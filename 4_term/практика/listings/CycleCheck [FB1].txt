@@ -1,0 +1,49 @@
+temp Bool
+ie_value Dint
+last Dint
+flag Bool
+volatage Real
+temp_voltage int
+
+IF ("CONVERTER" OR "SB") AND NOT #temp THEN
+    #temp := TRUE;
+    "HL" := NOT "HL";
+    "PROFIBUS_O" := NOT "PROFIBUS_O";
+    "SW_GATE" := NOT "SW_GATE";
+    #ie_value := 0;
+END_IF;
+
+IF NOT "SB" AND NOT "CONVERTER" THEN
+    #temp := FALSE;
+END_IF;
+
+IF "SW_GATE" THEN
+    IF #flag THEN
+        IF #last < "COUNT" AND #ie_value > -1 AND #ie_value < 100 THEN
+            #ie_value := #ie_value + 1;
+        END_IF;
+        IF #last > "COUNT" AND #ie_value > 0 AND #ie_value < 101 THEN
+            #ie_value := #ie_value - 1;
+        END_IF;
+    ELSE
+        IF "COUNT" > -1 AND "COUNT" < 101 THEN
+            #ie_value := "COUNT";
+        ELSE
+            #flag := TRUE;
+        END_IF;
+        
+    END_IF;
+    #last := "COUNT";
+END_IF;
+
+#temp_voltage := REAL_TO_INT((DINT_TO_REAL(#ie_value) / 100.0) * 27648.0);
+
+IF #temp_voltage >= 0 AND #temp_voltage <= 27648 THEN
+    "ENGINE_CAPACITY" := #temp_voltage;
+    #voltage := DINT_TO_REAL(#ie_value) * 10.0;
+ELSE
+    "ENGINE_CAPACITY" := 0;
+    #voltage := 0.0;
+END_IF;
+
+"MyClock_DB"();

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messanger"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#8C8C8C"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/centerText"
+        android:layout_width="30dp"
+        android:layout_height="35dp"
+        android:background="#673AB7"
+        android:fontFamily="monospace"
+        android:rotation="30"
+        android:shadowColor="#4CAF50"
+        android:shadowDx="8"
+        android:shadowDy="6"
+        android:shadowRadius="4"
+        android:text="@string/center_text"
+        android:textAlignment="center"
+        android:textColor="#FF9800"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lowText"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:rotation="13"
+        android:background="#673AB7"
+        android:shadowColor="#4CAF50"
+        android:shadowDx="8"
+        android:shadowDy="6"
+        android:shadowRadius="2"
+        android:text="@string/low_text"
+        android:textAlignment="center"
+        android:textColor="#FF9800"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

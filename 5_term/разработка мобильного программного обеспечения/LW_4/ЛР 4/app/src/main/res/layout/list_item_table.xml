@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ID" />
+
+        <TextView
+            android:id="@+id/val1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Производитель" />
+
+        <TextView
+            android:id="@+id/val2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="HDD" />
+
+        <TextView
+            android:id="@+id/val3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Наличие SSD" />
+
+        <TextView
+            android:id="@+id/val4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RAM" />
+
+        <TextView
+            android:id="@+id/val5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="FULL HD" />
+
+        <TextView
+            android:id="@+id/val6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/prop7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Автономная работа" />
+
+        <TextView
+            android:id="@+id/val7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Property 2" />
+    </TableRow>
+</TableLayout>
