@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LW_4"
         tools:targetApi="31">
+        <activity
+            android:name=".double_group"
+            android:exported="false" />
+        <activity
+            android:name=".lower_than_AVG"
+            android:exported="false" />
+        <activity
+            android:name=".value_greater_than"
+            android:exported="false" />
+        <activity
+            android:name=".avg_group"
+            android:exported="false" />
         <activity
             android:name=".NewLaptop"
             android:exported="false" />
