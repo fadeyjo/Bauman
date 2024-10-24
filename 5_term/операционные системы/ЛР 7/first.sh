@@ -7,12 +7,13 @@ fi
 
 USER_HOME="/home/$(whoami)"
 
-if [[ $1 == "*" && $2 == "-" ]]; then
-    if [[ $# -lt 3 ]]; then
+if [[ $2 == "*" && $3 == "-" ]]; then
+    if [[ $# -lt 4 ]]; then
         echo "Не указаны исключённые файлы."
         exit 1
     fi
-    excluded_files=("${@:3}")
+    excluded_files=("${@:4}")
+    excluded_files+=("${1}")
     for excluded_file in "${excluded_files[@]}"; do
         if [[ ! -f "${USER_HOME}/${excluded_file}" ]]; then
             echo "Файл ${excluded_file} не существует."
@@ -37,10 +38,14 @@ if [[ $1 == "*" && $2 == "-" ]]; then
         fi
     done
     echo "Все файлы удалены."
-elif [[ "${#}" -eq 1 && -f $1 ]]; then
-    echo "Удаление файла ${1}..."
-    rm -f "${1}"
-    echo "Файл ${1} удалён."
+elif [[ "${#}" -eq 2 && -f $2 ]]; then
+    if [[ "${1}" != "${2}" ]]; then
+        echo "Удаление файла ${2}..."
+        rm -f "${2}"
+        echo "Файл ${2} удалён."
+    else
+        echo "Файл не удалён".
+    fi
 else
     echo "Неправильный формат команды."
 fi

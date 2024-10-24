@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TEMP_DIR="/home/roman/"
+TEMP_DIR="/home/fadeyjo/"
 
 CURRENT_MONTH=$(date +"%Y-%m")
 ONE_WEEK_AGO=$(date -d '7 days ago' +%s)
