@@ -1,8 +1,6 @@
-123 = CXXIII
-3424 = MMMCDXXIV
-3 = III
-1 = I
-2 = II
-45 = XLV
-22 = XXII
-Ошибка: 'ds' не является допустимым десятичным числом.
+3999 = MMMCMXCIX
+333 = CCCXXXIII
+312 = CCCXII
+10 = X
+23 = XXIII
+312 = CCCXII
