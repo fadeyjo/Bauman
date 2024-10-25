@@ -17,7 +17,6 @@ class FilteredCompositionsActivity : AppCompatActivity() {
     private var fromSeconds: Int = 0
     private var toMinutes: Int = 0
     private var toSeconds: Int = 0
-    private val CONTENT_URI: Uri = Uri.parse("content://com.example.lw_5_source.provider/compositions")
     private val compositions = mutableListOf<Composition>()
 
 
@@ -31,7 +30,7 @@ class FilteredCompositionsActivity : AppCompatActivity() {
         this.toMinutes = intent.getIntExtra("toMinutes", -1)
         this.toSeconds = intent.getIntExtra("toSeconds", -1)
 
-        this.loadData(this)
+        this.loadData()
         this.renderData()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -41,35 +40,25 @@ class FilteredCompositionsActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadData(context: Context) {
-        val contentResolver = context.contentResolver
-        val cursor: Cursor? = contentResolver.query(
-            CONTENT_URI,
-            null,
-            null,
-            null,
-            null
-        )
+    private fun loadData() {
+        val uri = Uri.parse("content://com.example.lw_5_source.provider/compositions")
+        val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         if (cursor == null) {
-            Toast.makeText(context, "Не удалось получить данные", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Cursor = null", Toast.LENGTH_SHORT).show()
             return
         }
 
-        cursor.use {
-            val idColIndex = it.getColumnIndexOrThrow("id")
-            val authorColIndex = it.getColumnIndexOrThrow("author")
-            val titleColIndex = it.getColumnIndexOrThrow("title")
-            val durationColIndex = it.getColumnIndexOrThrow("duration")
-
+        cursor.let {
             while (it.moveToNext()) {
-                val id = it.getInt(idColIndex)
-                val author = it.getString(authorColIndex)
-                val title = it.getString(titleColIndex)
-                val duration = it.getInt(durationColIndex)
+                val id = it.getInt(it.getColumnIndexOrThrow("id"))
+                val author = it.getString(it.getColumnIndexOrThrow("author"))
+                val title = it.getString(it.getColumnIndexOrThrow("title"))
+                val duration = it.getInt(it.getColumnIndexOrThrow("duration"))
 
                 this.compositions.add(Composition(id, author, title, duration))
             }
+            it.close()
         }
     }
 

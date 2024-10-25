@@ -27,7 +27,7 @@
         <provider
             android:name=".CompositionContentProvider"
             android:authorities="com.example.lw_5_source.provider"
-            android:exported="true" />
+            android:exported="true"/>
     </application>
 
 </manifest>

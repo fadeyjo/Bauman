@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LW_5_CLIENT"
+rootProject.name = "LW_6"
 include(":app")
-include(":lw_5_source")
+ 
