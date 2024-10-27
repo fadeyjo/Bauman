@@ -14,7 +14,7 @@
 
     <item
         android:id="@+id/RAM_sum"
-        android:title="3) Вычислить сумму ОП"
+        android:title="3) Cумму параметра"
         android:orderInCategory="100"
         app:showAsAction="never"/>
     <item

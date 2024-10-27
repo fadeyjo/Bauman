@@ -203,7 +203,7 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return total
     }
 
-   fun doubleGroup(option1: String, option2: String): MutableList<Laptop> {
+    fun doubleGroup(option1: String, option2: String): MutableList<Laptop> {
        var col1 = ""
        if (option1 == "Производитель") {
            col1 = MANUFACTURE_NAME_COL
