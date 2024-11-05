@@ -41,7 +41,7 @@ class FilteredCompositionsActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        val uri = Uri.parse("content://com.example.lw_5_source.provider/compositions")
+        val uri = Uri.parse("content://com.example.lw_5_source.CompositionContentProvider/compositions")
         val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
 
         if (cursor == null) {

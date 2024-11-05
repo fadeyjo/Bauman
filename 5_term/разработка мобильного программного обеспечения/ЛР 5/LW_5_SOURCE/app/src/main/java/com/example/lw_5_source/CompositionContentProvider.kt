@@ -105,14 +105,14 @@ class CompositionContentProvider : ContentProvider() {
         return updatedRows
     }
 
-    override fun getType(uri: Uri): String? = when (uriMatcher.match(uri)) {
+    override fun getType(uri: Uri): String = when (uriMatcher.match(uri)) {
         COMPOSITIONS -> "vnd.android.cursor.dir/$AUTHORITY.$PATH_COMPOSITIONS"
         COMPOSITION_ID -> "vnd.android.cursor.item/$AUTHORITY.$PATH_COMPOSITIONS"
         else -> throw IllegalArgumentException("Unknown URI: $uri")
     }
 
     companion object {
-        const val AUTHORITY = "com.example.lw_5_source.provider"
+        const val AUTHORITY = "com.example.lw_5_source.CompositionContentProvider"
         val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/${CompositionDBHelper.TABLE_NAME}")
 
         private const val COMPOSITIONS = 1
