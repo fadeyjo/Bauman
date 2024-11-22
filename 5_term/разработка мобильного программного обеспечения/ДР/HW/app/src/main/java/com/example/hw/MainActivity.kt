@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
             val bufferMem = intent.getLongExtra("threshold", 0)
             val activeMem = intent.getLongExtra("activeMem", 0)
 
-            // Обновление текстовых полей
             totalMemText.text = "Total Memory: $totalMem KB"
             availMemText.text = "Available Memory: $availMem KB"
             bufferMemText.text = "Buffer Memory: $bufferMem KB"
@@ -51,7 +50,6 @@ class MainActivity : AppCompatActivity() {
             stopService(Intent(this, MemoryService::class.java))
         }
 
-        // Регистрируем приемник
         registerReceiver(memoryReceiver, IntentFilter("MEMORY_UPDATE"))
     }
 

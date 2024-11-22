@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LW_5</string>
+    <string name="min_duration">Min duration</string>
+    <string name="max_duration">Max duration</string>
+    <string name="colon">:</string>
+    <string name="search_tracks">Search Tracks</string>
+</resources>

@@ -21,7 +21,7 @@ class MemoryService : Service() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 updateMemoryInfo()
-                handler.postDelayed(this, 5000)  // обновление каждые 5 секунд
+                handler.postDelayed(this, 5000)
             }
         }, 0)
     }
@@ -30,14 +30,12 @@ class MemoryService : Service() {
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         activityManager.getMemoryInfo(memoryInfo)
 
-        // Подготовка данных для отправки
         val intent = Intent("MEMORY_UPDATE")
         intent.putExtra("totalMem", memoryInfo.totalMem / 1024)
         intent.putExtra("availMem", memoryInfo.availMem / 1024)
         intent.putExtra("threshold", memoryInfo.threshold / 1024)
         intent.putExtra("activeMem", memoryInfo.totalMem - memoryInfo.availMem)
 
-        // Отправка широковещательного намерения
         sendBroadcast(intent)
     }
 
