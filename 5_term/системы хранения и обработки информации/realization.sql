@@ -406,4 +406,38 @@ VALUES
 
 -- LW_3
 
+create index idx_customers_personal_account_number on customers (personal_account_number);
 
+create unique index idx_customers_email on customers (email);
+
+create index idx_traffic_plans_id on traffic_plans (traffic_plan_id);
+
+create index idx_sim_cards_phone_number on sim_cards (phone_number);
+
+create index idx_customer_to_customer on customer_to_customer (initiator_phone_number, interlocutor_phone_number);
+
+create index idx_customer_to_other on customer_to_other (other_phone_number, customer_phone_number);
+
+create index idx_customer_to_other_iniciator on customer_to_other (customer_is_initiator, other_phone_number, customer_phone_number);
+
+create index idx_messages_id on messages (message_id);
+
+create index idx_messages_date on messages (message_date_time);
+
+create index idx_calls_id on calls (call_id);
+
+create index idx_calls_date on calls (call_date_time);
+
+create or replace view phone_numbers_view AS
+select 
+  s.phone_number,
+  s.registration_date,
+  t.title AS traffic_plan_title
+from 
+  sim_cards s
+join 
+  traffic_plans t
+on
+  s.traffic_plan_id = t.traffic_plan_id;
+
+select * from phone_numbers_view;

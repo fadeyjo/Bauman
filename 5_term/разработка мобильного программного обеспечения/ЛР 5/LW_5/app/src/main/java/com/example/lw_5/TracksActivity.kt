@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
@@ -20,12 +19,12 @@ class TracksActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracks)
-        minDuration = intent.getLongExtra("MIN_DURATION", 0)
-        maxDuration = intent.getLongExtra("MAX_DURATION", Long.MAX_VALUE)
-        if (checkPermission()) {
-            loadTracks()
+        minDuration = intent.getLongExtra("from", 0)
+        maxDuration = intent.getLongExtra("to", Long.MAX_VALUE)
+        if (havePermission()) {
+            perTracks()
         } else {
-            requestPermission()
+            reqPermission()
         }
     }
     private fun getPermission(): String {
@@ -35,13 +34,13 @@ class TracksActivity : AppCompatActivity() {
             Manifest.permission.READ_MEDIA_AUDIO
         }
     }
-    private fun checkPermission(): Boolean {
+    private fun havePermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
             getPermission()
         ) == PackageManager.PERMISSION_GRANTED
     }
-    private fun requestPermission() {
+    private fun reqPermission() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(getPermission()),
@@ -58,33 +57,33 @@ class TracksActivity : AppCompatActivity() {
         if (requestCode == PERMISSION_REQUEST_CODE &&
             grantResults.isNotEmpty() && grantResults[0] ==
             PackageManager.PERMISSION_GRANTED) {
-            loadTracks()
+            perTracks()
         }
     }
-    private fun loadTracks() {
+    private fun perTracks() {
         val tracks = mutableListOf<String>()
         val projection = arrayOf(
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.DURATION
         )
-        val selection = "${MediaStore.Audio.Media.DURATION} BETWEEN ? AND ?"
-        val selectionArgs = arrayOf(minDuration.toString(),
+        val query = "${MediaStore.Audio.Media.DURATION} BETWEEN ? AND ?"
+        val args = arrayOf(minDuration.toString(),
             maxDuration.toString())
         contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
-            selection,
-            selectionArgs,
+            query,
+            args,
             null
         )?.use { cursor ->
-            val artistColumn =
+            val artistCol =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-            val titleColumn =
+            val titleCol =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
             while (cursor.moveToNext()) {
-                val artist = cursor.getString(artistColumn)
-                val title = cursor.getString(titleColumn)
+                val artist = cursor.getString(artistCol)
+                val title = cursor.getString(titleCol)
                 tracks.add("$artist - $title")
             }
         }

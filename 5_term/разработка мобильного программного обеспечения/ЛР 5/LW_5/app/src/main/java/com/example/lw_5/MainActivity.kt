@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
                 val maxSecondsValue =
                     toSeconds.text.toString().toIntOrNull() ?: 0
                 if (minSecondsValue >= 60 || maxSecondsValue >= 60) {
-                    Toast.makeText(this, "Seconds must be under 60",
+                    Toast.makeText(this, "Seconds must be smaller",
                         Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
@@ -33,16 +33,16 @@ class MainActivity : AppCompatActivity() {
                     (toMinutes.text.toString().toIntOrNull() ?: 0) * 60 +
                             maxSecondsValue
                 if (maxDuration < minDuration) {
-                    Toast.makeText(this, "Max duration must be greater than min duration", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Max duration must be greater", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                 }
                 val intent = Intent(this, TracksActivity::class.java).apply {
-                    putExtra("MIN_DURATION", minDuration * 1000L)
-                    putExtra("MAX_DURATION", maxDuration * 1000L)
+                    putExtra("from", minDuration * 1000L)
+                    putExtra("to", maxDuration * 1000L)
                 }
                 startActivity(intent)
             } catch (e: NumberFormatException) {
-                Toast.makeText(this, "Please enter valid numbers",
+                Toast.makeText(this, "Enter valid numbers",
                     Toast.LENGTH_SHORT).show()
             }
         }
