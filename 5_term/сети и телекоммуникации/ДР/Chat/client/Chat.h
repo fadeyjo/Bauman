@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTcpSocket>
+#include <QKeyEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,6 +26,9 @@ private slots:
 private:
     Ui::Chat *ui;
     QTcpSocket *socket;
+
+protected:
+    bool eventFilter(QObject*, QEvent*) override;
 };
 
 #endif // CHAT_H

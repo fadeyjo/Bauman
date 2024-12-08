@@ -35,18 +35,21 @@ public:
     {
         if (Chat->objectName().isEmpty())
             Chat->setObjectName("Chat");
-        Chat->resize(800, 500);
+        Chat->resize(800, 800);
         centralwidget = new QWidget(Chat);
         centralwidget->setObjectName("centralwidget");
         sendNewMsgBtn = new QPushButton(centralwidget);
         sendNewMsgBtn->setObjectName("sendNewMsgBtn");
-        sendNewMsgBtn->setGeometry(QRect(710, 442, 80, 26));
+        sendNewMsgBtn->setGeometry(QRect(625, 740, 110, 30));
         newMsgLineEdit = new QLineEdit(centralwidget);
         newMsgLineEdit->setObjectName("newMsgLineEdit");
-        newMsgLineEdit->setGeometry(QRect(0, 430, 700, 50));
+        newMsgLineEdit->setGeometry(QRect(40, 730, 560, 50));
         msgsBox = new QTextEdit(centralwidget);
         msgsBox->setObjectName("msgsBox");
-        msgsBox->setGeometry(QRect(0, 0, 800, 430));
+        msgsBox->setGeometry(QRect(40, 20, 720, 700));
+        QFont font;
+        font.setPointSize(14);
+        msgsBox->setFont(font);
         Chat->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Chat);
         menubar->setObjectName("menubar");

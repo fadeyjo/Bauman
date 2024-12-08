@@ -1,41 +1,16 @@
 # ninja log v6
-4	41	1733636874113393324	client_autogen/timestamp	c44163ce5ba47ca2
+4463	4846	1733645893356828504	client	22e9022de313365a
+1329	6120	1733645239440116905	CMakeFiles/client.dir/main.cpp.o	ea07661cd34c8d39
+1328	6417	1733645239440116905	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o	117f1531d16d11d5
+83	4463	1733645888976828203	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
+8	83	1733645888900161531	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
+8	83	1733645888900161531	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
+8	83	1733645888900161531	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
 4	504	1733599773550170928	build.ninja	eaad4e94487222df
-4	41	1733636874113393324	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-4	41	1733636874113393324	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
-4	41	1733636874113393324	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-41	2721	1733636874150059993	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
-472	4353	1733603178143453845	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o	117f1531d16d11d5
-472	4432	1733603178143453845	CMakeFiles/client.dir/main.cpp.o	ea07661cd34c8d39
-2721	3117	1733636876830060178	client	22e9022de313365a
-5	65	1733637333976758264	client_autogen/timestamp	c44163ce5ba47ca2
-5	65	1733637333976758264	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-5	65	1733637333976758264	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
-5	65	1733637333976758264	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-65	3833	1733637334036758269	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
-3834	4208	1733637337806758528	client	22e9022de313365a
-6	63	1733637363406760287	client_autogen/timestamp	c44163ce5ba47ca2
-6	63	1733637363406760287	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-6	63	1733637363406760287	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
-6	63	1733637363406760287	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-63	2294	1733637363463426958	CMakeFiles/client.dir/main.cpp.o	ea07661cd34c8d39
-63	2610	1733637363463426958	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
-2610	2988	1733637366010093800	client	22e9022de313365a
-6	65	1733637573370108060	client_autogen/timestamp	c44163ce5ba47ca2
-6	65	1733637573370108060	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-6	65	1733637573370108060	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
-6	65	1733637573370108060	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-65	4583	1733637573426774730	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
-4583	4962	1733637577946775041	client	22e9022de313365a
-7	71	1733637864976794780	client_autogen/timestamp	c44163ce5ba47ca2
-7	71	1733637864976794780	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-7	71	1733637864976794780	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
-7	71	1733637864976794780	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-71	4299	1733637865040128118	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
-4299	4678	1733637869270128408	client	22e9022de313365a
-6	69	1733638900310199277	client_autogen/timestamp	c44163ce5ba47ca2
-6	69	1733638900310199277	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-6	69	1733638900310199277	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
-6	69	1733638900310199277	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
-69	3828	1733638900373532615	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
-3828	4193	1733638904133532874	client	22e9022de313365a
+8	83	1733645888900161531	client_autogen/timestamp	c44163ce5ba47ca2
+11	101	1733650887966982260	client_autogen/timestamp	c44163ce5ba47ca2
+11	101	1733650887966982260	client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
+11	101	1733650887966982260	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/timestamp	c44163ce5ba47ca2
+11	101	1733650887966982260	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/Chat/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	c44163ce5ba47ca2
+101	3063	1733650888053648933	CMakeFiles/client.dir/Chat.cpp.o	c2cb6a3dfdcb1b90
+3063	3360	1733650891016982470	client	22e9022de313365a
