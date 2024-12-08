@@ -414,11 +414,21 @@ create index idx_traffic_plans_id on traffic_plans (traffic_plan_id);
 
 create index idx_sim_cards_phone_number on sim_cards (phone_number);
 
-create index idx_customer_to_customer on customer_to_customer (initiator_phone_number, interlocutor_phone_number);
+create index idx_customer_to_customer on customer_to_customer (
+	initiator_phone_number,
+	interlocutor_phone_number
+);
 
-create index idx_customer_to_other on customer_to_other (other_phone_number, customer_phone_number);
+create index idx_customer_to_other on customer_to_other (
+	other_phone_number,
+	customer_phone_number
+);
 
-create index idx_customer_to_other_iniciator on customer_to_other (customer_is_initiator, other_phone_number, customer_phone_number);
+create index idx_customer_to_other_iniciator on customer_to_other (
+	customer_is_initiator,
+	other_phone_number,
+	customer_phone_number
+);
 
 create index idx_messages_id on messages (message_id);
 
