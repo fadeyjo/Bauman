@@ -1,0 +1,9 @@
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/client.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/edit_cache.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/rebuild_cache.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/list_install_components.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/install.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/install/local.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/install/strip.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/client_autogen_timestamp_deps.dir
+/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/CMakeFiles/client_autogen.dir

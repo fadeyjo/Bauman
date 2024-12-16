@@ -1,0 +1,68 @@
+# ninja log v6
+11052	11442	1734365767837653397	client	88bc4bfdc936b37a
+180	9802	1734365756964319316	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+60	5423	1734351751936690075	CMakeFiles/client.dir/main.cpp.o	1be54841b92e4583
+919	8332	1734359893233916413	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o	f87d85419c8cc73c
+184	9112	1734365756970985984	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+168	10811	1734365756954319316	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+174	11052	1734365756957652649	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+20	168	1734365756804319305	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+20	168	1734365756804319305	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+20	168	1734365756804319305	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+49	3967	1734242898023494432	CMakeFiles/client.dir/chatitem.cpp.o	1575eac667f78c80
+20	168	1734365756804319305	client_autogen/timestamp	5e29afa792c30d4a
+10	1842	1734366369887694755	client_autogen/timestamp	5e29afa792c30d4a
+10	1842	1734366369887694755	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+10	1842	1734366369887694755	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+10	1842	1734366369887694755	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+1842	9420	1734366369917694757	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.o	f87d85419c8cc73c
+1855	9849	1734366369931028091	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+1848	9985	1734366369921028090	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+1862	10141	1734366369937694758	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+1848	10183	1734366369921028090	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+10184	10491	1734366378257695330	client	88bc4bfdc936b37a
+9	77	1734366511234371139	client_autogen/timestamp	5e29afa792c30d4a
+9	77	1734366511234371139	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+9	77	1734366511234371139	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+9	77	1734366511234371139	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+78	4908	1734366511304371144	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+78	5049	1734366511304371144	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+79	5115	1734366511304371144	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+78	5408	1734366511304371144	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+5408	5723	1734366516634371510	client	88bc4bfdc936b37a
+3	32	1734366596114376966	client_autogen/timestamp	5e29afa792c30d4a
+3	32	1734366596114376966	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+3	32	1734366596114376966	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+3	32	1734366596114376966	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+32	3211	1734366596144376968	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+32	3404	1734366596144376968	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+32	3486	1734366596144376968	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+32	3782	1734366596144376968	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+3782	4099	1734366599894377226	client	88bc4bfdc936b37a
+8	75	1734366665494381731	client_autogen/timestamp	5e29afa792c30d4a
+8	75	1734366665494381731	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+8	75	1734366665494381731	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+8	75	1734366665494381731	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+76	4240	1734366665561048402	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+75	4318	1734366665561048402	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+76	4532	1734366665561048402	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+76	4721	1734366665561048402	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+4721	5034	1734366670207715388	client	88bc4bfdc936b37a
+3	31	1734366843037727253	client_autogen/timestamp	5e29afa792c30d4a
+3	31	1734366843037727253	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+3	31	1734366843037727253	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+3	31	1734366843037727253	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+31	3234	1734366843064393922	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+32	3416	1734366843064393922	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+31	3549	1734366843064393922	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+31	3757	1734366843064393922	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+3757	4075	1734366846791060845	client	88bc4bfdc936b37a
+8	83	1734367107771078775	client_autogen/timestamp	5e29afa792c30d4a
+8	83	1734367107771078775	client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+8	83	1734367107771078775	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/timestamp	5e29afa792c30d4a
+8	83	1734367107771078775	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/client/build/Desktop-Debug/client_autogen/mocs_compilation.cpp	5e29afa792c30d4a
+85	4111	1734367107847745447	CMakeFiles/client.dir/roomlistwidgetitem.cpp.o	e2ce8c31bf5a8b0d
+84	4287	1734367107847745447	CMakeFiles/client.dir/authwindow.cpp.o	c04a3a482e4b6225
+85	4414	1734367107847745447	CMakeFiles/client.dir/room.cpp.o	e251cf45e4279df1
+84	4594	1734367107847745447	CMakeFiles/client.dir/roomslist.cpp.o	38ab82455720630e
+4594	4908	1734367112357745757	client	88bc4bfdc936b37a
