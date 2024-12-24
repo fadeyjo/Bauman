@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         roomslist.h roomslist.cpp roomslist.ui
         roomlistwidgetitem.h roomlistwidgetitem.cpp roomlistwidgetitem.ui
         room.h room.cpp room.ui
+        InputDialog.h
 
 
 

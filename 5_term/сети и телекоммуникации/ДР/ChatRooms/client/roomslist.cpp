@@ -2,17 +2,18 @@
 #include "ui_roomslist.h"
 #include "roomlistwidgetitem.h"
 
-RoomsList::RoomsList(QString nickname, QWidget *parent)
+RoomsList::RoomsList(QString hostAddress, QString nickname, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::RoomsList)
 {
     ui->setupUi(this);
 
     this->nickname = nickname;
+    this->hostAddress = hostAddress;
 
     socket= new QTcpSocket(this);
 
-    socket->connectToHost("127.0.0.1", 5000);
+    socket->connectToHost(hostAddress, 5000);
     if (!socket->waitForConnected(5000))
     {
         qDebug() << "Connection failed!";
@@ -52,7 +53,7 @@ void RoomsList::receive()
         if (message == "new_room\n")
         {
             QString newRoomFrom = socket->readLine();
-            roomListWidgetItem* roomItem = new roomListWidgetItem(socket, nickname, newRoomFrom, this);
+            roomListWidgetItem* roomItem = new roomListWidgetItem(hostAddress, socket, nickname, newRoomFrom, this);
             roomItem->setFixedSize(600, 60);
 
             QListWidgetItem* listItem = new QListWidgetItem(ui->roomsListWidget);
@@ -92,7 +93,7 @@ void RoomsList::receive()
         {
             QString existRoomName = socket->readLine();
 
-            roomListWidgetItem* roomItem = new roomListWidgetItem(socket, nickname, existRoomName, this);
+            roomListWidgetItem* roomItem = new roomListWidgetItem(hostAddress, socket, nickname, existRoomName, this);
             roomItem->setFixedSize(600, 60);
 
             QListWidgetItem* listItem = new QListWidgetItem(ui->roomsListWidget);

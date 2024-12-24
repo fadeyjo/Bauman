@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include "onlineuserlistitem.h"
 #include "roomlistitem.h"
+#include "InputDialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,16 +10,36 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    socket = new QTcpSocket(this);
+    InputDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        QString ip = dialog.getIpAddress();
 
-    socket->connectToHost("127.0.0.1", 5000);
-    if (!socket->waitForConnected(5000))
-    {
-        qDebug() << "Connection failed!";
-        return;
+        if (ip.isEmpty()) {
+            return;
+        }
+
+        QString hostAddress = ip;
+
+        socket = new QTcpSocket(this);
+        bool connected = false;
+
+        socket->connectToHost(hostAddress, 5000);
+        if (!socket->waitForConnected(5000)) {
+            qDebug() << "Connection by IP failed! Trying DNS...";
+            socket->abort();
+            socket->connectToHost(QHostAddress(hostAddress).toString(), 5000);
+            connected = socket->waitForConnected(5000);
+        } else {
+            connected = true;
+        }
+
+        if (!connected) {
+            qDebug() << "Connection failed completely!";
+            return;
+        }
+
+        socket->write("get_info_for_admin\n");
     }
-
-    socket->write("get_info_for_admin\n");
 
     connect(socket, &QTcpSocket::readyRead, this, &MainWindow::receive);
 }

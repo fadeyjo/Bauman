@@ -1,7 +1,8 @@
 #include "room.h"
 #include "ui_room.h"
+#include "authwindow.h"
 
-Room::Room(QString nickname, QString roomName, QWidget *parent)
+Room::Room(QString hostName, QString nickname, QString roomName, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Room)
 {
@@ -10,12 +11,13 @@ Room::Room(QString nickname, QString roomName, QWidget *parent)
     room = roomName;
     this->nickname = nickname;
     this->parent = parent;
+    this->hostName = hostName;
 
     ui->roomNameLabel->setText(room);
 
     socket= new QTcpSocket(this);
 
-    socket->connectToHost("127.0.0.1", 5000);
+    socket->connectToHost(hostName, 5000);
     if (!socket->waitForConnected(5000))
     {
         qDebug() << "Connection failed!";
@@ -34,7 +36,7 @@ Room::Room(QString nickname, QString roomName, QWidget *parent)
 
 void Room::goBack()
 {
-    RoomsList *roomsList = new RoomsList(nickname);
+    RoomsList *roomsList = new RoomsList(hostName, nickname);
     socket->disconnectFromHost();
     close();
     roomsList->show();
@@ -65,7 +67,7 @@ void Room::receive()
 
         if (signal == "delete_room\n")
         {
-            RoomsList *roomsList = new RoomsList(nickname);
+            RoomsList *roomsList = new RoomsList(hostName, nickname);
             socket->disconnectFromHost();
             close();
             roomsList->show();

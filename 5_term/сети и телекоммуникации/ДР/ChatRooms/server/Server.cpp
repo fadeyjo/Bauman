@@ -1,6 +1,6 @@
 #include "Server.h"
 
-Server::Server(int PORT)
+Server::Server(int PORT, char *listenAddress)
 {
     server = socket(AF_INET, SOCK_STREAM, 0);
     if (server == -1)
@@ -10,7 +10,16 @@ Server::Server(int PORT)
     }
 
     socketSettings.sin_family = AF_INET;
-    socketSettings.sin_addr.s_addr = INADDR_ANY;
+
+    if (listenAddress == "all")
+    {
+        socketSettings.sin_addr.s_addr = INADDR_ANY;
+    }
+    else
+    {
+        socketSettings.sin_addr.s_addr = inet_addr(listenAddress);
+    }
+
     socketSettings.sin_port = htons(PORT);
 
     this->PORT = PORT;
@@ -32,7 +41,8 @@ Server::Server(int PORT)
 
 void Server::startListening()
 {
-    std::cout << "Server listening on port = " << PORT << "." << std::endl;
+    std::cout << "Server listening on port = " << PORT << ".\n"
+              << "Enter command: " << std::flush;
 
     while (true)
     {
@@ -230,7 +240,6 @@ void Server::handleRoomsList(int client, std::string nickname)
         clientsInRoomsList.push_back(Client(client, nickname));
     }
 
-    std::cerr << "Добавление\t" << nickname << std::endl;
 
     std::vector<std::string> roomsNames = db->getRoomsNames();
 
@@ -261,7 +270,6 @@ void Server::handleRoomsList(int client, std::string nickname)
                                          return user.socket == client;
                                      });
             clientsInRoomsList.erase(it, clientsInRoomsList.end());
-            std::cerr << "Удаление:\t" << clientsInRoomsList.size() << std::endl;
 
             if (admin != nullptr)
             {

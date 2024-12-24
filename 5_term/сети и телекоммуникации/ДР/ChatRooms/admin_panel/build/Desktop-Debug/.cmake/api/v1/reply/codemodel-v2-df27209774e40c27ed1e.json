@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-b7a96e5feffc0860a504.json",
+					"jsonFile" : "directory-.-Debug-c8cd7cab16d23904ab7d.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "admin_panel::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-admin_panel-Debug-fd859ea3910017323f8f.json",
+					"jsonFile" : "target-admin_panel-Debug-998e5a880994c7a680b2.json",
 					"name" : "admin_panel",
 					"projectIndex" : 0
 				},

@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "admin_panel"
+			"path" : "client"
 		}
 	],
 	"backtrace" : 4,
@@ -71,19 +71,19 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 65,
+				"line" : 73,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 47,
+				"line" : 55,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 48,
+				"line" : 56,
 				"parent" : 0
 			},
 			{
@@ -252,7 +252,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "/home/fadeyjo/Documents/Bauman/5_term/\u0441\u0435\u0442\u0438 \u0438 \u0442\u0435\u043b\u0435\u043a\u043e\u043c\u043c\u0443\u043d\u0438\u043a\u0430\u0446\u0438\u0438/\u0414\u0420/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/include"
+					"path" : "/home/fadeyjo/Documents/Bauman/5_term/\u0441\u0435\u0442\u0438 \u0438 \u0442\u0435\u043b\u0435\u043a\u043e\u043c\u043c\u0443\u043d\u0438\u043a\u0430\u0446\u0438\u0438/\u0414\u0420/ChatRooms/client/build/Desktop-Debug/client_autogen/include"
 				},
 				{
 					"backtrace" : 31,
@@ -300,21 +300,23 @@
 				0,
 				1,
 				2,
-				6
+				6,
+				9,
+				12
 			]
 		}
 	],
 	"dependencies" : 
 	[
 		{
-			"id" : "admin_panel_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+			"id" : "client_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		},
 		{
 			"backtrace" : 0,
-			"id" : "admin_panel_autogen::@6890427a1f51a3e7e1df"
+			"id" : "client_autogen::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "admin_panel::@6890427a1f51a3e7e1df",
+	"id" : "client::@6890427a1f51a3e7e1df",
 	"install" : 
 	{
 		"destinations" : 
@@ -374,8 +376,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "admin_panel",
-	"nameOnDisk" : "admin_panel",
+	"name" : "client",
+	"nameOnDisk" : "client",
 	"paths" : 
 	{
 		"build" : ".",
@@ -390,7 +392,9 @@
 				0,
 				1,
 				2,
-				6
+				6,
+				9,
+				12
 			]
 		},
 		{
@@ -400,7 +404,12 @@
 				3,
 				5,
 				8,
-				9
+				11,
+				14,
+				15,
+				16,
+				17,
+				18
 			]
 		},
 		{
@@ -408,21 +417,23 @@
 			"sourceIndexes" : 
 			[
 				4,
-				7
+				7,
+				10,
+				13
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				10
+				19
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				11
+				20
 			]
 		}
 	],
@@ -432,7 +443,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/Desktop-Debug/admin_panel_autogen/mocs_compilation.cpp",
+			"path" : "build/Desktop-Debug/client_autogen/mocs_compilation.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -444,57 +455,106 @@
 		{
 			"backtrace" : 4,
 			"compileGroupIndex" : 0,
-			"path" : "mainwindow.cpp",
+			"path" : "authwindow.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 4,
-			"path" : "mainwindow.h",
+			"path" : "authwindow.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 4,
-			"path" : "mainwindow.ui",
+			"path" : "authwindow.ui",
 			"sourceGroupIndex" : 2
 		},
 		{
 			"backtrace" : 4,
-			"path" : "onlineuserlistitem.h",
+			"path" : "roomslist.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 4,
 			"compileGroupIndex" : 0,
-			"path" : "onlineuserlistitem.cpp",
+			"path" : "roomslist.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 4,
-			"path" : "onlineuserlistitem.ui",
+			"path" : "roomslist.ui",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 0,
-			"isGenerated" : true,
-			"path" : "build/Desktop-Debug/admin_panel_autogen/include/ui_mainwindow.h",
+			"backtrace" : 4,
+			"path" : "roomlistwidgetitem.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "roomlistwidgetitem.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "roomlistwidgetitem.ui",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 4,
+			"path" : "room.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "room.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "room.ui",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 4,
+			"path" : "InputDialog.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/Desktop-Debug/admin_panel_autogen/include/ui_onlineuserlistitem.h",
+			"path" : "build/Desktop-Debug/client_autogen/include/ui_authwindow.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/Desktop-Debug/admin_panel_autogen/timestamp",
+			"path" : "build/Desktop-Debug/client_autogen/include/ui_roomslist.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop-Debug/client_autogen/include/ui_roomlistwidgetitem.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop-Debug/client_autogen/include/ui_room.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop-Debug/client_autogen/timestamp",
 			"sourceGroupIndex" : 3
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/Desktop-Debug/admin_panel_autogen/timestamp.rule",
+			"path" : "build/Desktop-Debug/client_autogen/timestamp.rule",
 			"sourceGroupIndex" : 4
 		}
 	],

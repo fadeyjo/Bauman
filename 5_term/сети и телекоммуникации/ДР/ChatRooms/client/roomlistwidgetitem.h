@@ -13,7 +13,7 @@ class roomListWidgetItem : public QWidget
     Q_OBJECT
 
 public:
-    explicit roomListWidgetItem(QTcpSocket *socket, QString nickname, QString roomName, QWidget *parent = nullptr);
+    explicit roomListWidgetItem(QString hostName, QTcpSocket *socket, QString nickname, QString roomName, QWidget *parent = nullptr);
     ~roomListWidgetItem();
     QString name = "";
 
@@ -25,6 +25,7 @@ private:
     QWidget *parent = nullptr;
     QString nickname = "";
     QTcpSocket *socket = nullptr;
+    QString hostName = "";
 };
 
 #endif // ROOMLISTWIDGETITEM_H

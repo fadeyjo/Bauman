@@ -14,7 +14,7 @@ class Room : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Room(QString nickname, QString roomName, QWidget *parent = nullptr);
+    explicit Room(QString hostName, QString nickname, QString roomName, QWidget *parent = nullptr);
     ~Room();
 
 private slots:
@@ -28,6 +28,7 @@ private:
     QTcpSocket *socket = nullptr;
     QString nickname = "";
     QWidget *parent = nullptr;
+    QString hostName = "";
 
 protected:
     void closeEvent(QCloseEvent *event) override;

@@ -13,7 +13,7 @@ class RoomsList : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit RoomsList(QString nickname, QWidget *parent = nullptr);
+    explicit RoomsList(QString hostAddress, QString nickname, QWidget *parent = nullptr);
     ~RoomsList();
 
 private slots:
@@ -25,6 +25,7 @@ private:
     QString nickname = "";
     QTcpSocket *socket = nullptr;
     QString newRoomName;
+    QString hostAddress = "";
 
 protected:
     void closeEvent(QCloseEvent *event) override;

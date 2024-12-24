@@ -9,11 +9,12 @@
 #include "Client.h"
 #include <set>
 #include <algorithm>
+#include <arpa/inet.h>
 
 class Server
 {
 public:
-    Server(int);
+    Server(int, char *);
     void startListening();
 
 private:
