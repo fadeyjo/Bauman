@@ -1,6 +1,6 @@
 #include "Server.h"
 
-Server::Server(int PORT, char *listenAddress)
+Server::Server(int PORT)
 {
     server = socket(AF_INET, SOCK_STREAM, 0);
     if (server == -1)
@@ -10,16 +10,7 @@ Server::Server(int PORT, char *listenAddress)
     }
 
     socketSettings.sin_family = AF_INET;
-
-    if (listenAddress == "all")
-    {
-        socketSettings.sin_addr.s_addr = INADDR_ANY;
-    }
-    else
-    {
-        socketSettings.sin_addr.s_addr = inet_addr(listenAddress);
-    }
-
+    socketSettings.sin_addr.s_addr = INADDR_ANY;
     socketSettings.sin_port = htons(PORT);
 
     this->PORT = PORT;

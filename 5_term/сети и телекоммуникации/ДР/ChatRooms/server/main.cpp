@@ -4,16 +4,11 @@
 
 constexpr int PORT = 5000;
 
-void startServer(char *);
+void startServer();
 
 int main()
 {
-    int bufferSize = 100;
-    char *listenAddress = new char[bufferSize];
-    std::cout << "Enter addres to server or type 'all' for listening all ip addr: ";
-    std::cin.getline(listenAddress, bufferSize);
-
-    std::thread(startServer, listenAddress).detach();
+    std::thread(startServer).detach();
 
     std::string command;
 
@@ -34,9 +29,9 @@ int main()
     return 0;
 }
 
-void startServer(char *listenAddress)
+void startServer()
 {
-    Server *server = new Server(PORT, listenAddress);
+    Server *server = new Server(PORT);
 
     server->startListening();
 }

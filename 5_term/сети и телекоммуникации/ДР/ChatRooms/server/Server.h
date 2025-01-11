@@ -14,7 +14,7 @@
 class Server
 {
 public:
-    Server(int, char *);
+    Server(int);
     void startListening();
 
 private:
