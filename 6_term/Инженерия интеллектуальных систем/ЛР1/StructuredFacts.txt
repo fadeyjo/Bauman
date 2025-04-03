@@ -1,0 +1,59 @@
+         CLIPS (6.4.2 1/14/25)
+CLIPS> (assert (player injured))
+<Fact-1>
+CLIPS> (assert (weather cold))
+<Fact-2>
+CLIPS> (assert (weather windy))
+<Fact-3>
+CLIPS> (facts)
+f-1     (player injured)
+f-2     (weather cold)
+f-3     (weather windy)
+For a total of 3 facts.
+CLIPS> (deftemplate book
+(slot name (type STRING))
+(slot author (type STRING))
+(slot release_date (type INTEGER))
+(slot genre (type SYMBOL) (allowed-symbols novel detective))
+(slot pages_amount (type INTEGER))
+(slot language (type SYMBOL) (allowed-symbols English Russian Spanish Chinese))
+)
+CLIPS> (assert (book
+(name "Evgeniy Onegin")
+(author "Pushkin")
+(release_date 1831)
+(genre novel)
+(pages_amount 224)
+(language Russian)
+))
+<Fact-4>
+CLIPS> (facts)
+f-1     (player injured)
+f-2     (weather cold)
+f-3     (weather windy)
+f-4     (book (name "Evgeniy Onegin") (author "Pushkin") (release_date 1831) (genre novel) (pages_amount 224) (language Russian))
+For a total of 4 facts.
+CLIPS> (deffacts list_of_books
+  (book (name "Crime and Punishment") (author "Dostoevsky") (release_date 1866) (genre novel) (pages_amount 671) (language Russian))
+  (book (name "Sherlock Holmes") (author "Conan Doyle") (release_date 1892) (genre detective) (pages_amount 307) (language English))
+  (book (name "Don Quixote") (author "Cervantes") (release_date 1605) (genre novel) (pages_amount 863) (language Spanish))
+  (book (name "The Master and Margarita") (author "Bulgakov") (release_date 1967) (genre novel) (pages_amount 384) (language Russian))
+  (book (name "The Da Vinci Code") (author "Dan Brown") (release_date 2003) (genre detective) (pages_amount 489) (language English))
+  (book (name "War and Peace") (author "Tolstoy") (release_date 1869) (genre novel) (pages_amount 1225) (language Russian))
+  (book (name "One Hundred Years of Solitude") (author "Marquez") (release_date 1967) (genre novel) (pages_amount 417) (language Spanish))
+  (book (name "The Three-Body Problem") (author "Liu Cixin") (release_date 2008) (genre novel) (pages_amount 302) (language Chinese))
+)
+CLIPS> (reset)
+CLIPS> (facts)
+f-1     (book (name "Crime and Punishment") (author "Dostoevsky") (release_date 1866) (genre novel) (pages_amount 671) (language Russian))
+f-2     (book (name "Sherlock Holmes") (author "Conan Doyle") (release_date 1892) (genre detective) (pages_amount 307) (language English))
+f-3     (book (name "Don Quixote") (author "Cervantes") (release_date 1605) (genre novel) (pages_amount 863) (language Spanish))
+f-4     (book (name "The Master and Margarita") (author "Bulgakov") (release_date 1967) (genre novel) (pages_amount 384) (language Russian))
+f-5     (book (name "The Da Vinci Code") (author "Dan Brown") (release_date 2003) (genre detective) (pages_amount 489) (language English))
+f-6     (book (name "War and Peace") (author "Tolstoy") (release_date 1869) (genre novel) (pages_amount 1225) (language Russian))
+f-7     (book (name "One Hundred Years of Solitude") (author "Marquez") (release_date 1967) (genre novel) (pages_amount 417) (language Spanish))
+f-8     (book (name "The Three-Body Problem") (author "Liu Cixin") (release_date 2008) (genre novel) (pages_amount 302) (language Chinese))
+For a total of 8 facts.
+CLIPS> (save-facts "C:\\Users\\komra\\Desktop\\save_facts_result.txt" visible)
+8
+CLIPS>

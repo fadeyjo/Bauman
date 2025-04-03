@@ -1,0 +1,144 @@
+(set-strategy mea)
+
+(deftemplate book
+  (slot title (type STRING))
+  (slot author (type STRING))
+  (slot genre (type SYMBOL) (allowed-symbols novel detective fantasy sci-fi))
+  (slot pages (type INTEGER))
+  (slot year (type INTEGER))
+  (slot language (type SYMBOL) (allowed-symbols English Russian Spanish French))
+)
+
+(deffacts books
+  (book (title "1984") (author "Orwell") (genre sci-fi) (pages 328) (year 1949) (language English))
+  (book (title "Crime and Punishment") (author "Dostoevsky") (genre novel) (pages 671) (year 1866) (language Russian))
+  (book (title "Sherlock Holmes") (author "Conan Doyle") (genre detective) (pages 307) (year 1892) (language English))
+)
+
+(defrule rule-1-russian-book
+  (book (language Russian))
+  =>
+  (printout t "Russian book detected." crlf)
+)
+
+(defrule rule-2-big-book
+  (book (pages ?p&:(> ?p 500)))
+  =>
+  (printout t "Big book detected (over 500 pages)." crlf)
+)
+
+(defrule rule-3-old-book
+  (book (year ?y&:(< ?y 1900)))
+  =>
+  (printout t "Very old book detected (before 1900)." crlf)
+)
+
+(defrule rule-4-no-spanish-books
+  (not (book (language Spanish)))
+  =>
+  (printout t "No Spanish books detected." crlf)
+)
+
+(defrule rule-5-exists-detective
+  (exists (book (genre detective)))
+  =>
+  (printout t "Detective book exists." crlf)
+)
+
+(defrule rule-6-forall-old
+  (forall (book (year ?y)) (test (< ?y 2000)))
+  =>
+  (printout t "All books are published before 2000." crlf)
+)
+
+(defrule rule-7-logical-existence
+  (logical (book (author "Orwell")))
+  =>
+  (assert (book (title "Animal Farm") (author "Orwell") (genre novel) (pages 112) (year 1945) (language English)))
+)
+
+(defrule rule-8-fantasy-genre
+  (book (genre fantasy))
+  =>
+  (printout t "Fantasy genre detected." crlf)
+)
+
+(defrule rule-9-sci-fi-genre
+  (book (genre sci-fi))
+  =>
+  (printout t "Sci-fi genre detected." crlf)
+)
+
+(defrule rule-10-short-book
+  (book (pages ?p&:(< ?p 150)))
+  =>
+  (printout t "Short book detected (less than 150 pages)." crlf)
+)
+
+(defrule rule-11-english-language
+  (book (language English))
+  =>
+  (printout t "English language book detected." crlf)
+)
+
+(defrule rule-12-year-1949
+  (book (year 1949))
+  =>
+  (printout t "Book published in 1949 detected." crlf)
+)
+
+(defrule rule-13-author-orwell
+  (book (author "Orwell"))
+  =>
+  (printout t "Book by Orwell detected." crlf)
+)
+
+(defrule rule-14-not-french
+  (not (book (language French)))
+  =>
+  (printout t "No French books detected." crlf)
+)
+
+(defrule rule-15-pages-300
+  (book (pages 307))
+  =>
+  (printout t "Book with 307 pages detected." crlf)
+)
+
+(defrule rule-16-recent-book
+  (book (year ?y&:(>= ?y 1900)))
+  =>
+  (printout t "Book published after 1900 detected." crlf)
+)
+
+(defrule rule-17-novel-genre
+  (book (genre novel))
+  =>
+  (printout t "Novel genre detected." crlf)
+)
+
+(defrule rule-18-author-dostoevsky
+  (book (author "Dostoevsky"))
+  =>
+  (printout t "Book by Dostoevsky detected." crlf)
+)
+
+(defrule rule-19-no-book-2020
+  (not (book (year 2020)))
+  =>
+  (printout t "No book published in 2020 detected." crlf)
+)
+
+(defrule rule-20-language-check
+  (book (language English) (genre detective))
+  =>
+  (printout t "English detective book detected." crlf)
+)
+
+(reset)
+(list-defrules)
+(ppdefrule rule-1-russian-book)
+(matches rule-1-russian-book)
+(run)
+(undefrule rule-1-russian-book)
+(list-defrules)

@@ -1,0 +1,8 @@
+(book (name "Crime and Punishment") (author "Dostoevsky") (release_date 1866) (genre novel) (pages_amount 671) (language Russian))
+(book (name "Sherlock Holmes") (author "Conan Doyle") (release_date 1892) (genre detective) (pages_amount 307) (language English))
+(book (name "Don Quixote") (author "Cervantes") (release_date 1605) (genre novel) (pages_amount 863) (language Spanish))
+(book (name "The Master and Margarita") (author "Bulgakov") (release_date 1967) (genre novel) (pages_amount 384) (language Russian))
+(book (name "The Da Vinci Code") (author "Dan Brown") (release_date 2003) (genre detective) (pages_amount 489) (language English))
+(book (name "War and Peace") (author "Tolstoy") (release_date 1869) (genre novel) (pages_amount 1225) (language Russian))
+(book (name "One Hundred Years of Solitude") (author "Marquez") (release_date 1967) (genre novel) (pages_amount 417) (language Spanish))
+(book (name "The Three-Body Problem") (author "Liu Cixin") (release_date 2008) (genre novel) (pages_amount 302) (language Chinese))
