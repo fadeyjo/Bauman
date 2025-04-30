@@ -1,0 +1,7 @@
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\bin\Debug\EoIS_HW.exe.config
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\bin\Debug\EoIS_HW.exe
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\bin\Debug\EoIS_HW.pdb
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\obj\Debug\EoIS_HW.csproj.AssemblyReference.cache
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\obj\Debug\EoIS_HW.csproj.CoreCompileInputs.cache
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\obj\Debug\EoIS_HW.exe
+C:\Bauman\6_term\Инженерия интеллектуальных систем\ДР\EoIS_HW\EoIS_HW\obj\Debug\EoIS_HW.pdb
