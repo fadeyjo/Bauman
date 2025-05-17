@@ -1,60 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EoIS_HW
 {
     class Program
     {
+        static string[] Diagnoses =
+        {
+            "Кабель не подключен",
+            "DHCP-сервер не работает",
+            "Неисправен маршрутизатор",
+            "Проблема на стороне провайдера",
+            "Ошибка в адресе сайта или сайт недоступен",
+            "Сеть работает корректно"
+        };
+
+        static double[,] KnowledgeBase =
+        {
+            { 1,   0,   0,   0,   0 },
+            { 0.5, 1,   0,   0,   0 },
+            { 0,   0.5, 1,   0,   0 },
+            { 0,   0,   0.5, 1,   0 },
+            { 0,   0,   0,   0.5, 1 },
+            { 0,   0,   0,   0,   0 }
+        };
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Диагностика сети. Ответьте 'да' или 'нет':");
+            Console.WriteLine("Диагностика сети. Ответьте 'да' или 'нет' на следующие вопросы:");
 
             bool cableConnected = Ask("Кабель подключён?");
-            bool ledBlinking = Ask("Горит индикатор сетевой карты?");
             bool hasIp = Ask("Компьютер получил IP-адрес?");
             bool gatewayPing = Ask("Пингуется шлюз (например, 192.168.0.1)?");
             bool dnsPing = Ask("Пингуется DNS (например, 8.8.8.8)?");
             bool websiteLoads = Ask("Открывается ли нужный сайт?");
 
-            var explanation = new List<string>();
+            int[] answers = {
+                cableConnected ? 1 : 0,
+                hasIp ? 1 : 0,
+                gatewayPing ? 1 : 0,
+                dnsPing ? 1 : 0,
+                websiteLoads ? 1 : 0
+            };
 
-            if (!cableConnected)
-            {
-                explanation.Add("Нет подключения — проверьте сетевой кабель.");
-            }
-            else if (!hasIp)
-            {
-                explanation.Add("Кабель есть, но нет IP — проверьте DHCP на роутере.");
-            }
-            else if (!gatewayPing)
-            {
-                explanation.Add("Нет связи с маршрутизатором — возможно он неисправен.");
-            }
-            else if (!dnsPing)
-            {
-                explanation.Add("Нет выхода в интернет — проблема на стороне провайдера.");
-            }
-            else if (!websiteLoads)
-            {
-                explanation.Add("DNS и интернет есть — проверьте корректность адреса сайта или попробуйте другой.");
-            }
-            else
-            {
-                explanation.Add("Сеть работает корректно.");
-            }
+            double[] scores = new double[Diagnoses.Length];
+
+            for (int i = 0; i < Diagnoses.Length; i++)
+                for (int j = 0; j < answers.Length; j++)
+                    if (answers[j] == 0)
+                        scores[i] += KnowledgeBase[i, j];
+
+            int bestMatchIndex = Array.IndexOf(scores, scores.Max());
 
             Console.WriteLine("\nДиагноз:");
-            foreach (var line in explanation)
-                Console.WriteLine("- " + line);
+            Console.WriteLine("- " + Diagnoses[bestMatchIndex]);
         }
 
         static bool Ask(string question)
         {
             Console.Write(question + " ");
-            string answer = Console.ReadLine()?.ToLower();
+            string answer = Console.ReadLine()?.Trim().ToLower();
             return answer == "да" || answer == "yes";
         }
     }
