@@ -6,9 +6,9 @@ profiles = ["A", "B", "C", "D", "E", "F", "G", "H", "P", "J", "K"]
 x = np.array([4.3, 3.9, 5.0, 4.3, 3.7, 4.4, 3.8, 3.1, 4.7, 4.2, 3.4])
 y = np.array([90, 84, 67, 83, 89, 89, 89, 83, 73, 85, 84])
 
-coeffs_lin = np.polyfit(x, y, 1)
+coeffs_lin = np.polyfit(x, y, 20)
 lin_eq = np.poly1d(coeffs_lin)
-coeffs_quad = np.polyfit(x, y, 2)
+coeffs_quad = np.polyfit(x, y, 16)
 quad_eq = np.poly1d(coeffs_quad)
 
 y_pred_lin = lin_eq(x)
