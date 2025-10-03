@@ -18,11 +18,11 @@ import androidx.core.view.get
 
 class MainActivity : AppCompatActivity() {
 
-    private val enableBtLauncherToOpenBLEConnectionActivity = registerForActivityResult(
+    private val enableBtLauncherToOpenBTConnectionActivity = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (BTAdapter?.isEnabled == true) {
-            startActivity(Intent(this, BLEConnectionActivity::class.java))
+            startActivity(Intent(this, BTConnectionActivity::class.java))
         } else {
             AlertDialog.Builder(this)
                 .setTitle("Внимание")
@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     if (BTAdapter?.isEnabled == false) {
                         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                        enableBtLauncherToOpenBLEConnectionActivity.launch(enableBtIntent)
+                        enableBtLauncherToOpenBTConnectionActivity.launch(enableBtIntent)
                         return true
                     }
                 } catch (e: SecurityException) {
@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
 
-                startActivity(Intent(this, BLEConnectionActivity::class.java))
+                startActivity(Intent(this, BTConnectionActivity::class.java))
                 return true
             }
             else -> super.onOptionsItemSelected(item)

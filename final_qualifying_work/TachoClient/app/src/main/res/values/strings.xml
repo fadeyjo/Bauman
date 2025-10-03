@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">TachoClient</string>
     <string name="main_activity_header">Телеметрия автомобиля</string>
-    <string name="BLE_state">Состояние BLE</string>
-    <string name="BLE_connection">Подключение BLE</string>
-    <string name="BLE_disabled">Bluetooth выключен</string>
-    <string name="BLE_enable">Включить Bluetooth</string>
-    <string name="BLE_enabled">Bluetooth включен</string>
+    <string name="BT_state">Состояние BLE</string>
+    <string name="BT_connection">Подключение BLE</string>
+    <string name="BT_disabled">Bluetooth выключен</string>
+    <string name="BT_enable">Включить Bluetooth</string>
+    <string name="BT_enabled">Bluetooth включен</string>
     <string name="paired_devices">Сопряжённые устройства:</string>
     <string name="searched_devices">Найденные устройства:</string>
 </resources>

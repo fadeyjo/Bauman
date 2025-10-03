@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TachoClient">
         <activity
-            android:name=".BLEConnectionActivity"
+            android:name=".BTConnectionActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

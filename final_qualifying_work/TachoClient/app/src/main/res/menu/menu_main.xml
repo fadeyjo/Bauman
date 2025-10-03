@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_ble_state"
-        android:title="@string/BLE_state" />
+        android:title="@string/BT_state" />
     <item
         android:id="@+id/menu_ble_connect"
-        android:title="@string/BLE_connection" />
+        android:title="@string/BT_connection" />
 </menu>
