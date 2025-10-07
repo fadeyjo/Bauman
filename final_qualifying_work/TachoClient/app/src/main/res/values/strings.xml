@@ -8,4 +8,7 @@
     <string name="BT_enabled">Bluetooth включен</string>
     <string name="paired_devices">Сопряжённые устройства:</string>
     <string name="searched_devices">Найденные устройства:</string>
+    <string name="proccess_connection_state">Подключение…</string>
+    <string name="mac_address_example">00:11:22:33:44:55</string>
+    <string name="device_name">Device Name</string>
 </resources>

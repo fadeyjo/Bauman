@@ -9,7 +9,7 @@
         android:id="@+id/device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Device Name"
+        android:text="@string/device_name"
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@color/colorTextPrimary" />
@@ -18,8 +18,18 @@
         android:id="@+id/device_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:11:22:33:44:55"
+        android:text="@string/mac_address_example"
         android:textSize="14sp"
         android:textColor="@color/colorTextSecondary" />
+
+    <TextView
+        android:id="@+id/device_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/proccess_connection_state"
+        android:textSize="14sp"
+        android:textColor="@color/colorAccent"
+        android:visibility="gone"
+        android:paddingTop="4dp" />
 
 </LinearLayout>

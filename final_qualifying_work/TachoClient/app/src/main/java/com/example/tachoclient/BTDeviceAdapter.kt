@@ -13,6 +13,9 @@ class BTDeviceAdapter(
     private val devices: List<BluetoothDevice>
 ) : BaseAdapter() {
 
+    var connectingDeviceAddress: String? = null
+    var connectedDeviceAddress: String? = null
+
     override fun getCount(): Int = devices.size
 
     override fun getItem(position: Int): BluetoothDevice = devices[position]
@@ -30,14 +33,18 @@ class BTDeviceAdapter(
 
         try {
             nameTextView.text = device.name ?: "Неизвестное устройство"
-        }
-        catch (e: SecurityException)
-        {
+        } catch (e: SecurityException) {
             nameTextView.text = "Неизвестное устройство"
         }
 
-        addressTextView.text = device.address
+        when (device.address) {
+            connectingDeviceAddress -> addressTextView.text = "Подключение..."
+            connectedDeviceAddress -> addressTextView.text = "Подключено"
+            else -> addressTextView.text = device.address
+        }
 
         return view
     }
 }
+
+

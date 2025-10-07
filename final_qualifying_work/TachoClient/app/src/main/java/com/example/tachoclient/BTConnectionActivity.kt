@@ -3,11 +3,13 @@ package com.example.tachoclient
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
@@ -15,6 +17,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import java.io.IOException
+import java.util.UUID
 
 class BTConnectionActivity : AppCompatActivity() {
 
@@ -28,6 +32,9 @@ class BTConnectionActivity : AppCompatActivity() {
     private var pairedDevices = mutableListOf<BluetoothDevice>()
     private val searchedDevices = mutableListOf<BluetoothDevice>()
     private lateinit var searchedDeviceAdapter: BTDeviceAdapter
+    private var isConnecting = false
+    private var connectThread: ConnectThread? = null
+    private val MY_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +55,16 @@ class BTConnectionActivity : AppCompatActivity() {
         pairedDevicesListView.adapter = pairedDeviceAdapter
         searchedDeviceAdapter = BTDeviceAdapter(this, searchedDevices)
         searchedDevicesListView.adapter = searchedDeviceAdapter
+
+        pairedDevicesListView.setOnItemClickListener { _, _, position, _ ->
+            val device = pairedDevices[position]
+            onDeviceSelected(device)
+        }
+
+        searchedDevicesListView.setOnItemClickListener { _, _, position, _ ->
+            val device = searchedDevices[position]
+            onDeviceSelected(device)
+        }
 
         BTManager = getSystemService(BluetoothManager::class.java) as BluetoothManager
         BTAdapter = BTManager.adapter
@@ -87,6 +104,21 @@ class BTConnectionActivity : AppCompatActivity() {
 
         refreshButton.isEnabled = false
         BTStateTextView.text = getString(R.string.BT_disabled)
+    }
+
+    private fun onDeviceSelected(device: BluetoothDevice) {
+        if (isConnecting) return
+
+        connectThread
+
+        isConnecting = true
+        connectThread = ConnectThread(device)
+        connectThread?.start()
+
+        pairedDeviceAdapter.connectingDeviceAddress = device.address
+        searchedDeviceAdapter.connectingDeviceAddress = device.address
+        pairedDeviceAdapter.notifyDataSetChanged()
+        searchedDeviceAdapter.notifyDataSetChanged()
     }
 
     private val bluetoothStateReceiver = object : BroadcastReceiver() {
@@ -251,4 +283,65 @@ class BTConnectionActivity : AppCompatActivity() {
         unregisterReceiver(bluetoothStateReceiver)
         cancelBTDiscovering()
     }
+
+    private inner class ConnectThread(private val device: BluetoothDevice) : Thread() {
+        private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            device.createRfcommSocketToServiceRecord(MY_UUID)
+        }
+
+        override fun run() {
+            cancelBTDiscovering()
+
+            try {
+                mmSocket?.connect()
+
+                runOnUiThread {
+                    isConnecting = false
+
+                    val index = searchedDevices.indexOfFirst { it.address == device.address }
+                    if (index >= 0) {
+                        searchedDevices.removeAt(index)
+                    }
+
+                    if (!pairedDevices.none { it.address == device.address }) {
+                        val indexInPaired = pairedDevices.indexOfFirst { it.address == device.address }
+                        pairedDevices.removeAt(indexInPaired)
+                    }
+
+                    pairedDevices.add(0, device)
+
+                    pairedDeviceAdapter.connectingDeviceAddress = null
+                    pairedDeviceAdapter.connectedDeviceAddress = device.address
+                    searchedDeviceAdapter.connectingDeviceAddress = null
+                    searchedDeviceAdapter.connectedDeviceAddress = null
+
+                    pairedDeviceAdapter.notifyDataSetChanged()
+                    searchedDeviceAdapter.notifyDataSetChanged()
+                }
+
+            } catch (e: IOException) {
+                Log.e("BTConnection", "Ошибка подключения", e)
+                runOnUiThread {
+                    isConnecting = false
+                    pairedDeviceAdapter.connectingDeviceAddress = null
+                    searchedDeviceAdapter.connectingDeviceAddress = null
+                    pairedDeviceAdapter.notifyDataSetChanged()
+                    searchedDeviceAdapter.notifyDataSetChanged()
+                }
+
+                try {
+                    mmSocket?.close()
+                } catch (_: IOException) { }
+            }
+        }
+
+        fun cancel() {
+            try {
+                mmSocket?.close()
+            } catch (e: IOException) {
+                Log.e("BTConnection", "Could not close the client socket", e)
+            }
+        }
+    }
+
 }
