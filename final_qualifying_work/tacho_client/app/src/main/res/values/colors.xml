@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_bar_layout_background_color">#0066DB</color>
+    <color name="main_background_color">#E4E1E1</color>
+    <color name="main_text_color">#E4E1E1</color>
+    <color name="main_black_text_color">#262020</color>
+    <color name="secondary_text_color">#45494D</color>
+    <color name="main_button_background_color">#319236</color>
+
+    <color name="disconnected_state_text_color">#F44336</color>
+    <color name="connected_state_text_color">#4CAF50</color>
+    <color name="connection_state_text_color">#FFEB3B</color>
+</resources>
