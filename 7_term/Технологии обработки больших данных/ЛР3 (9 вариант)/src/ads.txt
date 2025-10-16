@@ -1,0 +1,11 @@
+userId,country,city,campaign_id,creative_id,payment
+1,Russia,Moscow,1001,5001,2.5
+2,Russia,Sochi,1002,5002,3.0
+3,Russia,Kazan,1003,5003,4.5
+4,USA,New York,1004,5004,5.0
+5,Russia,Moscow,1005,5005,3.0
+6,Russia,Kazan,1006,5006,2.0
+7,France,Paris,1007,5007,6.0
+8,Russia,Sochi,1008,5008,4.0
+9,Russia,Novosibirsk,1009,5009,5.5
+10,Russia,Novosibirsk,1010,5010,4.5
