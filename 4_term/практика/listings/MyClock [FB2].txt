@@ -1,0 +1,26 @@
+seconds Int
+minutes Int
+hours Int
+temp Bool
+
+IF "HL" THEN
+    IF "Clock_0.5Hz" <> #temp THEN
+        #temp := "Clock_0.5Hz";
+        #seconds := #seconds + 1;
+        IF #seconds = 60 THEN
+            #seconds := 0;
+            #minutes := #minutes + 1;
+        END_IF;
+        IF #minutes = 60 THEN
+            #minutes := 0;
+            #hours := #hours + 1;
+        END_IF;
+    END_IF;
+ELSE
+    #seconds := 0;
+    #minutes := 0;
+    #hours := 0;
+END_IF;
+
+
+

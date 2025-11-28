@@ -1,0 +1,36 @@
+# ninja log v6
+2	37	1734366069047674086	admin_panel_autogen/timestamp	f02e9dbe7bce863
+2	37	1734366069047674086	admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+37	3094	1734366069081007422	CMakeFiles/admin_panel.dir/mainwindow.cpp.o	bcbccafd7cdf053b
+2	37	1734366069047674086	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/timestamp	f02e9dbe7bce863
+37	2139	1734366069081007422	CMakeFiles/admin_panel.dir/onlineuserlistitem.cpp.o	a66fb38da628ad6b
+2	37	1734366069047674086	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+1372	7312	1734355158020257586	CMakeFiles/admin_panel.dir/main.cpp.o	88b0239b7244428a
+37	2756	1734366069081007422	CMakeFiles/admin_panel.dir/roomlistitem.cpp.o	5ce1c924d648289f
+535	11350	1734365756184319263	CMakeFiles/admin_panel.dir/admin_panel_autogen/mocs_compilation.cpp.o	78350ff0f64263e4
+3094	3415	1734366072137674299	admin_panel	48c52ef6f7d17f6
+13	1078	1734376738060010407	admin_panel_autogen/timestamp	f02e9dbe7bce863
+13	1078	1734376738060010407	admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+13	1078	1734376738060010407	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/timestamp	f02e9dbe7bce863
+13	1078	1734376738060010407	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+1086	7294	1734376738100010410	CMakeFiles/admin_panel.dir/roomlistitem.cpp.o	5ce1c924d648289f
+1079	7296	1734376738090010409	CMakeFiles/admin_panel.dir/onlineuserlistitem.cpp.o	a66fb38da628ad6b
+1078	7363	1734376738090010409	CMakeFiles/admin_panel.dir/admin_panel_autogen/mocs_compilation.cpp.o	78350ff0f64263e4
+1078	7731	1734376738090010409	CMakeFiles/admin_panel.dir/mainwindow.cpp.o	bcbccafd7cdf053b
+7731	8058	1734376744743344200	admin_panel	48c52ef6f7d17f6
+6	80	1734376803016681536	admin_panel_autogen/timestamp	f02e9dbe7bce863
+6	80	1734376803016681536	admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+6	80	1734376803016681536	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/timestamp	f02e9dbe7bce863
+6	80	1734376803016681536	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+80	4479	1734376803090014875	CMakeFiles/admin_panel.dir/mainwindow.cpp.o	bcbccafd7cdf053b
+80	4866	1734376803090014875	CMakeFiles/admin_panel.dir/roomlistitem.cpp.o	5ce1c924d648289f
+80	4883	1734376803090014875	CMakeFiles/admin_panel.dir/onlineuserlistitem.cpp.o	a66fb38da628ad6b
+4883	5227	1734376807893348538	admin_panel	48c52ef6f7d17f6
+7	78	1734429599700071662	admin_panel_autogen/timestamp	f02e9dbe7bce863
+7	78	1734429599700071662	admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+7	78	1734429599700071662	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/timestamp	f02e9dbe7bce863
+7	78	1734429599700071662	/home/fadeyjo/Documents/Bauman/5_term/сети и телекоммуникации/ДР/ChatRooms/admin_panel/build/Desktop-Debug/admin_panel_autogen/mocs_compilation.cpp	f02e9dbe7bce863
+78	3874	1734429599773405000	CMakeFiles/admin_panel.dir/roomlistitem.cpp.o	5ce1c924d648289f
+78	4472	1734429599773405000	CMakeFiles/admin_panel.dir/onlineuserlistitem.cpp.o	a66fb38da628ad6b
+78	5144	1734429599770071666	CMakeFiles/admin_panel.dir/mainwindow.cpp.o	bcbccafd7cdf053b
+5144	5541	1734429604836738681	admin_panel	48c52ef6f7d17f6

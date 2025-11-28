@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/rotate"
+        android:title="Rotate"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/fade_out"
+        android:title="Fade out"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/compose"
+        android:title="Compose"
+        app:showAsAction="never" />
+</menu>

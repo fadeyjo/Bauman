@@ -1,0 +1,281 @@
+
+(defclass SpaceObject
+   (is-a USER)
+   (role abstract)
+   (slot _name
+         (type SYMBOL)
+         (create-accessor read-write)
+         (visibility public))
+   (slot mass
+         (type FLOAT)
+         (create-accessor read-write)
+         (visibility public))
+)
+
+
+(defclass Galaxy
+   (is-a SpaceObject)
+   (role concrete)
+   (pattern-match reactive)
+   (slot galaxy-type
+         (type SYMBOL)
+         (create-accessor read-write)
+         (visibility public))
+)
+
+
+(defclass BlackHole
+   (is-a SpaceObject)
+   (role concrete)
+   (pattern-match reactive)
+   (slot event-horizon-radius
+         (type FLOAT)
+         (create-accessor read-write)
+         (visibility public))
+)
+
+
+(defclass Asteroid
+   (is-a SpaceObject)
+   (role concrete)
+   (pattern-match reactive)
+   (slot composition
+         (type SYMBOL)
+         (create-accessor read-write)
+         (visibility public))
+)
+
+
+(defclass Exoplanet
+   (is-a SpaceObject)
+   (role concrete)
+   (pattern-match reactive)
+   (slot distance-lightyears
+         (type FLOAT)
+         (create-accessor read-write)
+         (visibility public))
+)
+
+
+(defclass GasGiant
+   (is-a SpaceObject)
+   (role concrete)
+   (pattern-match reactive)
+   (slot atmosphere
+         (type SYMBOL)
+         (create-accessor read-write)
+         (visibility public))
+)
+    3. Задать обработчики сообщений.
+(defmessage-handler Galaxy print-galaxy-info ()
+   (printout t "Galaxy: " ?self:_name 
+               ", Type: " ?self:galaxy-type
+               ", Mass: " ?self:mass crlf)
+)
+
+(defmessage-handler BlackHole print-bh-info ()
+   (printout t "BlackHole: " ?self:_name 
+               ", Event horizon radius: " ?self:event-horizon-radius
+               ", Mass: " ?self:mass crlf)
+)
+
+(defmessage-handler Asteroid print-asteroid-info ()
+   (printout t "Asteroid: " ?self:_name 
+               ", Composition: " ?self:composition
+               ", Mass: " ?self:mass crlf)
+)
+
+(defmessage-handler Exoplanet print-exoplanet-info ()
+   (printout t "Exoplanet: " ?self:_name
+               ", Distance (ly): " ?self:distance-lightyears
+               ", Mass: " ?self:mass crlf)
+)
+
+(defmessage-handler GasGiant print-gasgiant-info ()
+   (printout t "GasGiant: " ?self:_name
+               ", Atmosphere: " ?self:atmosphere
+               ", Mass: " ?self:mass crlf)
+)
+
+(definstances GalaxyInstances
+   (MilkyWay of Galaxy
+      (_name MilkyWay)
+      (mass 1.5e12)
+      (galaxy-type "Spiral")
+   )
+   (Andromeda of Galaxy
+      (_name Andromeda)
+      (mass 1.23e12)
+      (galaxy-type "Spiral")
+   )
+   (Sombrero of Galaxy
+      (_name Sombrero)
+      (mass 8.0e11)
+      (galaxy-type "Lenticular")
+   )
+   (Whirlpool of Galaxy
+      (_name Whirlpool)
+      (mass 1.6e12)
+      (galaxy-type "Spiral")
+   )
+)
+
+(definstances BlackHoleInstances
+   (SagittariusA of BlackHole
+      (_name SagittariusA)
+      (mass 4.0e6)
+      (event-horizon-radius 12.0)
+   )
+   (CygnusX1 of BlackHole
+      (_name CygnusX1)
+      (mass 14.8)
+      (event-horizon-radius 44.0)
+   )
+   (M87 of BlackHole
+      (_name M87)
+      (mass 6.5e9)
+      (event-horizon-radius 19500.0)
+   )
+   (Ton618 of BlackHole
+      (_name Ton618)
+      (mass 6.6e10)
+      (event-horizon-radius 198000.0)
+   )
+)
+
+(definstances AsteroidInstances
+   (Ceres of Asteroid
+      (_name Ceres)
+      (mass 9.39e20)
+      (composition "Rock-Ice")
+   )
+   (Pallas of Asteroid
+      (_name Pallas)
+      (mass 2.11e20)
+      (composition "Rocky")
+   )
+   (Vesta of Asteroid
+      (_name Vesta)
+      (mass 2.59e20)
+      (composition "Rocky")
+   )
+   (Hygiea of Asteroid
+      (_name Hygiea)
+      (mass 8.32e19)
+      (composition "Carbonaceous")
+   )
+)
+
+(definstances ExoplanetInstances
+   (Kepler22b of Exoplanet
+      (_name Kepler22b)
+      (mass 2.4e25)
+      (distance-lightyears 600.0)
+   )
+   (ProximaCentauriB of Exoplanet
+      (_name ProximaCentauriB)
+      (mass 1.27e25)
+      (distance-lightyears 4.24)
+   )
+   (TRAPPIST1d of Exoplanet
+      (_name TRAPPIST1d)
+      (mass 0.772e25)
+      (distance-lightyears 39.0)
+   )
+   (Gliese667Cc of Exoplanet
+      (_name Gliese667Cc)
+      (mass 3.8e25)
+      (distance-lightyears 23.6)
+   )
+)
+
+(definstances GasGiantInstances
+   (HD209458b of GasGiant
+      (_name HD209458b)
+      (mass 0.69e27)
+      (atmosphere "Hydrogen-Helium")
+   )
+   (WASP12b of GasGiant
+      (_name WASP12b)
+      (mass 1.4e27)
+      (atmosphere "Carbon-rich")
+   )
+   (Kepler7b of GasGiant
+      (_name Kepler7b)
+      (mass 0.43e27)
+      (atmosphere "Hydrogen-Helium")
+   )
+   (HATP1b of GasGiant
+      (_name HATP1b)
+      (mass 0.52e27)
+      (atmosphere "Unknown")
+   )
+)
+
+
+удаляем объект Hygiea
+CLIPS> (send [Hygiea] delete)
+<== instance [Hygiea] of Asteroid
+TRUE
+
+выведем информацию об объекте Vesta, затем изменим его массу
+CLIPS> (send [Vesta] print-asteroid-info)
+Asteroid: Vesta, Composition: Rocky, Mass: 2.59e+20
+
+CLIPS> (modify-instance [Vesta] (mass 2.61e+20))
+TRUE
+
+CLIPS> (send [Vesta] print-asteroid-info)
+Asteroid: Vesta, Composition: Rocky, Mass: 2.61e+20
+
+    6. Создать 4-6 правил, использующих созданные объекты.
+
+(defrule MassiveGalaxyRule
+   (object (is-a Galaxy) (_name ?gName) (mass ?m&:(> ?m 1.0e12)))
+   =>
+   (printout t "MassiveGalaxyRule: Galaxy " ?gName 
+              " is very massive (>1.0e12 solar masses)!" crlf)
+)
+
+(defrule SupermassiveBlackHoleRule
+   (object (is-a BlackHole) (_name ?bhName) (mass ?bhMass&:(> ?bhMass 1.0e9)))
+   =>
+   (printout t "SupermassiveBlackHoleRule: Black hole " ?bhName 
+              " is supermassive (>1e9 solar masses)!" crlf)
+)
+
+(defrule LargeAsteroidRule
+   (object (is-a Asteroid) (_name ?aName) (mass ?aMass&:(> ?aMass 1.0e20)))
+   =>
+   (printout t "LargeAsteroidRule: Asteroid " ?aName 
+              " has mass greater than 1e20 kg!" crlf)
+)
+
+(defrule NearbyExoplanetRule
+   (object (is-a Exoplanet) (_name ?expName) (distance-lightyears ?dist&:(< ?dist 50.0)))
+   =>
+   (printout t "NearbyExoplanetRule: Exoplanet " ?expName 
+              " is relatively close (<50 ly)!" crlf)
+)
+
+(defrule JovianGasGiantRule
+   (object (is-a GasGiant) (_name ?ggName) (mass ?ggMass&:(> ?ggMass 1.0e27)))
+   =>
+   (printout t "JovianGasGiantRule: Gas giant " ?ggName 
+              " is more massive than Jupiter (~1.0e27 kg)!" crlf)
+)
+
+
+
+CLIPS> (reset)
+CLIPS> (run)
+MassiveGalaxyRule: Galaxy MilkyWay is very massive (>1.0e12 solar masses)!
+MassiveGalaxyRule: Galaxy Whirlpool is very massive (>1.0e12 solar masses)!
+SupermassiveBlackHoleRule: Black hole M87 is supermassive (>1e9 solar masses)!
+SupermassiveBlackHoleRule: Black hole Ton618 is supermassive (>1e9 solar masses)!
+LargeAsteroidRule: Asteroid Ceres has mass greater than 1e20 kg!
+LargeAsteroidRule: Asteroid Vesta has mass greater than 1e20 kg!
+NearbyExoplanetRule: Exoplanet ProximaCentauriB is relatively close (<50 ly)!
+NearbyExoplanetRule: Exoplanet TRAPPIST1d is relatively close (<50 ly)!
+NearbyExoplanetRule: Exoplanet Gliese667Cc is relatively close (<50 ly)!
+JovianGasGiantRule: Gas giant WASP12b is more massive than Jupiter (~1.0e27 kg)!

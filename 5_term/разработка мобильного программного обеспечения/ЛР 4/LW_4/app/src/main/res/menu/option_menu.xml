@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort"
+        android:title="1) Сортировка"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/double_group"
+        android:title="2) Группировка по 2 параметрам"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/RAM_sum"
+        android:title="3) Cумму параметра"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/AVG_group_option"
+        android:title="4) СЗ по сгруппированным поляи"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/laptop_max_value"
+        android:title="5) Ноутбук с максимальным значением поля"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/value_greater_than"
+        android:title="6) Ноутбуки со значением больше заданного"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/lower_than_AVG"
+        android:title="7) Ноутбуки со значением меньше среднего"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/lower_than_AVG_one"
+        android:title="8) Ноутбук (1) со значением больше заданного"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+</menu>

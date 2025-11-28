@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Messanger</string>
+    <string name="center_text"><u>Center text</u></string>
+    <string name="low_text"><u>Low text</u></string>
+</resources>

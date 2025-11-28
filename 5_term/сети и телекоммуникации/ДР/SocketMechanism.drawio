@@ -1,0 +1,146 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36" version="24.7.17">
+  <diagram name="Page-1" id="0MLpGY198FT-PRymO74k">
+    <mxGraphModel dx="803" dy="482" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="0A1cs9edvADzwp7JMRT6-33" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="390" width="360" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-21" value="&lt;b style=&quot;font-size: 16px;&quot;&gt;Клиент&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry x="100" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-33" source="0A1cs9edvADzwp7JMRT6-22" target="0A1cs9edvADzwp7JMRT6-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-22" value="Создание сокета для TCP-соединения" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry x="80" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-33" source="0A1cs9edvADzwp7JMRT6-23" target="0A1cs9edvADzwp7JMRT6-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-23" value="Сокет подкючается к серверу (connectToHost)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry x="80" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-33" source="0A1cs9edvADzwp7JMRT6-25" target="0A1cs9edvADzwp7JMRT6-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-33" source="0A1cs9edvADzwp7JMRT6-25" target="0A1cs9edvADzwp7JMRT6-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-25" value="Создание события получения данных с сервера" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry x="80" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-26" value="Отправка сообщения на сервер (write)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-27" value="Чтение сообщения" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry x="160" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-32" value="Есть данные на чтение&lt;div&gt;(отработка события)&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-33">
+          <mxGeometry x="210" y="250" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-41" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="40" width="280" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-3" value="&lt;b style=&quot;font-size: 16px;&quot;&gt;Сервер&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry x="100" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-4" target="0A1cs9edvADzwp7JMRT6-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-4" value="Создание сервера" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-5" target="0A1cs9edvADzwp7JMRT6-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-5" value="Настройка сокета" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-6" target="0A1cs9edvADzwp7JMRT6-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-6" value="Привязка сокета к серверу (bind)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-7" target="0A1cs9edvADzwp7JMRT6-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-7" value="Сервер начинает принимать входящие подключения (listen)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-8" value="Принятие входящего подключения (accept)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry x="80" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-9" target="0A1cs9edvADzwp7JMRT6-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-9" value="Ожидание сообщения от клиента (recv)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry x="160" y="200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-10" target="0A1cs9edvADzwp7JMRT6-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-10" value="Отправка сообщения всем остальным клиентам" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry x="160" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-11" value="Закрытие подключения (close)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry x="160" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-41" source="0A1cs9edvADzwp7JMRT6-12" target="0A1cs9edvADzwp7JMRT6-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-12" value="Создание отдельного потока для работы с клиентом" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-41">
+          <mxGeometry x="160" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-55" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="200" y="540" width="360" height="146.09750915559255" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-42" value="К&lt;span style=&quot;background-color: initial;&quot;&gt;лиент 1&lt;/span&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry y="80" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-53" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.884;exitY=0.786;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-55" source="0A1cs9edvADzwp7JMRT6-44" target="0A1cs9edvADzwp7JMRT6-43">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="90" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-43" value="Клиент 2" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry x="330" y="80" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-44" value="Сервер" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry x="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-45" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.07;entryY=0.4;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-55" source="0A1cs9edvADzwp7JMRT6-42" target="0A1cs9edvADzwp7JMRT6-44">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-50" y="110" as="sourcePoint" />
+            <mxPoint y="60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-46" value="Создание подключения" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=325;fontSize=10;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry x="10" y="40" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-48" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.906;entryY=0.374;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-55" source="0A1cs9edvADzwp7JMRT6-43" target="0A1cs9edvADzwp7JMRT6-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-49" value="Создание подключения" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=35;fontSize=10;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry x="220" y="40" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-51" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.153;entryY=0.785;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="0A1cs9edvADzwp7JMRT6-55" source="0A1cs9edvADzwp7JMRT6-42" target="0A1cs9edvADzwp7JMRT6-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-52" value="Отправляет сообщение" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=325;fontSize=10;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry x="14" y="81" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="0A1cs9edvADzwp7JMRT6-54" value="Получает сообщение" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;rotation=37;fontSize=10;" vertex="1" parent="0A1cs9edvADzwp7JMRT6-55">
+          <mxGeometry x="217" y="80" width="130" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
