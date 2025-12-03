@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -11,12 +12,12 @@
 #define MCP2515_MOSI_PIN 23
 #define MCP2515_CLK_PIN 18
 #define MCP2515_INT_PIN 4
-#define MCP2515_MAX_TRANSFER_SZ 3
+#define MCP2515_MAX_TRANSFER_SZ 64
 #define MCP2515_CLOCK_SPEED_HZ 8000000
 #define MCP2515_QUEUE_SIZE 1024
 #define MCP2515_SPI_HOST_ID SPI2_HOST
 #define MCP2515_CAN_SPEED CAN_500KBPS
-#define MCP2515_CAN_CLOCK MCP_8MHZ
+#define MCP2515_CAN_CLOCK MCP_16MHZ
 #define MCP2515_ONE_SHOT_MODE true
 
 static const char* MCP2515_SPI = "MCP2515 SPI";
@@ -78,16 +79,16 @@ void can_bus_init(void)
 	ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully configured");
 }
 
-void send_speed_response(uint8_t speed_km_h)
+void send_speed_response(uint32_t num)
 {
     CAN_FRAME_t frame;
     frame->can_id = 0x7EC;
-    frame->can_dlc = 3;
+    frame->can_dlc = 8;
 
-	frame->data[0] = 0x3;
-	frame->data[1] = 0x41;
-    frame->data[2] = 0x0D;
-    frame->data[3] = speed_km_h;
+	frame->data[0] = num >> 24;
+	frame->data[1] = (num >> 16) & 0xff;
+    frame->data[2] = (num >> 8) & 0xff;
+    frame->data[3] = num & 0xff;
 
     for (int i = 4; i < 8; i++)
 		frame->data[i] = 0x00;
@@ -120,34 +121,24 @@ void send_speed_response(uint8_t speed_km_h)
 	}
 }
 
-void can_tx_task(void *arg)
-{
-    CAN_FRAME_t frame;
-    
-    int i = 0;
-
-    while (1)
-    {
-		if (i == 2147483647)
-			i = 0;
-		
-		if (i++ % 2 == 0)
-		{
-			send_speed_response(90);
-		}
-		else
-		{
-			send_speed_response(1);
-		}
-        
-        vTaskDelay(pdMS_TO_TICKS(15));
-    }
-}
-
-
 void app_main(void)
 {
     can_bus_init();
     
-    xTaskCreatePinnedToCore(can_tx_task, "can_tx", 4096, NULL, 10, NULL, 0);
+    uint32_t i = 1;
+
+    while (1)
+    {
+		if (i < 4294967295)
+		{
+			send_speed_response(i);
+			i++;
+		}
+		else
+		{
+			i = 1;
+		}
+        
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
 }
