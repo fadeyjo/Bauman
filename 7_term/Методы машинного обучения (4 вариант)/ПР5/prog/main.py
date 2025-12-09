@@ -3,8 +3,11 @@ import matplotlib.pyplot as plt
 
 # Генерация данных
 np.random.seed(10)
+#
+X = np.linspace(0, 10, 10)
+y = np.array([-1]*5 + [1]*5)
 X = np.random.uniform(0, 10, 10)
-y = np.random.choice([-1, 1], 10)
+#y = np.random.choice([-1, 1], 10)
 sort_indices = np.argsort(X)
 X = X[sort_indices]
 y = y[sort_indices]

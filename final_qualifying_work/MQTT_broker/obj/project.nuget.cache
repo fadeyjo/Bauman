@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "mcgAWXpRuTo=",
+  "success": true,
+  "projectFilePath": "C:\\Bauman\\final_qualifying_work\\MQTT_broker\\MQTT_broker.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\komra\\.nuget\\packages\\mqttnet\\5.0.1.1416\\mqttnet.5.0.1.1416.nupkg.sha512"
+  ],
+  "logs": []
+}

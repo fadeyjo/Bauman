@@ -35,18 +35,15 @@
 #define GPS_BAUD_RATE 9600
 #define GPS_TIME_FOR_WAIT_DATA_MS 500
 
-#define TRIES_TO_REQUEST_SUPPORTED_TELEMETRY_PIDS 5
-#define TIME_FOR_SUPPORTED_TELEMETRY_PID_REQUEST_MS 1000
-
-#define TRIES_TO_REQUEST_SUPPORTED_AUTO_PIDS 5
-#define TIME_FOR_SUPPORTED_AUTO_PID_REQUEST_MS 1000
+#define TRIES_TO_REQUEST_SUPPORTED_PIDS 5
+#define TIME_FOR_SUPPORTED_PID_REQUEST_MS 1000
 
 #define TRIES_TO_REQUEST_FRAMES_COUNT_VIN 5
 #define TIME_FOR_FRAMES_COUNT_VIN_REQUEST_MS 1000
 
 #define USE_CAN_FILTERS 1
 
-#define VIN_LEN 17
+#define DELAY_BETWEEN_SINDING_PID_REQUESTS 200
 
 static const char* MCP2515_SPI = "MCP2515 SPI";
 static const char* MCP2515_DEVICE = "MCP2515";
@@ -55,24 +52,13 @@ TaskHandle_t mcp2515ServiceDataTaskHandle = NULL;
 TaskHandle_t mcp2515DataTaskHandle = NULL;
 TaskHandle_t mcp2515DataRequestTaskHandle = NULL;
 TaskHandle_t gpsDataTaskHandle = NULL;
+TaskHandle_t modemTransmitterTaskHandle = NULL;
 
 QueueHandle_t canQueue;
 QueueHandle_t canInterruptQueue;
 
-uint32_t supported_telemtry_pids = 0x00;
-volatile bool supported_telemetry_pid_received = false;
-
-uint32_t supported_auto_pids = 0x00;
-volatile bool supported_auto_pid_received = false;
-
-bool can_get_vin = false;
-
-bool frames_count_to_get_vin_received = false;
-uint8_t frames_count_to_get_vin = 0x00;
-
-bool vin_received = false;
-char vin_buf[VIN_LEN + 1];
-uint8_t vin_index = 0;
+uint32_t supported_pids = 0x00;
+volatile bool supported_pid_received = false;
 
 uint8_t current_pid = 0x00;
 
@@ -333,16 +319,12 @@ void print_can_frame(CAN_FRAME_t frame)
 
 bool is_response(CAN_FRAME_t frame)
 {
-	if (frame->can_id < 0x7e8)
-		return false;
-	
-	if (frame->can_id > 0x7ef)
-		return false;
-		
-	if (frame->can_dlc == 0x00)
-		return false;
-		
-	return frame->data[0] != 0x00;
+	return
+		frame->data[0] != 0x00 &&
+		frame->can_id >= 0x7e8 &&
+		frame->can_id <= 0x7ef &&
+		frame->can_dlc != 0x00 &&
+		frame->data[1] == 0x41;
 }
 
 void mcp2515_service_data_task(void *pvParameters)
@@ -397,29 +379,29 @@ void mcp2515_service_data_task(void *pvParameters)
 void set_current_pid_to_request()
 {
     if (!control_pids)
-        return;
-
-    uint8_t start_bit = current_pid ? current_pid : 0;
-
-    for (uint8_t bit = start_bit; bit < 32; bit++)
     {
-        if ((control_pids >> bit) & 1)
-        {
-            current_pid = bit + 1;
-            return;
-        }
-    }
-
-    for (uint8_t bit = 0; bit < start_bit; bit++)
+		esp_restart();
+		return;
+	}
+    
+    uint8_t start_bit =
+    	current_pid == 0x20 || current_pid == 0x00 ?
+    	0x00 :
+    	current_pid;
+    
+    while (1)
     {
-        if ((control_pids >> bit) & 1)
-        {
-            current_pid = bit + 1;
-            return;
-        }
-    }
-
-    current_pid = 0;
+		if (start_bit == 0x20)
+			start_bit = 0x00;
+		
+		if ((control_pids << start_bit) & 0x80000000)
+		{
+			current_pid = start_bit + 0x01;
+			return;
+		}
+		
+		start_bit++;
+	}
 }
 
 void mcp2515_send_pid_requests_task(void *pvParameters)
@@ -428,7 +410,7 @@ void mcp2515_send_pid_requests_task(void *pvParameters)
 	{
 		set_current_pid_to_request();
 	
-		if (current_pid > 0x00 && current_pid < 0x20)
+		if (current_pid > 0x00 && current_pid < 0x21)
 		{
 			CAN_FRAME_t frame;
 			frame->can_id = 0x7df;
@@ -445,146 +427,8 @@ void mcp2515_send_pid_requests_task(void *pvParameters)
 			log_error(MCP2515_DEVICE, "sending PID request", ret);
 		}
 		
-		vTaskDelay(pdMS_TO_TICKS(200));
+		vTaskDelay(pdMS_TO_TICKS(DELAY_BETWEEN_SINDING_PID_REQUESTS));
 	}	
-}
-
-void mcp2515_data_task(void *pvParameters)
-{
-    CAN_FRAME_t frame;
-
-    while (1) {
-        if (xQueueReceive(canQueue, &frame, portMAX_DELAY)) {
-            print_can_frame(&frame);
-            
-            if (!is_response(frame))
-            	continue;
-            	
-            if (!supported_auto_pid_received)
-            {
-				if (frame->data[1] != 0x49 || frame->data[2] != 0x00)
-					continue;
-					
-				supported_auto_pid_received = true;
-				
-				supported_auto_pids =
-						(frame->data[3] << 24) |
-                        (frame->data[4] << 16) |
-						(frame->data[5] << 8) |
-						frame->data[6];
-						
-				can_get_vin = (supported_auto_pids >> 30) & 0x03;
-				
-				if (!can_get_vin)
-				{
-					ESP_LOGE(MCP2515_DEVICE, "Auto cannot get VIN");
-					esp_restart();
-				}
-				
-				continue;
-			}
-			
-			if (!frames_count_to_get_vin_received)
-			{
-				if (frame->data[1] != 0x49 || frame->data[2] != 0x01)
-					continue;
-					
-				frames_count_to_get_vin_received = true;
-				
-				frames_count_to_get_vin = frame->data[3];
-				
-				if (frames_count_to_get_vin == 0x00)
-				{
-					ESP_LOGE(MCP2515_DEVICE, "Auto get 0 frames count to get VIN");
-					esp_restart();
-				}
-				
-				continue;
-			}
-			
-			if (!vin_received)
-			{
-				
-			}
-            
-            if (!supported_telemetry_pid_received)
-            {
-				if (frame->data[1] != 0x01 || frame->data[2] != 0x00)
-					continue;
-				
-				supported_telemetry_pid_received = true;
-					
-				supported_telemetry_pid_received =
-					(frame->data[3] << 24) |
-                    (frame->data[4] << 16) |
-					(frame->data[5] << 8) |
-					frame->data[6];
-					
-					control_pids = supported_telemetry_pid_received & checked_pids;
-					
-					if (control_pids == 0x00)
-					{
-						ESP_LOGE(MCP2515_DEVICE, "In the output are 0 control PIDs");
-						esp_restart();
-					}
-					else
-					{
-						xTaskCreate(
-							mcp2515_send_pid_requests_task,
-    						"MCP2515 Request Data Task",
-    						4096,
-    						NULL,
-    						5,
-    						&mcp2515DataRequestTaskHandle
-						);
-					}
-					
-				continue;
-			}
-			
-			// обработка телеметрии
-        }
-    }
-}
-
-void get_supported_pids(void)
-{
-	CAN_FRAME_t frame;
-	frame->can_id = 0x7df;
-	frame->can_dlc = 0x08;
-	frame->data[0] = 0x02;
-	frame->data[1] = 0x01;
-	frame->data[2] = 0x00;
-	
-	for (int i = 3; i < 8; i++)
-		frame->data[i] = 0x00;
-		
-	for (int i = 0; i < TRIES_TO_REQUEST_SUPPORTED_TELEMETRY_PIDS; i++)
-	{
-		ERROR_t ret = MCP2515_sendMessageAfterCtrlCheck(&frame);
-			
-		if (log_error(MCP2515_DEVICE, "try to send PID request to get supported telemetry PIDs", ret))
-		{
-			esp_restart();
-			return;
-		}
-			
-		int waited_ms = 0;
-        while (!supported_telemetry_pid_received && waited_ms < TIME_FOR_SUPPORTED_TELEMETRY_PID_REQUEST_MS)
-        {
-            vTaskDelay(pdMS_TO_TICKS(10));
-            waited_ms += 10;
-        }
-        
-        if (supported_telemetry_pid_received)
-        	break;
-	}
-	
-	if (!supported_telemetry_pid_received)
-	{
-		ESP_LOGE(MCP2515_DEVICE, "ECU do not respond");
-		esp_restart();
-	}
 }
 
 void gps_init(void)
@@ -620,93 +464,134 @@ void gps_task(void *arg)
         {
             data[len] = '\0';
             
-            ESP_LOGI("GPS", "RX: %s", (char*)data);
+            // ESP_LOGI("GPS", "RX: %s", (char*)data);
         }
         else
         {
-            ESP_LOGI("GPS", "Нет данных");
+            // ESP_LOGI("GPS", "Нет данных");
         }
     }
     
     free(data);
 }
 
-void get_supported_auto_pids(void)
+void modem_transmitter_task(void *pvParameters)
+{
+	while (1)
+	{
+		vTaskDelay(pdMS_TO_TICKS(20));
+	}
+}
+
+void mcp2515_data_task(void *pvParameters)
+{
+    CAN_FRAME_t frame;
+
+    while (1) {
+        if (xQueueReceive(canQueue, &frame, portMAX_DELAY))
+        {
+            print_can_frame(&frame);
+            
+            if (!is_response(frame))
+            	continue;
+            
+            if (!supported_pid_received)
+            {
+				if (frame->data[2] != 0x00)
+					continue;
+				
+				supported_pid_received = true;
+					
+				supported_pids =
+					(frame->data[3] << 24) |
+                    (frame->data[4] << 16) |
+					(frame->data[5] << 8) |
+					frame->data[6];
+					
+				control_pids = supported_pids & checked_pids;
+					
+				if (control_pids == 0x00)
+				{
+					ESP_LOGE(MCP2515_DEVICE, "In the output are 0 control PIDs");
+					esp_restart();
+				}
+				else
+				{
+					xTaskCreate(
+						mcp2515_send_pid_requests_task,
+    					"MCP2515 Request Data Task",
+    					4096,
+    					NULL,
+    					10,
+    					&mcp2515DataRequestTaskHandle
+					);
+					
+					gps_init();
+	
+					xTaskCreate(
+						gps_task,
+    					"GPS Data Task",
+    					4096,
+    					NULL,
+    					5,
+						&gpsDataTaskHandle
+					);
+					
+					xTaskCreate(
+						modem_transmitter_task,
+    					"Modem Transmitter Task",
+    					4096,
+    					NULL,
+    					11,
+						&modemTransmitterTaskHandle
+					);
+				}
+					
+				continue;
+			}
+			
+			// обработка телеметрии
+			
+        }
+    }
+}
+
+void get_supported_pids(void)
 {
 	CAN_FRAME_t frame;
 	frame->can_id = 0x7df;
 	frame->can_dlc = 0x08;
 	frame->data[0] = 0x02;
-	frame->data[1] = 0x09;
+	frame->data[1] = 0x01;
 	frame->data[2] = 0x00;
 	
 	for (int i = 3; i < 8; i++)
 		frame->data[i] = 0x00;
 		
-	for (int i = 0; i < TRIES_TO_REQUEST_SUPPORTED_AUTO_PIDS; i++)
+	for (int i = 0; i < TRIES_TO_REQUEST_SUPPORTED_PIDS; i++)
 	{
 		ERROR_t ret = MCP2515_sendMessageAfterCtrlCheck(&frame);
 			
-		if (log_error(MCP2515_DEVICE, "try to send PID request to get supported auto PIDs", ret))
+		if (log_error(MCP2515_DEVICE, "try to send PID request to get supported telemetry PIDs", ret))
 		{
 			esp_restart();
 			return;
 		}
 			
 		int waited_ms = 0;
-        while (!supported_auto_pid_received && waited_ms < TIME_FOR_SUPPORTED_AUTO_PID_REQUEST_MS)
+        while (!supported_pid_received && waited_ms < TIME_FOR_SUPPORTED_PID_REQUEST_MS)
         {
             vTaskDelay(pdMS_TO_TICKS(10));
             waited_ms += 10;
         }
         
-        if (supported_auto_pid_received)
+        if (supported_pid_received)
         	break;
 	}
 	
-	if (!supported_auto_pid_received)
+	if (!supported_pid_received)
 	{
-		ESP_LOGE(MCP2515_DEVICE, "ECU do not respond to get auto PIDs");
-		esp_restart();
-	}
-}
-
-void get_count_frames_vin(void)
-{
-	CAN_FRAME_t frame;
-	frame->can_id = 0x7df;
-	frame->can_dlc = 0x08;
-	frame->data[0] = 0x02;
-	frame->data[1] = 0x09;
-	frame->data[2] = 0x01;
-	
-	for (int i = 3; i < 8; i++)
-		frame->data[i] = 0x00;
-		
-	for (int i = 0; i < TRIES_TO_REQUEST_FRAMES_COUNT_VIN; i++)
-	{
-		ERROR_t ret = MCP2515_sendMessageAfterCtrlCheck(&frame);
-			
-		if (log_error(MCP2515_DEVICE, "try to send PID request to get frames count VIN", ret))
-		{
-			esp_restart();
-			return;
-		}
-			
-		int waited_ms = 0;
-        while (!frames_count_to_get_vin_received && waited_ms < TIME_FOR_FRAMES_COUNT_VIN_REQUEST_MS)
-        {
-            vTaskDelay(pdMS_TO_TICKS(10));
-            waited_ms += 10;
-        }
-        
-        if (frames_count_to_get_vin_received)
-        	break;
-	}
-	
-	if (!frames_count_to_get_vin_received)
-	{
-		ESP_LOGE(MCP2515_DEVICE, "ECU do not respond to get frames count VIN");
+		ESP_LOGE(MCP2515_DEVICE, "ECU do not respond");
 		esp_restart();
 	}
 }
@@ -732,7 +617,7 @@ void app_main(void)
     	"MCP2515 Service Data Task",
     	4096,
     	NULL,
-    	15,
+    	20,
 		&mcp2515ServiceDataTaskHandle
 	);
 	
@@ -741,26 +626,11 @@ void app_main(void)
     	"MCP2515 Data Task",
     	4096,
     	NULL,
-    	9,
+    	15,
 		&mcp2515DataTaskHandle
 	);
 	
 	can_bus_init();
 	
-	get_supported_auto_pids();
-	
-	get_count_frames_vin();
-	
 	get_supported_pids();
-	
-	gps_init();
-	
-	xTaskCreate(
-		gps_task,
-    	"GPS Data Task",
-    	4096,
-    	NULL,
-    	14,
-		&gpsDataTaskHandle
-	);
 }

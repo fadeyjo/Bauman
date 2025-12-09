@@ -1,0 +1,56 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Bauman\\final_qualifying_work\\MQTT_broker\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6944ECEC-9BBF-4320-B92E-2EC8F8309920}|MQTT_broker.csproj|c:\\bauman\\final_qualifying_work\\mqtt_broker\\mqttbroker\\mqttbroker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6944ECEC-9BBF-4320-B92E-2EC8F8309920}|MQTT_broker.csproj|solutionrelative:mqttbroker\\mqttbroker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6944ECEC-9BBF-4320-B92E-2EC8F8309920}|MQTT_broker.csproj|c:\\bauman\\final_qualifying_work\\mqtt_broker\\program\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6944ECEC-9BBF-4320-B92E-2EC8F8309920}|MQTT_broker.csproj|solutionrelative:program\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\MQTT_broker\\Program\\Program.cs",
+              "RelativeDocumentMoniker": "Program\\Program.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\MQTT_broker\\Program\\Program.cs",
+              "RelativeToolTip": "Program\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-07T08:52:08.912Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MQTTBroker.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\MQTT_broker\\MQTTBroker\\MQTTBroker.cs",
+              "RelativeDocumentMoniker": "MQTTBroker\\MQTTBroker.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\MQTT_broker\\MQTTBroker\\MQTTBroker.cs",
+              "RelativeToolTip": "MQTTBroker\\MQTTBroker.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAkwA8AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-07T09:11:35.345Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
