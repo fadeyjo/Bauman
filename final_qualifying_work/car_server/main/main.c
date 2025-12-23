@@ -1,69 +1,37 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include "can.h"
+#include "driver/twai.h"
+#include "esp_err.h"
 #include "esp_system.h"
-#include "esp_timer.h"
 #include "freertos/projdefs.h"
-#include "hal/gpio_types.h"
-#include "hal/uart_types.h"
-#include "lwip/err.h"
-#include "mcp2515.h"
-#include "driver/spi_master.h"
-#include "driver/gpio.h"
 #include "esp_log.h"
-#include "portmacro.h"
-#include "driver/uart.h"
+#include "xtensa/config/specreg.h"
+#include <string.h>
 
-#define MCP2515_CS_PIN 5
-#define MCP2515_MISO_PIN 19
-#define MCP2515_MOSI_PIN 23
-#define MCP2515_CLK_PIN 18
-#define MCP2515_INT_PIN 4
-#define MCP2515_MAX_TRANSFER_SZ 64
-#define MCP2515_CLOCK_SPEED_HZ 8000000
-#define MCP2515_QUEUE_SIZE 1024
-#define MCP2515_SPI_HOST_ID SPI2_HOST
-#define MCP2515_CAN_SPEED CAN_500KBPS
-#define MCP2515_CAN_CLOCK MCP_8MHZ
-#define MCP2515_SET_ONE_SHOT_MODE true
+#define TWAI_TX_GPIO GPIO_NUM_5
+#define TWAI_RX_GPIO GPIO_NUM_4
 
-#define GPS_UART_NUM UART_NUM_2
-#define GPS_TX_PIN 17
-#define GPS_RX_PIN 16
-#define GPS_BUF_SIZE 1024
-#define GPS_BAUD_RATE 9600
-#define GPS_TIME_FOR_WAIT_DATA_MS 500
+#define USE_FILTRATION false
+#define TWAI_FILTER 0x7e8
+#define TWAI_MASK 0x7f8
+
+#define CAN_RX_QUEUE_SIZE 64
+#define CAN_TX_QUEUE_SIZE 64
 
 #define TRIES_TO_REQUEST_SUPPORTED_PIDS 5
-#define TIME_FOR_SUPPORTED_PID_REQUEST_MS 1000
+#define TIME_FOR_SUPPORTED_PIDS_REQUEST_MS 1000
+#define STEP_FOR_TIME_FOR_SUPPORTED_PIDS_REQUEST_MS 10
 
-#define TRIES_TO_REQUEST_FRAMES_COUNT_VIN 5
-#define TIME_FOR_FRAMES_COUNT_VIN_REQUEST_MS 1000
+#define CHECKED_PIDS 0b00011111111111111100000000000010
 
-#define USE_CAN_FILTERS 1
+#define PERIOD_TO_SEND_PID_REQUEST 200
 
-#define DELAY_BETWEEN_SINDING_PID_REQUESTS 200
-
-static const char* MCP2515_SPI = "MCP2515 SPI";
-static const char* MCP2515_DEVICE = "MCP2515";
-
-TaskHandle_t mcp2515ServiceDataTaskHandle = NULL;
-TaskHandle_t mcp2515DataTaskHandle = NULL;
-TaskHandle_t mcp2515DataRequestTaskHandle = NULL;
-TaskHandle_t gpsDataTaskHandle = NULL;
-TaskHandle_t modemTransmitterTaskHandle = NULL;
-
-QueueHandle_t canQueue;
-QueueHandle_t canInterruptQueue;
-
-uint32_t supported_pids = 0x00;
-volatile bool supported_pid_received = false;
-
-uint8_t current_pid = 0x00;
+#define DELAY_FOR_TWAI_TRANSMIT_MS 10
+#define DELAY_FOR_TWAI_RECEIVE_MS 0
 
 /*
-Список PID для чтения, которые я хочу знать, в переменной checked_pids
+Список PID для чтения, которые я хочу знать, в CHECKED_PIDS
 0x04 - нагрузка двигателя = A*100/255 %
 0x05 - температура охлаждающей жидкости = A-40 C
 0x06 - кратковременная топливная коррекция—Bank 1 = (A-128) * 100/128 %
@@ -85,307 +53,137 @@ uint8_t current_pid = 0x00;
 	4 — в атмосферу
 	8 — помпа включена
 0x1f - время, прошедшее с запуска двигателя
-ЕСТЬ ЕЩЁ, ОБРАБОТАТЬ ПОЗЖЕ!!!
 */
 
-uint32_t checked_pids = 0b00011111111111111100000000000010;
-uint32_t control_pids = 0x00;
+static const char* TWAI_DEVICE = "TWAI";
 
-const char *error_to_str(ERROR_t err)
+static QueueHandle_t can_rx_queue = NULL;
+static QueueHandle_t can_tx_queue = NULL;
+static QueueHandle_t can_log_queue = NULL;
+
+uint32_t supported_pids = 0;
+volatile bool supported_pids_received = false;
+uint32_t control_pids = 0;
+
+uint8_t current_pid = 0x00;
+
+void twai_init(void)
 {
-    switch (err)
-    {
-    	case ERROR_FAIL: return "ERROR_FAIL";
-    	case ERROR_ALLTXBUSY: return "ERROR_ALLTXBUSY";
-    	case ERROR_FAILINIT: return "ERROR_FAILINIT";
-    	case ERROR_FAILTX: return "ERROR_FAILTX";
-    	default: return "ERROR_NOMSG";;
-    }
-}
+    twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(
+        TWAI_TX_GPIO,
+        TWAI_RX_GPIO,
+        TWAI_MODE_NORMAL
+    );
 
-// Возвращает true, если была ошибка
-bool log_error(const char *TAG, const char *text, ERROR_t err)
-{
-	if (err == ERROR_OK) return false;
-	
-	ESP_LOGE(TAG, "%s: %s", error_to_str(err), text);
-	
-	return true;
-}
+    g_config.tx_queue_len = CAN_TX_QUEUE_SIZE;
+    g_config.rx_queue_len = CAN_RX_QUEUE_SIZE;
+    g_config.alerts_enabled = TWAI_ALERT_NONE;
+    g_config.clkout_divider = 0;
 
-void can_bus_spi_init(void)
-{
-	spi_bus_config_t bus_cfg={
-		.miso_io_num = MCP2515_MISO_PIN,
-		.mosi_io_num = MCP2515_MOSI_PIN,
-		.sclk_io_num = MCP2515_CLK_PIN,
-		.quadwp_io_num = -1,
-		.quadhd_io_num = -1,
-		.max_transfer_sz = MCP2515_MAX_TRANSFER_SZ
-	};
-	
-	esp_err_t ret = spi_bus_initialize(MCP2515_SPI_HOST_ID, &bus_cfg, SPI_DMA_CH_AUTO);
-	ESP_ERROR_CHECK(ret);
-	
-	ESP_LOGI(MCP2515_SPI, "MCP2515 SPI bus successfully initialized");
-	
-	
-	spi_device_interface_config_t dev_cfg = {
-		.mode = 0,
-		.clock_speed_hz = MCP2515_CLOCK_SPEED_HZ,
-		.spics_io_num = MCP2515_CS_PIN,
-		.queue_size = MCP2515_QUEUE_SIZE
-	};
+	twai_timing_config_t t_config = TWAI_TIMING_CONFIG_500KBITS();
 
-    ret = spi_bus_add_device(MCP2515_SPI_HOST_ID, &dev_cfg, &MCP2515_Object->spi);
-    ESP_ERROR_CHECK(ret);
-    
-    ESP_LOGI(MCP2515_SPI, "MCP2515 SPI device successfully initialized");
-}
+	twai_filter_config_t f_config;
 
-void IRAM_ATTR mcp2515_isr_handler(void *args)
-{
-	uint8_t dummy = 1;
-	
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	
-	xQueueSendFromISR(canInterruptQueue, &dummy, &xHigherPriorityTaskWoken);
-	
-	if (xHigherPriorityTaskWoken)
-        portYIELD_FROM_ISR();
-}
-
-void mcp2515_init_intr(void)
-{
-	gpio_config_t io_conf = {
-        .intr_type = GPIO_INTR_NEGEDGE,
-        .mode = GPIO_MODE_INPUT,
-        .pin_bit_mask = 1ULL << MCP2515_INT_PIN,
-        .pull_up_en = GPIO_PULLUP_ENABLE,
-        .pull_down_en = GPIO_PULLDOWN_DISABLE
-    };
-
-    esp_err_t ret = gpio_config(&io_conf);
-    ESP_ERROR_CHECK(ret);
-    
-    ret = gpio_install_isr_service(0);
-    ESP_ERROR_CHECK(ret);
-    
-    ret = gpio_isr_handler_add(MCP2515_INT_PIN, mcp2515_isr_handler, NULL);
-    ESP_ERROR_CHECK(ret);
-}
-
-void can_bus_init(void)
-{
-	ESP_LOGI(MCP2515_DEVICE, "Starting configuration of MCP2515...");
-	
-	ERROR_t err = MCP2515_init();
-	if (log_error(MCP2515_DEVICE, "trying to initialize MCP2515 object is failure", err))
+	if (USE_FILTRATION)
 	{
-		esp_restart();
-		
-		return;
-	}
-	ESP_LOGI(MCP2515_DEVICE, "MCP2515 object successfully initialized");
-	
-	can_bus_spi_init();
-    ESP_LOGI(MCP2515_DEVICE, "MCP2515 SPI successfully initialized");
-    
-    mcp2515_init_intr();
-    ESP_LOGI(MCP2515_DEVICE, "MCP2515 SPI INTR successfully initialized");
-	
-	err = MCP2515_reset();
-	if (log_error(MCP2515_DEVICE, "trying to MCP2515 reseting is failure", err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	ESP_LOGI(MCP2515_DEVICE, "MCP2515 successfully reseted");
-	
-	err = MCP2515_setBitrate(MCP2515_CAN_SPEED, MCP2515_CAN_CLOCK);
-	if (log_error(MCP2515_DEVICE, "trying to set MCP2515 bitrate is failure", err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	
-	ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set the bitrate");
-	
-#if USE_CAN_FILTERS
-
-	err =  MCP2515_setFilterMask(MASK0, false, 0xffc);
-	if (log_error(MCP2515_DEVICE, "trying to set mask0, starting to restart controller...", err))
-	{
-		esp_restart();
-		
-		return;
+    	f_config.acceptance_code = (TWAI_FILTER << 21);
+    	f_config.acceptance_mask = ~(TWAI_MASK << 21);
+    	f_config.single_filter   = true;
 	}
 	else
 	{
-		ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set the mask0");
+    	f_config = (twai_filter_config_t)TWAI_FILTER_CONFIG_ACCEPT_ALL();
 	}
-
-	err = MCP2515_setFilter(RXF0, false, 0x7e8);
-	if (log_error(MCP2515_DEVICE, "trying to set RXF0, starting to restart controller...", err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	else
-	{
-		ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set the RXF0");
-	}
-	
-	err =  MCP2515_setFilterMask(MASK1, false, 0xffc);
-	if (log_error(MCP2515_DEVICE, "trying to set mask1, starting to restart controller...", err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	else
-	{
-		ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set the mask1");
-	}
-	
-	err = MCP2515_setFilter(RXF2, false, 0x7ec);
-	if (log_error(MCP2515_DEVICE, "trying to set RXF2, starting to restart controller...", err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	else
-	{
-		ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set the RXF2");
-	}
-	
-	ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set the RXF0, RXF2, mask0 and mask1");
-	
-#endif
-
-	err = MCP2515_setNormalMode();
-	if (log_error(MCP2515_DEVICE, "trying to set NormalMode", err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	
-	const char *text = NULL;
-	if (MCP2515_SET_ONE_SHOT_MODE)
-	{
-		text = "trying to set One Shot Mode";
-	}
-	else
-	{
-		text = "trying to unset One Shot Mode";
-	}
-	
-	err = MCP2515_setOneShotMode(MCP2515_SET_ONE_SHOT_MODE);
-	if (log_error(MCP2515_DEVICE, text, err))
-	{
-		esp_restart();
-		
-		return;
-	}
-	
-	ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully set Normal Operation mode");
-	
-	ESP_LOGI(MCP2515_DEVICE, "MCP2515 has successfully configured");
+    
+    ESP_ERROR_CHECK(twai_driver_install(&g_config, &t_config, &f_config));
+    ESP_ERROR_CHECK(twai_start());
 }
 
-void print_can_frame(CAN_FRAME_t frame)
+void print_can_frame(const twai_message_t *msg)
 {
-    if (!frame) return;
+    printf(
+        "CAN RX | ID: 0x%03X | DLC: %d | DATA:",
+        (unsigned int)msg->identifier,
+        msg->data_length_code
+    );
 
-    int64_t timestamp_us = esp_timer_get_time();
-    
-    printf("[Time: %lld.%03lld ms] ", timestamp_us / 1000, timestamp_us % 1000);
+    for (int i = 0; i < msg->data_length_code; i++)
+        printf(" %02X", msg->data[i]);
 
-    printf("CAN ID: 0x%08lX, DLC: %u, Data: ", frame->can_id, frame->can_dlc);
-
-    for (int i = 0; i < frame->can_dlc; i++)
-        printf("%02X ", frame->data[i]);
-    
-    for (int i = 0; i < 8 - frame->can_dlc; i++)
-        printf("00 ");
-    
     printf("\n");
 }
 
-bool is_response(CAN_FRAME_t frame)
+void can_logger_task(void *arg)
 {
-	return
-		frame->data[0] != 0x00 &&
-		frame->can_id >= 0x7e8 &&
-		frame->can_id <= 0x7ef &&
-		frame->can_dlc != 0x00 &&
-		frame->data[1] == 0x41;
-}
-
-void mcp2515_service_data_task(void *pvParameters)
-{
-    uint8_t dummy;
-    CAN_FRAME_t frame;
+    twai_message_t msg;
 
     while (1)
-    {
-        if (xQueueReceive(canInterruptQueue, &dummy, portMAX_DELAY))
-        {
-			
-			while (1)
-			{
-				bool has_data = false;
-				
-				uint8_t irq = MCP2515_getInterrupts();
-	
-				ERROR_t ret;
-	
-				if (irq & CANINTF_RX0IF)
-				{
-					ret = MCP2515_readMessage(RXB0, &frame);
-		
-    				if (!log_error(MCP2515_DEVICE, "reading message from RXB0", ret))
-    				{
-						xQueueSend(canQueue, &frame, pdMS_TO_TICKS(0));
-						has_data = true;
-					}
-						
-    			}
-
-    			if (irq & CANINTF_RX1IF)
-    			{
-        			ret = MCP2515_readMessage(RXB1, &frame);
-		
-    				if (!log_error(MCP2515_DEVICE, "reading message from RXB1", ret))
-    				{
-						xQueueSend(canQueue, &frame, pdMS_TO_TICKS(0));
-						has_data = true;
-					}
-    			}
-    			
-    			if (!has_data)
-                	break;
-			}
-			
-		}
-    }
+        if (xQueueReceive(can_log_queue, &msg, portMAX_DELAY))
+            print_can_frame(&msg);
 }
 
-void set_current_pid_to_request()
+void can_rx_task(void *arg)
+{
+    twai_message_t msg;
+
+    while (1)
+        if (twai_receive(&msg, portMAX_DELAY) == ESP_OK)
+	    {
+			xQueueSend(can_rx_queue, &msg, DELAY_FOR_TWAI_RECEIVE_MS);
+	        xQueueSend(can_log_queue, &msg, 0);
+		}
+}
+
+void can_tx_task(void *arg)
+{
+    twai_message_t msg;
+
+    while (1)
+        if (xQueueReceive(can_tx_queue, &msg, portMAX_DELAY))
+		{
+			ESP_ERROR_CHECK(twai_transmit(&msg, pdMS_TO_TICKS(DELAY_FOR_TWAI_TRANSMIT_MS)));
+			print_can_frame(&msg);
+		}
+}
+
+void get_supported_pids(void)
+{
+	twai_message_t msg = {
+        .identifier = 0x7df,
+        .data_length_code = 8,
+        .flags = TWAI_MSG_FLAG_NONE,
+        .data = { 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
+    };
+    
+   	uint8_t try = 0;
+    
+    while (!supported_pids_received && try++ < TRIES_TO_REQUEST_SUPPORTED_PIDS)
+    {
+		uint16_t delay_sum = 0;
+		
+		xQueueSend(can_tx_queue, &msg, 0);
+		
+		while (!supported_pids_received && delay_sum < TIME_FOR_SUPPORTED_PIDS_REQUEST_MS)
+		{
+			delay_sum += STEP_FOR_TIME_FOR_SUPPORTED_PIDS_REQUEST_MS;
+			vTaskDelay(pdMS_TO_TICKS(STEP_FOR_TIME_FOR_SUPPORTED_PIDS_REQUEST_MS));
+		}
+	}
+	
+	if (!supported_pids)
+	{
+		ESP_LOGE(TWAI_DEVICE, "CAN do not respond");
+		esp_restart();
+	}
+}
+
+void set_current_pid_to_request(void)
 {
     if (!control_pids)
-    {
 		esp_restart();
-		return;
-	}
     
     uint8_t start_bit =
-    	current_pid == 0x20 || current_pid == 0x00 ?
+    	current_pid == 0x20 ?
     	0x00 :
     	current_pid;
     
@@ -404,233 +202,106 @@ void set_current_pid_to_request()
 	}
 }
 
-void mcp2515_send_pid_requests_task(void *pvParameters)
+void poll_can_task(void *arg)
 {
-	while (1)
-	{
-		set_current_pid_to_request();
-	
-		if (current_pid > 0x00 && current_pid < 0x21)
-		{
-			CAN_FRAME_t frame;
-			frame->can_id = 0x7df;
-			frame->can_dlc = 8;
-			frame->data[0] = 0x02;
-			frame->data[1] = 0x01;
-			frame->data[2] = current_pid;
-			
-			for (int i = 3; i < 8; i++)
-				frame->data[i] = 0x00;
-				
-			ERROR_t ret = MCP2515_sendMessageAfterCtrlCheck(&frame);
-			
-			log_error(MCP2515_DEVICE, "sending PID request", ret);
-		}
-		
-		vTaskDelay(pdMS_TO_TICKS(DELAY_BETWEEN_SINDING_PID_REQUESTS));
-	}	
-}
-
-void gps_init(void)
-{
-    uart_config_t uart_config = {
-        .baud_rate = GPS_BAUD_RATE,
-        .data_bits = UART_DATA_8_BITS,
-        .parity    = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+	twai_message_t msg = {
+        .identifier = 0x7df,
+        .data_length_code = 8,
+        .flags = TWAI_MSG_FLAG_NONE
     };
-
-    uart_param_config(GPS_UART_NUM, &uart_config);
-    uart_set_pin(GPS_UART_NUM, GPS_TX_PIN, GPS_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-    uart_driver_install(
-        GPS_UART_NUM,
-        GPS_BUF_SIZE * 2,
-        GPS_BUF_SIZE * 2,
-        0,
-        NULL,
-        0
-    );
-}
-
-void gps_task(void *arg)
-{
-    uint8_t* data = (uint8_t*) malloc(GPS_BUF_SIZE);
     
-    while (1)
+    uint8_t data[8] = {0x02, 0x01, 0, 0, 0, 0, 0, 0};
+    
+    while(1)
     {
-        int len = uart_read_bytes(GPS_UART_NUM, data, GPS_BUF_SIZE - 1, pdMS_TO_TICKS(GPS_TIME_FOR_WAIT_DATA_MS));
-        if (len > 0)
-        {
-            data[len] = '\0';
-            
-            // ESP_LOGI("GPS", "RX: %s", (char*)data);
-        }
-        else
-        {
-            // ESP_LOGI("GPS", "Нет данных");
-        }
-    }
-    
-    free(data);
-}
-
-void modem_transmitter_task(void *pvParameters)
-{
-	while (1)
-	{
-		vTaskDelay(pdMS_TO_TICKS(20));
+		set_current_pid_to_request();
+		
+		data[2] = current_pid;
+		
+		memcpy(msg.data, data, 8);
+		
+		xQueueSend(can_tx_queue, &msg, 0);
+		
+		vTaskDelay(pdMS_TO_TICKS(PERIOD_TO_SEND_PID_REQUEST));
 	}
 }
 
-void mcp2515_data_task(void *pvParameters)
+bool is_response(twai_message_t msg)
 {
-    CAN_FRAME_t frame;
+	return
+		msg.identifier >= 0x7e8 &&
+		msg.identifier <= 0x7ef &&
+		msg.data_length_code == 8 &&
+		msg.data[0] > 0x02 &&
+		msg.data[1] == 0x41;
+}
 
-    while (1) {
-        if (xQueueReceive(canQueue, &frame, portMAX_DELAY))
+void can_processing_task(void *arg)
+{
+    twai_message_t msg;
+
+    while (1)
+        if (xQueueReceive(can_rx_queue, &msg, portMAX_DELAY))
         {
-            print_can_frame(&frame);
-            
-            if (!is_response(frame))
-            	continue;
-            
-            if (!supported_pid_received)
+			if (!is_response(msg))
+				continue;
+			
+            if (!supported_pids_received)
             {
-				if (frame->data[2] != 0x00)
+				if (msg.data[2] != 0x00)
 					continue;
 				
-				supported_pid_received = true;
-					
+				supported_pids_received = true;
+				
 				supported_pids =
-					(frame->data[3] << 24) |
-                    (frame->data[4] << 16) |
-					(frame->data[5] << 8) |
-					frame->data[6];
-					
-				control_pids = supported_pids & checked_pids;
-					
-				if (control_pids == 0x00)
+					(msg.data[3] << 24) |
+                    (msg.data[4] << 16) |
+					(msg.data[5] << 8) |
+					msg.data[6];
+				
+				control_pids = supported_pids & CHECKED_PIDS;
+				 
+				if (!control_pids)
 				{
-					ESP_LOGE(MCP2515_DEVICE, "In the output are 0 control PIDs");
+					ESP_LOGE(TWAI_DEVICE, "Control PIDs are 0");
 					esp_restart();
 				}
-				else
-				{
-					xTaskCreate(
-						mcp2515_send_pid_requests_task,
-    					"MCP2515 Request Data Task",
-    					4096,
-    					NULL,
-    					10,
-    					&mcp2515DataRequestTaskHandle
-					);
-					
-					gps_init();
-	
-					xTaskCreate(
-						gps_task,
-    					"GPS Data Task",
-    					4096,
-    					NULL,
-    					5,
-						&gpsDataTaskHandle
-					);
-					
-					xTaskCreate(
-						modem_transmitter_task,
-    					"Modem Transmitter Task",
-    					4096,
-    					NULL,
-    					11,
-						&modemTransmitterTaskHandle
-					);
-				}
-					
+				
+				xTaskCreate(poll_can_task, "poll_can", 4096, NULL, 10, NULL);
+				
 				continue;
 			}
 			
 			// обработка телеметрии
-			
         }
-    }
-}
-
-void get_supported_pids(void)
-{
-	CAN_FRAME_t frame;
-	frame->can_id = 0x7df;
-	frame->can_dlc = 0x08;
-	frame->data[0] = 0x02;
-	frame->data[1] = 0x01;
-	frame->data[2] = 0x00;
-	
-	for (int i = 3; i < 8; i++)
-		frame->data[i] = 0x00;
-		
-	for (int i = 0; i < TRIES_TO_REQUEST_SUPPORTED_PIDS; i++)
-	{
-		ERROR_t ret = MCP2515_sendMessageAfterCtrlCheck(&frame);
-			
-		if (log_error(MCP2515_DEVICE, "try to send PID request to get supported telemetry PIDs", ret))
-		{
-			esp_restart();
-			return;
-		}
-			
-		int waited_ms = 0;
-        while (!supported_pid_received && waited_ms < TIME_FOR_SUPPORTED_PID_REQUEST_MS)
-        {
-            vTaskDelay(pdMS_TO_TICKS(10));
-            waited_ms += 10;
-        }
-        
-        if (supported_pid_received)
-        	break;
-	}
-	
-	if (!supported_pid_received)
-	{
-		ESP_LOGE(MCP2515_DEVICE, "ECU do not respond");
-		esp_restart();
-	}
 }
 
 void app_main(void)
 {
-	canQueue = xQueueCreate(64, sizeof(CAN_FRAME_t));
-	if (!canQueue) {
-    	ESP_LOGE(MCP2515_DEVICE, "Failed to create canQueue!");
-    	esp_restart();
-    	return;
-	}
-	
-	canInterruptQueue = xQueueCreate(64, sizeof(uint8_t));
-	if (!canInterruptQueue) {
-    	ESP_LOGE(MCP2515_DEVICE, "Failed to create canInterruptQueue!");
-    	esp_restart();
-    	return;
-	}
-	
-	xTaskCreate(
-		mcp2515_service_data_task,
-    	"MCP2515 Service Data Task",
-    	4096,
-    	NULL,
-    	20,
-		&mcp2515ServiceDataTaskHandle
+	can_rx_queue = xQueueCreate(
+        CAN_RX_QUEUE_SIZE,
+        sizeof(twai_message_t)
+    );
+    assert(can_rx_queue != NULL);
+    
+    can_tx_queue = xQueueCreate(
+        CAN_TX_QUEUE_SIZE,
+        sizeof(twai_message_t)
+    );
+    assert(can_tx_queue != NULL);
+    
+    can_log_queue = xQueueCreate(
+    	CAN_RX_QUEUE_SIZE,
+    	sizeof(twai_message_t)
 	);
+	assert(can_log_queue != NULL);
 	
-	xTaskCreate(
-		mcp2515_data_task,
-    	"MCP2515 Data Task",
-    	4096,
-    	NULL,
-    	15,
-		&mcp2515DataTaskHandle
-	);
+    twai_init();
 	
-	can_bus_init();
+	xTaskCreate(can_processing_task, "can_proc", 4096, NULL, 10, NULL);
+	xTaskCreate(can_logger_task, "can_logger", 4096, NULL, 5, NULL);
+	xTaskCreate(can_rx_task, "can_rx", 4096, NULL, 20, NULL);
+	xTaskCreate(can_tx_task, "can_tx", 4096, NULL, 12, NULL);
 	
 	get_supported_pids();
 }
