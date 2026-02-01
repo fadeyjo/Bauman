@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_background_activity_color">#888888</color>
+    <color name="main_background_color">#0A84FF</color>
+    <color name="main_text_color">#F3F3F3</color>
+    <color name="text_input_enabled_color">#000000</color>
+</resources>

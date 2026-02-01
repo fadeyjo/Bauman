@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">request_service_app</string>
+    <string name="app_title">Сервис запроса телеметрии</string>
+</resources>
