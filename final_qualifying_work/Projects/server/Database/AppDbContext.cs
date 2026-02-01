@@ -9,7 +9,7 @@ namespace server.Database
 
         public DbSet<AccessRight> AccessRights => Set<AccessRight>();
         public DbSet<Person> Persons => Set<Person>();
-        public DbSet<CarBodie> CarBodies => Set<CarBodie>();
+        public DbSet<CarBody> CarBodies => Set<CarBody>();
         public DbSet<CarGearbox> CarGearboxes => Set<CarGearbox>();
         public DbSet<FuelType> FuelTypes => Set<FuelType>();
         public DbSet<CarDrive> CarDrives => Set<CarDrive>();
@@ -44,11 +44,11 @@ namespace server.Database
                 entity.HasOne(p => p.AccessRight).WithMany().HasForeignKey(p => p.RightLevel).OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<CarBodie>(entity =>
+            modelBuilder.Entity<CarBody>(entity =>
             {
-                entity.HasKey(cb => cb.BodieId);
+                entity.HasKey(cb => cb.BodyId);
 
-                entity.HasIndex(cb => cb.BodieName).IsUnique();
+                entity.HasIndex(cb => cb.BodyName).IsUnique();
             });
 
             modelBuilder.Entity<CarGearbox>(entity =>
@@ -122,7 +122,7 @@ namespace server.Database
 
                 entity.HasOne(cc => cc.CarBrandModel).WithMany().HasForeignKey(cc => cc.CarBrandModelId).OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(cc => cc.CarBodie).WithMany().HasForeignKey(cc => cc.BodieId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(cc => cc.CarBody).WithMany().HasForeignKey(cc => cc.BodyId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(cc => cc.CarGearbox).WithMany().HasForeignKey(cc => cc.GearboxId).OnDelete(DeleteBehavior.Cascade);
 

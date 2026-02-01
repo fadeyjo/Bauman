@@ -1,0 +1,264 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.VisualBasic.FileIO;
+using server.Database;
+using server.Models;
+using System;
+
+namespace server.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CarsController : ControllerBase
+    {
+        private readonly AppDbContext _context;
+
+        public CarsController(AppDbContext context)
+        {
+            _context=context;
+        }
+
+        [HttpGet("vin/{vin}")]
+        public async Task<IActionResult> GetCarByVIN([FromRoute] string vin)
+        {
+            if (vin.Length != 17)
+                return BadRequest("VIN номер должен иметь длину 17 символов");
+
+            Car? car;
+            try
+            {
+                car = await _context.Cars.FirstOrDefaultAsync(c => c.VINNumber == vin);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
+            if (car is null)
+                return NotFound();
+
+            return Ok(car);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCar([FromBody] CreateCarRequestModel body)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (body.PersonId is null)
+                return BadRequest("Не получен ID человека");
+
+            try
+            {
+                bool exists = await _context.Cars.AnyAsync(c => c.VINNumber == body.VINNumber);
+
+                if (exists)
+                    return BadRequest("Автомобиль с данным VIN номером уже существует");
+
+                if (!string.IsNullOrWhiteSpace(body.StateNumber))
+                {
+                    exists = await _context.Cars.AnyAsync(c => c.StateNumber == body.StateNumber);
+                    if (exists)
+                        return BadRequest("Автомобиль с данным гос. номером уже существует");
+                }
+
+                var engineType =
+                    await _context.EngineTypes
+                        .Where(et => et.TypeName == body.EngineTypeName)
+                        .Select (et => new { et.TypeId })
+                        .FirstOrDefaultAsync();
+                if (engineType is null)
+                    return BadRequest("Неизвестный тип двигателя");
+
+                var fuelType =
+                    await _context.FuelTypes
+                        .Where(ft => ft.TypeName == body.FuelTypeName)
+                        .Select(ft => new { ft.TypeId })
+                        .FirstOrDefaultAsync();
+                if (fuelType is null)
+                    return BadRequest("Неизвестный тип топлива");
+
+                uint? engineConfigurationId = await GetEngineConfigurationId(
+                    body.EnginePowerHP, body.EnginePowerKW,
+                    engineType.TypeId, body.EngineCapacityL,
+                    body.TankCapacityL, fuelType.TypeId
+                );
+
+                if (engineConfigurationId is null)
+                {
+                    var newEngineConfiguration = new EngineConfiguration()
+                    {
+                        EnginePowerHP = body.EnginePowerHP,
+                        EnginePowerKW = body.EnginePowerKW,
+                        EngineTypeId = engineType.TypeId,
+                        EngineCapacityL = body.EngineCapacityL,
+                        TankCapacityL = body.TankCapacityL,
+                        FuelTypeId = fuelType.TypeId
+                    };
+
+                    _context.EngineConfigurations.Add(newEngineConfiguration);
+
+                    await _context.SaveChangesAsync();
+
+                    engineConfigurationId = await GetEngineConfigurationId(
+                        body.EnginePowerHP, body.EnginePowerKW,
+                        engineType.TypeId, body.EngineCapacityL,
+                        body.TankCapacityL, fuelType.TypeId
+                    );
+                }
+
+                if (engineConfigurationId is null)
+                    return StatusCode(500, "Не удалось найти engine_configurations (engine_config_id)");
+
+                var carBrand =
+                    await _context.CarBrands
+                        .Where(cb => cb.BrandName == body.BrandName)
+                        .Select(cb => new { cb.BrandId })
+                        .FirstOrDefaultAsync();
+                if (carBrand is null)
+                    return BadRequest("Неизвестный бренд");
+
+                var carBrandModel =
+                    await _context.CarBrandsModels
+                        .Where(cbm => cbm.BrandId == carBrand.BrandId && cbm.ModelName == body.ModelName)
+                        .Select(cbm => new { cbm.CarBrandModelId })
+                        .FirstOrDefaultAsync();
+                if (carBrandModel is null)
+                    return BadRequest("Неизвестная модель");
+
+                var carBody =
+                    await _context.CarBodies
+                        .Where(cb => cb.BodyName == body.BodyName)
+                        .Select(cbm => new { cbm.BodyId })
+                        .FirstOrDefaultAsync();
+                if (carBody is null)
+                    return BadRequest("Неизвестный кузов");
+
+                var carGearbox =
+                    await _context.CarGearboxes
+                        .Where(cg => cg.GearboxName == body.GearboxName)
+                        .Select(cg => new { cg.GearboxId })
+                        .FirstOrDefaultAsync();
+                if (carGearbox is null)
+                    return BadRequest("Неизвестный тип КПП");
+
+                var carDrive =
+                    await _context.CarDrives
+                        .Where(cd => cd.DriveName == body.DriveName)
+                        .Select(cd => new { cd.DriveId })
+                        .FirstOrDefaultAsync();
+                if (carDrive is null)
+                    return BadRequest("Неизвестный привод");
+
+                uint? carConfigurationId = await GetCarConfigurationId(
+                    carBrandModel.CarBrandModelId, carBody.BodyId,
+                    body.ReleaseYear, carGearbox.GearboxId,
+                    carDrive.DriveId, (uint)engineConfigurationId,
+                    body.VehicleWeightKG
+                );
+
+                if (carConfigurationId is null)
+                {
+                    var newCarConfiguration = new CarConfiguration()
+                    {
+                        CarBrandModelId = carBrandModel.CarBrandModelId,
+                        BodyId = carBody.BodyId,
+                        ReleaseYear = body.ReleaseYear,
+                        GearboxId = carGearbox.GearboxId,
+                        DriveId = carDrive.DriveId,
+                        EngineConfId = (uint)engineConfigurationId,
+                        VehicleWeightKG = body.VehicleWeightKG
+                    };
+
+                    _context.CarConfigurations.Add(newCarConfiguration);
+
+                    await _context.SaveChangesAsync();
+
+                    carConfigurationId = await GetCarConfigurationId(
+                        carBrandModel.CarBrandModelId, carBody.BodyId,
+                        body.ReleaseYear, carGearbox.GearboxId,
+                        carDrive.DriveId, (uint)engineConfigurationId,
+                        body.VehicleWeightKG
+                    );
+                }
+
+                if (carConfigurationId is null)
+                    return StatusCode(500, "Не удалось найти car_configurations (car_config_id)");
+
+                Car newCar = new ()
+                {
+                    PersonId = (uint)body.PersonId,
+                    VINNumber = body.VINNumber,
+                    StateNumber = body.StateNumber,
+                    CarConfigId = (uint)carConfigurationId
+                };
+
+                _context.Cars.Add(newCar);
+
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetCarByVIN), new { vin = newCar.VINNumber }, new { newCar.VINNumber });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        private async Task<uint?> GetEngineConfigurationId(
+            ushort enginePowerHP, float enginePowerKW,
+            byte engineTypeId, float engineCapacityL,
+            byte tankCapacityL, byte fuelTypeId
+        )
+        {
+            var engineConfiguration =
+                await _context.EngineConfigurations
+                    .Where(ec =>
+                        ec.EnginePowerHP == enginePowerHP &&
+                        ec.EnginePowerKW == enginePowerKW &&
+                        ec.EngineTypeId == engineTypeId &&
+                        ec.EngineCapacityL == engineCapacityL &&
+                        ec.TankCapacityL == tankCapacityL &&
+                        ec.FuelTypeId == fuelTypeId
+                    )
+                    .Select(ec => new { ec.EngineConfigId })
+                    .FirstOrDefaultAsync();
+
+            if (engineConfiguration is null)
+                return null;
+
+            return engineConfiguration.EngineConfigId;
+        }
+
+        private async Task<uint?> GetCarConfigurationId(
+            uint carBrandModelId, byte bodyId,
+            ushort releaseYear, byte gearboxId,
+            byte driveId, uint engineConfId,
+            ushort vehicleWeightKG
+        )
+        {
+            var carConfiguration =
+            await _context.CarConfigurations
+                .Where(cc =>
+                    cc.CarBrandModelId == carBrandModelId &&
+                    cc.BodyId == bodyId &&
+                    cc.ReleaseYear == releaseYear &&
+                    cc.GearboxId == gearboxId &&
+                    cc.DriveId == driveId &&
+                    cc.EngineConfId == engineConfId &&
+                    cc.VehicleWeightKG == vehicleWeightKG
+                )
+                .Select(cc => new { cc.CarConfigId })
+                .FirstOrDefaultAsync();
+
+            if (carConfiguration is null)
+                return null;
+
+            return carConfiguration.CarConfigId;
+        }
+    }
+}

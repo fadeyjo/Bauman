@@ -61,13 +61,13 @@ insert into OBDII_PIDs (service_id, PID, PID_description) values
 
 create table car_bodies
 (
-    bodie_id tinyint unsigned auto_increment primary key,
-    bodie_name varchar(30) not null unique,
+    body_id tinyint unsigned auto_increment primary key,
+    body_name varchar(30) not null unique,
 
-    check (char_length(bodie_name) > 0)
+    check (char_length(body_name) > 0)
 );
 
-insert into car_bodies (bodie_name) values
+insert into car_bodies (body_name) values
     ('Седан'), ('Купе'),
     ('Хэтчбек'), ('Лифтбек'),
     ('Фастбек'), ('Универсал'),
@@ -208,7 +208,7 @@ create table car_configurations
 (
     car_config_id mediumint unsigned auto_increment primary key,
     car_brand_model_id mediumint unsigned not null,
-    bodie_id tinyint unsigned not null,
+    body_id tinyint unsigned not null,
     release_year year not null,
     gearbox_id tinyint unsigned not null,
     drive_id tinyint unsigned not null,
@@ -218,10 +218,21 @@ create table car_configurations
     check (vehicle_weight_kg > 0),
     
     foreign key (car_brand_model_id) references car_brands_models (car_brand_model_id) on delete cascade,
-    foreign key (bodie_id) references car_bodies (bodie_id) on delete cascade,
+    foreign key (body_id) references car_bodies (body_id) on delete cascade,
     foreign key (gearbox_id) references car_gearboxes (gearbox_id) on delete cascade,
     foreign key (drive_id) references car_drives (drive_id) on delete cascade,
-    foreign key (engine_conf_id) references engine_configurations (engine_config_id) on delete cascade
+    foreign key (engine_conf_id) references engine_configurations (engine_config_id) on delete cascade,
+
+    constraint unique_car_configurations unique
+    (
+        car_brand_model_id,
+        body_id,
+        release_year,
+        gearbox_id,
+        drive_id,
+        engine_conf_id,
+        vehicle_weight_kg
+    )
 );
 
 create table cars
@@ -235,7 +246,7 @@ create table cars
     foreign key (person_id) references persons (person_id) on delete cascade,
     foreign key (car_config_id) references car_configurations (car_config_id) on delete cascade,
 
-    check (state_number is null or state_number regexp '^[авекмнорстух][0-9]{3}[авекмнорстух]{2}[0-9]{2,3}$')
+    check (state_number is null or lower(state_number) regexp '^[авекмнорстух][0-9]{3}[авекмнорстух]{2}[0-9]{2,3}$')
 );
 
 create table trips
@@ -287,6 +298,12 @@ create table GPS_data
 );
 
 -- Начальные данные
+
+insert into car_brands (brand_name) values
+('Toyota');
+
+insert into car_brands_models (brand_id, model_name) values
+(1, 'Camry');
 
 insert into persons
 (

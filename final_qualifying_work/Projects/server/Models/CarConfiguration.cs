@@ -13,11 +13,11 @@ namespace server.Models
         [Column("car_brand_model_id")]
         public uint CarBrandModelId { get; set; }
 
-        [Column("bodie_id")]
-        public byte BodieId { get; set; }
+        [Column("body_id")]
+        public byte BodyId { get; set; }
 
         [Column("release_year")]
-        public ushort Year { get; set; }
+        public ushort ReleaseYear { get; set; }
 
         [Column("gearbox_id")]
         public byte GearboxId { get; set; }
@@ -34,8 +34,8 @@ namespace server.Models
         [ForeignKey(nameof(CarBrandModelId))]
         public CarBrandModel CarBrandModel { get; set; } = null!;
 
-        [ForeignKey(nameof(BodieId))]
-        public CarBodie CarBodie { get; set; } = null!;
+        [ForeignKey(nameof(BodyId))]
+        public CarBody CarBody { get; set; } = null!;
 
         [ForeignKey(nameof(GearboxId))]
         public CarGearbox CarGearbox { get; set; } = null!;

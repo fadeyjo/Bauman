@@ -5,6 +5,59 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Cars/vin/{vin}": {
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Cars": {
+      "post": {
+        "tags": [
+          "Cars"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCarRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCarRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCarRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Persons/id/{id}": {
       "get": {
         "tags": [
@@ -128,6 +181,103 @@
           },
           "password": {
             "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateCarRequestModel": {
+        "required": [
+          "bodyName",
+          "brandName",
+          "driveName",
+          "engineCapacityL",
+          "enginePowerHP",
+          "enginePowerKW",
+          "engineTypeName",
+          "fuelTypeName",
+          "gearboxName",
+          "modelName",
+          "personId",
+          "releaseYear",
+          "tankCapacityL",
+          "vehicleWeightKG",
+          "vinNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vinNumber": {
+            "maxLength": 17,
+            "minLength": 17,
+            "type": "string"
+          },
+          "stateNumber": {
+            "pattern": "^[авекмнорстухАВЕКМНОРСТУХ][0-9]{3}[авекмнорстухАВЕКМНОРСТУХ]{2}[0-9]{2,3}$",
+            "type": "string",
+            "nullable": true
+          },
+          "brandName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "modelName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "bodyName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "releaseYear": {
+            "pattern": "^20[0-9]{2}$",
+            "type": "integer",
+            "format": "int32"
+          },
+          "gearboxName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "driveName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "vehicleWeightKG": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enginePowerHP": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enginePowerKW": {
+            "type": "number",
+            "format": "float"
+          },
+          "engineCapacityL": {
+            "type": "number",
+            "format": "float"
+          },
+          "engineTypeName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "tankCapacityL": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fuelTypeName": {
+            "maxLength": 30,
+            "minLength": 0,
             "type": "string"
           }
         },

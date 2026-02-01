@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace server.Models
 {
     [Table("car_bodies")]
-    public class CarBodie
+    public class CarBody
     {
         [Key]
-        [Column("bodie_id")]
-        public byte BodieId { get; set; }
+        [Column("body_id")]
+        public byte BodyId { get; set; }
 
-        [Column("bodie_name")]
-        public string BodieName { get; set; } = null!;
+        [Column("body_name")]
+        public string BodyName { get; set; } = null!;
     }
 }

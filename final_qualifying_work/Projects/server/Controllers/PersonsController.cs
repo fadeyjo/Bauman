@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Database;
 using server.Models;
@@ -18,9 +17,9 @@ namespace server.Controllers
         }
 
         [HttpGet("id/{id}")]
-        public async Task<IActionResult> GetPersonById(uint id)
+        public async Task<IActionResult> GetPersonById([FromRoute] uint id)
         {
-            object? person;
+            Person? person;
             try
             {
                 person = await _context.Persons.Include(p => p.AccessRight).FirstOrDefaultAsync(p => p.PersonId == id);
@@ -31,16 +30,16 @@ namespace server.Controllers
                 return StatusCode(500, ex.Message);
             }
             
-            if (person == null)
+            if (person is null)
                 return NotFound();
 
             return Ok(person);
         }
 
         [HttpGet("email/{email}")]
-        public async Task<IActionResult> GetPersonByEmail(string email)
+        public async Task<IActionResult> GetPersonByEmail([FromRoute] string email)
         {
-            object? person;
+            Person? person;
             try
             {
                 person = await _context.Persons.Include(p => p.AccessRight).FirstOrDefaultAsync(p => p.Email == email);
@@ -51,7 +50,7 @@ namespace server.Controllers
                 return StatusCode(500, ex.Message);
             }
 
-            if (person == null)
+            if (person is null)
                 return NotFound();
 
             return Ok(person);
@@ -68,7 +67,7 @@ namespace server.Controllers
             try
             {
                 var person = await _context.Persons.Where(p => p.PersonId == body.PersonId).Select(p => new { p.HashedPassword }).FirstOrDefaultAsync();
-                if (person == null)
+                if (person is null)
                     return NotFound();
                 hashedPassword = person.HashedPassword;
             }
@@ -86,6 +85,9 @@ namespace server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePerson([FromBody] CreatePersonRequestModel request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             try
             {
                 bool exists = await _context.Persons.AnyAsync(p => p.Email == request.Email);
@@ -130,6 +132,7 @@ namespace server.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return StatusCode(500, ex.Message);
             }
         }
