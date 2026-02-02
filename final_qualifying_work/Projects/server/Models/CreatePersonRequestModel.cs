@@ -28,7 +28,7 @@ namespace server.Models
         public string? Patronymic { get; set; }
 
         [Required(ErrorMessage = "Поле даты рождения обязательно")]
-        public DateOnly Birth { get; set; }
+        public DateOnly? Birth { get; set; }
 
         [Required(ErrorMessage = "Поле захешированного пароля обязательно")]
         [StringLength(32, MinimumLength = 8, ErrorMessage = "Длина пароля должна быть от 8 до 32")]

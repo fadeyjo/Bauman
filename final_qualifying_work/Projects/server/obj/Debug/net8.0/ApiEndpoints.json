@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "server.Controllers.CarsController",
+    "Method": "GetCarsByPersonId",
+    "RelativePath": "api/Cars/person_id/{personId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "personId",
+        "Type": "System.UInt32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.CarsController",
     "Method": "GetCarByVIN",
     "RelativePath": "api/Cars/vin/{vin}",
     "HttpMethod": "GET",
@@ -40,7 +56,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "request",
+        "Name": "body",
         "Type": "server.Models.CreatePersonRequestModel",
         "IsRequired": true
       }
@@ -90,6 +106,59 @@
       {
         "Name": "id",
         "Type": "System.UInt32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.TripsController",
+    "Method": "StartTrip",
+    "RelativePath": "api/Trips",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.StartTripRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.TripsController",
+    "Method": "EndTrip",
+    "RelativePath": "api/Trips/end/{tripId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "server.Models.EndTripRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.TripsController",
+    "Method": "GetTripById",
+    "RelativePath": "api/Trips/trip_id/{tripId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Type": "System.UInt64",
         "IsRequired": true
       }
     ],

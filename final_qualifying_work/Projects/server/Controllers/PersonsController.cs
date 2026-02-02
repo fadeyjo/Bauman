@@ -83,46 +83,49 @@ namespace server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePerson([FromBody] CreatePersonRequestModel request)
+        public async Task<IActionResult> CreatePerson([FromBody] CreatePersonRequestModel body)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if (body.Birth is null)
+                return BadRequest("Дата рождения обязательна");
+
             try
             {
-                bool exists = await _context.Persons.AnyAsync(p => p.Email == request.Email);
+                bool exists = await _context.Persons.AnyAsync(p => p.Email == body.Email);
                 if (exists)
                     return BadRequest("Пользователь с таким email уже существует");
 
-                if (request.RightLevel is null)
+                if (body.RightLevel is null)
                     return BadRequest("Поле прав доступа обязательно");
 
-                exists = await _context.Persons.AnyAsync(p => p.Phone == request.Phone);
+                exists = await _context.Persons.AnyAsync(p => p.Phone == body.Phone);
                 if (exists)
                     return BadRequest("Пользователь с таким номером телефона уже существует");
 
-                if (!string.IsNullOrWhiteSpace(request.DriveLisense))
+                if (!string.IsNullOrWhiteSpace(body.DriveLisense))
                 {
-                    exists = await _context.Persons.AnyAsync(p => p.DriveLisense == request.DriveLisense);
+                    exists = await _context.Persons.AnyAsync(p => p.DriveLisense == body.DriveLisense);
                     if (exists)
                         return BadRequest("Пользователь с такими правами уже существует");
                 }
 
-                exists = await _context.AccessRights.AnyAsync(a => a.RightLevel == request.RightLevel);
+                exists = await _context.AccessRights.AnyAsync(a => a.RightLevel == body.RightLevel);
                 if (!exists)
                     return BadRequest("Передан неизвестный уровень прав");
 
                 var person = new Person
                 {
-                    Email = request.Email,
-                    Phone = request.Phone,
-                    LastName = request.LastName,
-                    FirstName = request.FirstName,
-                    Patronymic = string.IsNullOrWhiteSpace(request.Patronymic) ? null : request.Patronymic,
-                    Birth = request.Birth,
-                    HashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                    DriveLisense = string.IsNullOrWhiteSpace(request.DriveLisense) ? null : request.DriveLisense,
-                    RightLevel = (byte)request.RightLevel
+                    Email = body.Email,
+                    Phone = body.Phone,
+                    LastName = body.LastName,
+                    FirstName = body.FirstName,
+                    Patronymic = string.IsNullOrWhiteSpace(body.Patronymic) ? null : body.Patronymic,
+                    Birth = (DateOnly)body.Birth,
+                    HashedPassword = BCrypt.Net.BCrypt.HashPassword(body.Password),
+                    DriveLisense = string.IsNullOrWhiteSpace(body.DriveLisense) ? null : body.DriveLisense,
+                    RightLevel = (byte)body.RightLevel
                 };
 
                 _context.Persons.Add(person);

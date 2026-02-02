@@ -19,6 +19,12 @@ namespace server.Database
         public DbSet<CarBrandModel> CarBrandsModels => Set<CarBrandModel>();
         public DbSet<CarConfiguration> CarConfigurations => Set<CarConfiguration>();
         public DbSet<Car> Cars => Set<Car>();
+        public DbSet<OBDIIService> OBDIIServices => Set<OBDIIService>();
+        public DbSet<OBDIIPID> OBDIIPIDs => Set<OBDIIPID>();
+        public DbSet<OBDIIDevice> OBDIIDevices => Set<OBDIIDevice>();
+        public DbSet<Trip> Trips => Set<Trip>();
+        public DbSet<TelemetryData> TelemetryData => Set<TelemetryData>();
+        public DbSet<GPSData> GPSData => Set<GPSData>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -142,6 +148,58 @@ namespace server.Database
                 entity.HasIndex(c => c.VINNumber).IsUnique();
 
                 entity.HasIndex(c => c.StateNumber).IsUnique();
+            });
+
+            modelBuilder.Entity<OBDIIService>(entity =>
+            {
+                entity.HasKey(s => s.ServiceId);
+
+                entity.HasIndex(s => s.ServiceDescription).IsUnique();
+            });
+
+            modelBuilder.Entity<OBDIIPID>(entity =>
+            {
+                entity.HasKey(p => p.OBDIIPIDId);
+
+                entity.HasOne(p => p.OBDIIService).WithMany().HasForeignKey(p => p.ServiceId).OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(p => new
+                {
+                    p.ServiceId,
+                    p.PID
+                }).IsUnique();
+            });
+
+            modelBuilder.Entity<OBDIIDevice>(entity =>
+            {
+                entity.HasKey(d => d.DeviceId);
+
+                entity.HasIndex(d => d.MACAddress).IsUnique();
+            });
+
+            modelBuilder.Entity<Trip>(entity =>
+            {
+                entity.HasKey(t => t.TripId);
+
+                entity.HasOne(t => t.OBDIIDevice).WithMany().HasForeignKey(t => t.DeviceId).OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(t => t.Car).WithMany().HasForeignKey(t => t.CarId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<TelemetryData>(entity =>
+            {
+                entity.HasKey(t => t.RecId);
+
+                entity.HasOne(t => t.Trip).WithMany().HasForeignKey(t => t.TripId).OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(t => t.OBDIIPID).WithMany().HasForeignKey(t => t.OBDIIPIDId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<GPSData>(entity =>
+            {
+                entity.HasKey(g => g.RecId);
+
+                entity.HasOne(g => g.Trip).WithMany().HasForeignKey(t => t.TripId).OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

@@ -28,7 +28,7 @@ namespace server.Controllers
             Car? car;
             try
             {
-                car = await _context.Cars.FirstOrDefaultAsync(c => c.VINNumber == vin);
+                car = await _context.Cars.FirstOrDefaultAsync(c => c.VINNumber.ToUpper() == vin.ToUpper());
             }
             catch (Exception ex)
             {
@@ -51,6 +51,26 @@ namespace server.Controllers
             if (body.PersonId is null)
                 return BadRequest("Не получен ID человека");
 
+            if (body.EnginePowerHP is null)
+                return BadRequest("Мощность двигателя обязательна");
+
+            if (body.EnginePowerKW is null)
+                return BadRequest("Мощность двигателя обязательна");
+
+            if (body.EngineCapacityL is null)
+                return BadRequest("Объём двигателя обязателен");
+
+            if (body.TankCapacityL is null)
+                return BadRequest("Объём бака обязателен");
+
+            if (body.ReleaseYear is null)
+                return BadRequest("Год выпуска автомобиля обязателен");
+
+            if (body.VehicleWeightKG is null)
+                return BadRequest("Масса автомобиля обязательна");
+
+            body.VINNumber = body.VINNumber.ToUpper();
+
             try
             {
                 bool exists = await _context.Cars.AnyAsync(c => c.VINNumber == body.VINNumber);
@@ -60,7 +80,8 @@ namespace server.Controllers
 
                 if (!string.IsNullOrWhiteSpace(body.StateNumber))
                 {
-                    exists = await _context.Cars.AnyAsync(c => c.StateNumber == body.StateNumber);
+                    body.StateNumber = body.StateNumber.ToUpper();
+                    exists = await _context.Cars.AnyAsync(c => c.StateNumber != null && c.StateNumber.ToUpper() == body.StateNumber);
                     if (exists)
                         return BadRequest("Автомобиль с данным гос. номером уже существует");
                 }
@@ -82,20 +103,20 @@ namespace server.Controllers
                     return BadRequest("Неизвестный тип топлива");
 
                 uint? engineConfigurationId = await GetEngineConfigurationId(
-                    body.EnginePowerHP, body.EnginePowerKW,
-                    engineType.TypeId, body.EngineCapacityL,
-                    body.TankCapacityL, fuelType.TypeId
+                    (ushort)body.EnginePowerHP, (float)body.EnginePowerKW,
+                    engineType.TypeId, (float)body.EngineCapacityL,
+                    (byte)body.TankCapacityL, fuelType.TypeId
                 );
 
                 if (engineConfigurationId is null)
                 {
                     var newEngineConfiguration = new EngineConfiguration()
                     {
-                        EnginePowerHP = body.EnginePowerHP,
-                        EnginePowerKW = body.EnginePowerKW,
+                        EnginePowerHP = (ushort)body.EnginePowerHP,
+                        EnginePowerKW = (float)body.EnginePowerKW,
                         EngineTypeId = engineType.TypeId,
-                        EngineCapacityL = body.EngineCapacityL,
-                        TankCapacityL = body.TankCapacityL,
+                        EngineCapacityL = (float)body.EngineCapacityL,
+                        TankCapacityL = (byte)body.TankCapacityL,
                         FuelTypeId = fuelType.TypeId
                     };
 
@@ -103,11 +124,7 @@ namespace server.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    engineConfigurationId = await GetEngineConfigurationId(
-                        body.EnginePowerHP, body.EnginePowerKW,
-                        engineType.TypeId, body.EngineCapacityL,
-                        body.TankCapacityL, fuelType.TypeId
-                    );
+                    engineConfigurationId = newEngineConfiguration.EngineConfigId;
                 }
 
                 if (engineConfigurationId is null)
@@ -155,9 +172,9 @@ namespace server.Controllers
 
                 uint? carConfigurationId = await GetCarConfigurationId(
                     carBrandModel.CarBrandModelId, carBody.BodyId,
-                    body.ReleaseYear, carGearbox.GearboxId,
+                    (ushort)body.ReleaseYear, carGearbox.GearboxId,
                     carDrive.DriveId, (uint)engineConfigurationId,
-                    body.VehicleWeightKG
+                    (ushort)body.VehicleWeightKG
                 );
 
                 if (carConfigurationId is null)
@@ -166,23 +183,18 @@ namespace server.Controllers
                     {
                         CarBrandModelId = carBrandModel.CarBrandModelId,
                         BodyId = carBody.BodyId,
-                        ReleaseYear = body.ReleaseYear,
+                        ReleaseYear = (ushort)body.ReleaseYear,
                         GearboxId = carGearbox.GearboxId,
                         DriveId = carDrive.DriveId,
                         EngineConfId = (uint)engineConfigurationId,
-                        VehicleWeightKG = body.VehicleWeightKG
+                        VehicleWeightKG = (ushort)body.VehicleWeightKG
                     };
 
                     _context.CarConfigurations.Add(newCarConfiguration);
 
                     await _context.SaveChangesAsync();
 
-                    carConfigurationId = await GetCarConfigurationId(
-                        carBrandModel.CarBrandModelId, carBody.BodyId,
-                        body.ReleaseYear, carGearbox.GearboxId,
-                        carDrive.DriveId, (uint)engineConfigurationId,
-                        body.VehicleWeightKG
-                    );
+                    carConfigurationId = newCarConfiguration.CarConfigId;
                 }
 
                 if (carConfigurationId is null)
@@ -201,6 +213,50 @@ namespace server.Controllers
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction(nameof(GetCarByVIN), new { vin = newCar.VINNumber }, new { newCar.VINNumber });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("person_id/{personId}")]
+        public async Task<IActionResult> GetCarsByPersonId([FromRoute] uint personId)
+        {
+            try
+            {
+                bool exists = await _context.Persons.AnyAsync(p => p.PersonId == personId);
+
+                if (!exists)
+                    return BadRequest("Пользователя не существует");
+
+                var cars =
+                await _context.Cars
+                    .Where(c => c.PersonId == personId)
+                    .Select(c => new
+                    {
+                        c.CarId,
+                        c.PersonId,
+                        c.VINNumber,
+                        c.StateNumber,
+                        c.CarConfiguration.CarBody.BodyName,
+                        c.CarConfiguration.ReleaseYear,
+                        c.CarConfiguration.CarGearbox.GearboxName,
+                        c.CarConfiguration.CarDrive.DriveName,
+                        c.CarConfiguration.VehicleWeightKG,
+                        c.CarConfiguration.CarBrandModel.CarBrand.BrandName,
+                        c.CarConfiguration.CarBrandModel.ModelName,
+                        c.CarConfiguration.EngineConfiguration.EnginePowerHP,
+                        c.CarConfiguration.EngineConfiguration.EnginePowerKW,
+                        c.CarConfiguration.EngineConfiguration.EngineCapacityL,
+                        c.CarConfiguration.EngineConfiguration.TankCapacityL,
+                        EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
+                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName
+                    })
+                    .ToListAsync();
+
+                return Ok(cars);
             }
             catch (Exception ex)
             {

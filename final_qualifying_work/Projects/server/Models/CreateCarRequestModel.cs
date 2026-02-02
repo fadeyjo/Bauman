@@ -29,7 +29,7 @@ namespace server.Models
 
         [Required(ErrorMessage = "Год выпуска автомобиля обязателен")]
         [RegularExpression(@"^20[0-9]{2}$", ErrorMessage = "Год выпуска автомобиля должен быть не меньше 2000")]
-        public ushort ReleaseYear { get; set; }
+        public ushort? ReleaseYear { get; set; }
 
         [Required(ErrorMessage = "Тип КПП автомобиля обязателен")]
         [StringLength(30, ErrorMessage = "Длина типа КПП автомобиля должна быть не больше 30")]
@@ -40,23 +40,23 @@ namespace server.Models
         public string DriveName { get; set; } = null!;
 
         [Required(ErrorMessage = "Масса автомобиля обязательна")]
-        public ushort VehicleWeightKG { get; set; }
+        public ushort? VehicleWeightKG { get; set; }
 
         [Required(ErrorMessage = "Мощность автомобиля обязательна")]
-        public ushort EnginePowerHP { get; set; }
+        public ushort? EnginePowerHP { get; set; }
 
         [Required(ErrorMessage = "Мощность автомобиля обязательна")]
-        public float EnginePowerKW { get; set; }
+        public float? EnginePowerKW { get; set; }
 
         [Required(ErrorMessage = "Объём двигателя обязателен")]
-        public float EngineCapacityL { get; set; }
+        public float? EngineCapacityL { get; set; }
 
         [Required(ErrorMessage = "Тип двигателя обязателен")]
         [StringLength(30, ErrorMessage = "Длина типа двигателя должна быть не больше 30")]
         public string EngineTypeName { get; set; } = null!;
 
         [Required(ErrorMessage = "Объём бака обязателен")]
-        public byte TankCapacityL { get; set; }
+        public byte? TankCapacityL { get; set; }
 
         [Required(ErrorMessage = "Тип топлива обязателен")]
         [StringLength(30, ErrorMessage = "Длина типа топлива должна быть не больше 30")]
