@@ -21,6 +21,8 @@ create table OBDII_services
     check (char_length(service_description) > 0)
 );
 
+insert into OBDII_services value (0, 'Неизвестный сервис');
+
 insert into OBDII_services value (1, 'Текущие параметры систем управления');
 
 create table OBDII_PIDs
@@ -36,6 +38,9 @@ create table OBDII_PIDs
 
     check (char_length(PID_description) > 0)
 );
+
+insert into OBDII_PIDs (OBDII_PID_id, service_id, PID, PID_description) value
+    (0, 0, 65535, "Неизвестный PID");
 
 insert into OBDII_PIDs (service_id, PID, PID_description) values
     (1, 0, 'Список поддерживаемых PID’ов (0-20)'), (1, 1, 'Состояние после устранения кодов неисправностей'),

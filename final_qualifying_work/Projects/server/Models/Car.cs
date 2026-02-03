@@ -26,9 +26,11 @@ namespace server.Models
         public uint CarConfigId { get; set; }
 
         [ForeignKey(nameof(PersonId))]
+        [JsonIgnore]
         public Person Person { get; set; } = null!;
 
         [ForeignKey(nameof(CarConfigId))]
+        [JsonIgnore]
         public CarConfiguration CarConfiguration { get; set; } = null!;
     }
 }

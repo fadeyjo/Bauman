@@ -81,6 +81,60 @@
         }
       }
     },
+    "/api/GPSData/rec_id/{recId}": {
+      "get": {
+        "tags": [
+          "GPSData"
+        ],
+        "parameters": [
+          {
+            "name": "recId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GPSData": {
+      "post": {
+        "tags": [
+          "GPSData"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGPSDataRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGPSDataRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGPSDataRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Persons/id/{id}": {
       "get": {
         "tags": [
@@ -177,6 +231,60 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/CreatePersonRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TelemetryData/rec_id/{recId}": {
+      "get": {
+        "tags": [
+          "TelemetryData"
+        ],
+        "parameters": [
+          {
+            "name": "recId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TelemetryData": {
+      "post": {
+        "tags": [
+          "TelemetryData"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTelemetryDataRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTelemetryDataRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTelemetryDataRequestModel"
               }
             }
           }
@@ -402,6 +510,55 @@
         },
         "additionalProperties": false
       },
+      "CreateGPSDataRequestModel": {
+        "required": [
+          "latitudeDEG",
+          "longitudeDEG",
+          "recDatetime",
+          "tripId"
+        ],
+        "type": "object",
+        "properties": {
+          "recDatetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tripId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "latitudeDEG": {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number",
+            "format": "float"
+          },
+          "longitudeDEG": {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number",
+            "format": "float"
+          },
+          "accuracyM": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "speedKMH": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bearingDEG": {
+            "maximum": 360,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreatePersonRequestModel": {
         "required": [
           "birth",
@@ -459,6 +616,49 @@
           "rightLevel": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateTelemetryDataRequestModel": {
+        "required": [
+          "ecuId",
+          "pid",
+          "recDatetime",
+          "responseDlc",
+          "serviceId",
+          "tripId"
+        ],
+        "type": "object",
+        "properties": {
+          "recDatetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "serviceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pid": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ecuId": {
+            "type": "string",
+            "format": "byte"
+          },
+          "responseDlc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "response": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "tripId": {
+            "type": "integer",
+            "format": "int64"
           }
         },
         "additionalProperties": false

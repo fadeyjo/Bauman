@@ -22,7 +22,7 @@ namespace server.Controllers
             Person? person;
             try
             {
-                person = await _context.Persons.Include(p => p.AccessRight).FirstOrDefaultAsync(p => p.PersonId == id);
+                person = await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == id);
             }
             catch (Exception ex)
             {
@@ -42,7 +42,7 @@ namespace server.Controllers
             Person? person;
             try
             {
-                person = await _context.Persons.Include(p => p.AccessRight).FirstOrDefaultAsync(p => p.Email == email);
+                person = await _context.Persons.FirstOrDefaultAsync(p => p.Email == email);
             }
             catch (Exception ex)
             {

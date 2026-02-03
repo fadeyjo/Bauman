@@ -3,28 +3,20 @@
   "WorkspaceRootPath": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\endtriprequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\endtriprequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\program\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:program\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\tripscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\tripscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\creategpsdatarequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\creategpsdatarequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\starttriprequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\starttriprequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\gpsdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\gpsdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\database\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:database\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\trip.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\trip.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,13 +30,13 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Database\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Database\\AppDbContext.cs",
               "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Database\\AppDbContext.cs",
               "RelativeToolTip": "Database\\AppDbContext.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAowBwAAABKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-01T08:50:41.057Z",
               "IsPinned": true,
@@ -53,66 +45,40 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "EndTripRequestModel.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\EndTripRequestModel.cs",
-              "RelativeDocumentMoniker": "Models\\EndTripRequestModel.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\EndTripRequestModel.cs",
-              "RelativeToolTip": "Models\\EndTripRequestModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAABPAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Program\\Program.cs",
+              "RelativeDocumentMoniker": "Program\\Program.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Program\\Program.cs",
+              "RelativeToolTip": "Program\\Program.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAQwCAAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T18:29:00.762Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CarsController.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\CarsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\CarsController.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\CarsController.cs",
-              "RelativeToolTip": "Controllers\\CarsController.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAzwBYAAABMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T18:20:04.849Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "StartTripRequestModel.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\StartTripRequestModel.cs",
-              "RelativeDocumentMoniker": "Models\\StartTripRequestModel.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\StartTripRequestModel.cs",
-              "RelativeToolTip": "Models\\StartTripRequestModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T18:16:17.286Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Trip.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Trip.cs",
-              "RelativeDocumentMoniker": "Models\\Trip.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Trip.cs",
-              "RelativeToolTip": "Models\\Trip.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T18:16:06.056Z",
+              "WhenOpened": "2026-02-03T17:27:17.843Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "TripsController.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TripsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\TripsController.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TripsController.cs",
-              "RelativeToolTip": "Controllers\\TripsController.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAgwHAAAAAqAAAAAAAAAA==",
+              "Title": "CreateGPSDataRequestModel.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\CreateGPSDataRequestModel.cs",
+              "RelativeDocumentMoniker": "Models\\CreateGPSDataRequestModel.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\CreateGPSDataRequestModel.cs",
+              "RelativeToolTip": "Models\\CreateGPSDataRequestModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-02T17:25:40.876Z",
+              "WhenOpened": "2026-02-03T16:02:12.301Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GPSDataController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\GPSDataController.cs",
+              "RelativeDocumentMoniker": "Controllers\\GPSDataController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\GPSDataController.cs",
+              "RelativeToolTip": "Controllers\\GPSDataController.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAqwCcAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-03T15:41:52.837Z",
               "EditorCaption": ""
             }
           ]

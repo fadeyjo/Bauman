@@ -40,6 +40,7 @@ namespace server.Models
         public byte RightLevel { get; set; }
 
         [ForeignKey(nameof(RightLevel))]
+        [JsonIgnore]
         public AccessRight AccessRight { get; set; } = null!;
     }
 }

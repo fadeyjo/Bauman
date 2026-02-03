@@ -48,6 +48,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "server.Controllers.GPSDataController",
+    "Method": "CreateGPSData",
+    "RelativePath": "api/GPSData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.CreateGPSDataRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.GPSDataController",
+    "Method": "GetGPSDataById",
+    "RelativePath": "api/GPSData/rec_id/{recId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recId",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.PersonsController",
     "Method": "CreatePerson",
     "RelativePath": "api/Persons",
@@ -106,6 +138,38 @@
       {
         "Name": "id",
         "Type": "System.UInt32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.TelemetryDataController",
+    "Method": "CreateTelemetryData",
+    "RelativePath": "api/TelemetryData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.CreateTelemetryDataRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.TelemetryDataController",
+    "Method": "GetTelemtryDataById",
+    "RelativePath": "api/TelemetryData/rec_id/{recId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recId",
+        "Type": "System.UInt64",
         "IsRequired": true
       }
     ],

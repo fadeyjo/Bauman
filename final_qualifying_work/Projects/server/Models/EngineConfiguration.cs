@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace server.Models
 {
@@ -29,9 +30,11 @@ namespace server.Models
         public byte FuelTypeId { get; set; }
 
         [ForeignKey(nameof(EngineTypeId))]
+        [JsonIgnore]
         public EngineType EngineType { get; set; } = null!;
 
         [ForeignKey(nameof(FuelTypeId))]
+        [JsonIgnore]
         public FuelType FuelType { get; set; } = null!;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace server.Models
 {
@@ -29,9 +30,11 @@ namespace server.Models
         public ulong TripId { get; set; }
 
         [ForeignKey(nameof(TripId))]
+        [JsonIgnore]
         public Trip Trip { get; set; } = null!;
 
         [ForeignKey(nameof(OBDIIPIDId))]
+        [JsonIgnore]
         public OBDIIPID OBDIIPID { get; set; } = null!;
     }
 }

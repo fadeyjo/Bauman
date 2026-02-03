@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace server.Models
 {
@@ -32,18 +33,23 @@ namespace server.Models
         public ushort VehicleWeightKG { get; set; }
 
         [ForeignKey(nameof(CarBrandModelId))]
+        [JsonIgnore]
         public CarBrandModel CarBrandModel { get; set; } = null!;
 
         [ForeignKey(nameof(BodyId))]
+        [JsonIgnore]
         public CarBody CarBody { get; set; } = null!;
 
         [ForeignKey(nameof(GearboxId))]
+        [JsonIgnore]
         public CarGearbox CarGearbox { get; set; } = null!;
 
         [ForeignKey(nameof(DriveId))]
+        [JsonIgnore]
         public CarDrive CarDrive { get; set; } = null!;
 
         [ForeignKey(nameof(EngineConfId))]
+        [JsonIgnore]
         public EngineConfiguration EngineConfiguration { get; set; } = null!;
     }
 }

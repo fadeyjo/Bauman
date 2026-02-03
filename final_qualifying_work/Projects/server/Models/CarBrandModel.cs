@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace server.Models
 {
@@ -17,6 +18,7 @@ namespace server.Models
         public ushort BrandId { get; set; }
 
         [ForeignKey(nameof(BrandId))]
+        [JsonIgnore]
         public CarBrand CarBrand { get; set; } = null!;
     }
 }

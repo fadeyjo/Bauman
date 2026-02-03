@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace server.Models
 {
@@ -17,9 +18,11 @@ namespace server.Models
         public ushort PID { get; set; }
 
         [Column("PID_description")]
+        [JsonIgnore]
         public string PIDDescription { get; set; } = null!;
 
         [ForeignKey(nameof(ServiceId))]
+        [JsonIgnore]
         public OBDIIService OBDIIService { get; set; } = null!;
     }
 }
