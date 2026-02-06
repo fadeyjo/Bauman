@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_bar_layout_background_primary">#0A84FF</color>
+    <color name="text_primary">#EEEEEE</color>
+    <color name="button_background_primary">#0066CC</color>
+</resources>

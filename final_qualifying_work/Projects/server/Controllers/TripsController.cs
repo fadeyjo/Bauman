@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Database;
-using server.Models;
+using server.Models.Dtos;
+using server.Models.Entities;
 
 namespace server.Controllers
 {
@@ -17,18 +18,16 @@ namespace server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> StartTrip([FromBody] StartTripRequestModel body)
+        public async Task<IActionResult> StartTrip([FromBody] StartTripRequest body)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             if (body.CarId is null)
-                return BadRequest("ID автомобиля обязателен");
+                return BadRequest(new BadRequestResponse("В теле запроса не передан ID автомобиля"));
 
             if (body.StartDatetime is null)
-                return BadRequest("Дата и время поездки обязательны");
-
-            body.MACAddress = body.MACAddress.ToUpper();
+                return BadRequest(new BadRequestResponse("В теле запроса не переданы дата и время начала поездки"));
 
             try
             {
@@ -41,7 +40,7 @@ namespace server.Controllers
 
                 if (deviceId is null)
                 {
-                    var newOBDIIDevice = new OBDIIDevice {MACAddress = body.MACAddress};
+                    var newOBDIIDevice = new OBDIIDevice { MACAddress = body.MACAddress.ToUpper() };
 
                     _context.OBDIIDevices.Add(newOBDIIDevice);
 
@@ -51,7 +50,7 @@ namespace server.Controllers
                 }
 
                 if (deviceId is null)
-                    return StatusCode(500, "Не удалось найти контроллер");
+                    return StatusCode(500, new BadRequestResponse("Не удалось определить контроллер ESP32"));
 
                 var newTrip = new Trip()
                 {
@@ -69,7 +68,7 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
             }
         }
 
@@ -84,7 +83,7 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
             }
 
             if (trip is null)
@@ -94,17 +93,17 @@ namespace server.Controllers
         }
 
         [HttpPut("end/{tripId}")]
-        public async Task<IActionResult> EndTrip([FromRoute] ulong tripId, [FromBody] EndTripRequestModel body)
+        public async Task<IActionResult> EndTrip([FromRoute] ulong tripId, [FromBody] EndTripRequest body)
         {
             try
             {
                 var trip = await _context.Trips.FirstOrDefaultAsync(t => t.TripId == tripId);
 
                 if (trip is null)
-                    return BadRequest("Поездка не найдена");
+                    return BadRequest(new BadRequestResponse("Поездка не найдена"));
 
                 if (trip.StartDatetime >= body.EndDatetime)
-                    return BadRequest("Окончание поездки должно быть позже начала");
+                    return BadRequest(new BadRequestResponse("Окончание поездки должно быть позже начала"));
 
                 trip.EndDatetime = body.EndDatetime;
 
@@ -115,15 +114,19 @@ namespace server.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
             }
         }
 
         private async Task<uint?> GetDeviceIdByMACAddress(string MACAddress)
         {
-            var device = await _context.OBDIIDevices.Where(d => d.MACAddress.ToUpper() == MACAddress.ToUpper()).Select(d => new { d.DeviceId }).FirstOrDefaultAsync();
+            var device =
+                await _context.OBDIIDevices
+                    .Where(d => d.MACAddress == MACAddress.ToUpper())
+                    .Select(d => new { d.DeviceId })
+                    .FirstOrDefaultAsync();
 
-            return device is null ? null : device.DeviceId;
+            return device?.DeviceId;
         }
     }
 }

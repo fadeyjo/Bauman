@@ -12,7 +12,13 @@ namespace server
 
             builder.WebHost.ConfigureKestrel(options => {
                 options.ListenAnyIP(5000);
-                options.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps());
+                options.ListenAnyIP(
+                    5001,
+                    listenOptions =>
+                    {
+                        listenOptions.UseHttps("C:\\cert\\myapi.pfx", "123456");
+                    }
+                );
             });
 
             // Add services to the container.

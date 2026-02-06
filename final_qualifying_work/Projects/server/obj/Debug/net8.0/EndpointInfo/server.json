@@ -36,17 +36,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCarRequestModel"
+                "$ref": "#/components/schemas/CreateCarRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCarRequestModel"
+                "$ref": "#/components/schemas/CreateCarRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCarRequestModel"
+                "$ref": "#/components/schemas/CreateCarRequest"
               }
             }
           }
@@ -113,17 +113,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateGPSDataRequestModel"
+                "$ref": "#/components/schemas/CreateGPSDataRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateGPSDataRequestModel"
+                "$ref": "#/components/schemas/CreateGPSDataRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateGPSDataRequestModel"
+                "$ref": "#/components/schemas/CreateGPSDataRequest"
               }
             }
           }
@@ -189,17 +189,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckPasswordRequestModel"
+                "$ref": "#/components/schemas/CheckPasswordRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckPasswordRequestModel"
+                "$ref": "#/components/schemas/CheckPasswordRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckPasswordRequestModel"
+                "$ref": "#/components/schemas/CheckPasswordRequest"
               }
             }
           }
@@ -220,17 +220,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePersonRequestModel"
+                "$ref": "#/components/schemas/CreatePersonRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePersonRequestModel"
+                "$ref": "#/components/schemas/CreatePersonRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePersonRequestModel"
+                "$ref": "#/components/schemas/CreatePersonRequest"
               }
             }
           }
@@ -274,17 +274,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTelemetryDataRequestModel"
+                "$ref": "#/components/schemas/CreateTelemetryDataRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTelemetryDataRequestModel"
+                "$ref": "#/components/schemas/CreateTelemetryDataRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTelemetryDataRequestModel"
+                "$ref": "#/components/schemas/CreateTelemetryDataRequest"
               }
             }
           }
@@ -305,17 +305,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/StartTripRequestModel"
+                "$ref": "#/components/schemas/StartTripRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/StartTripRequestModel"
+                "$ref": "#/components/schemas/StartTripRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/StartTripRequestModel"
+                "$ref": "#/components/schemas/StartTripRequest"
               }
             }
           }
@@ -370,17 +370,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EndTripRequestModel"
+                "$ref": "#/components/schemas/EndTripRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/EndTripRequestModel"
+                "$ref": "#/components/schemas/EndTripRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/EndTripRequestModel"
+                "$ref": "#/components/schemas/EndTripRequest"
               }
             }
           }
@@ -395,16 +395,16 @@
   },
   "components": {
     "schemas": {
-      "CheckPasswordRequestModel": {
+      "CheckPasswordRequest": {
         "required": [
-          "password",
-          "personId"
+          "email",
+          "password"
         ],
         "type": "object",
         "properties": {
-          "personId": {
-            "type": "integer",
-            "format": "int32"
+          "email": {
+            "minLength": 1,
+            "type": "string"
           },
           "password": {
             "minLength": 1,
@@ -413,7 +413,7 @@
         },
         "additionalProperties": false
       },
-      "CreateCarRequestModel": {
+      "CreateCarRequest": {
         "required": [
           "bodyName",
           "brandName",
@@ -510,7 +510,7 @@
         },
         "additionalProperties": false
       },
-      "CreateGPSDataRequestModel": {
+      "CreateGPSDataRequest": {
         "required": [
           "latitudeDEG",
           "longitudeDEG",
@@ -559,7 +559,7 @@
         },
         "additionalProperties": false
       },
-      "CreatePersonRequestModel": {
+      "CreatePersonRequest": {
         "required": [
           "birth",
           "email",
@@ -620,7 +620,7 @@
         },
         "additionalProperties": false
       },
-      "CreateTelemetryDataRequestModel": {
+      "CreateTelemetryDataRequest": {
         "required": [
           "ecuId",
           "pid",
@@ -663,7 +663,7 @@
         },
         "additionalProperties": false
       },
-      "EndTripRequestModel": {
+      "EndTripRequest": {
         "required": [
           "endDatetime"
         ],
@@ -676,7 +676,7 @@
         },
         "additionalProperties": false
       },
-      "StartTripRequestModel": {
+      "StartTripRequest": {
         "required": [
           "carId",
           "macAddress",

@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.CreateCarRequestModel",
+        "Type": "server.Models.Dtos.CreateCarRequest",
         "IsRequired": true
       }
     ],
@@ -57,7 +57,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.CreateGPSDataRequestModel",
+        "Type": "server.Models.Dtos.CreateGPSDataRequest",
         "IsRequired": true
       }
     ],
@@ -89,7 +89,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.CreatePersonRequestModel",
+        "Type": "server.Models.Dtos.CreatePersonRequest",
         "IsRequired": true
       }
     ],
@@ -105,7 +105,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.CheckPasswordRequestModel",
+        "Type": "server.Models.Dtos.CheckPasswordRequest",
         "IsRequired": true
       }
     ],
@@ -153,7 +153,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.CreateTelemetryDataRequestModel",
+        "Type": "server.Models.Dtos.CreateTelemetryDataRequest",
         "IsRequired": true
       }
     ],
@@ -185,7 +185,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.StartTripRequestModel",
+        "Type": "server.Models.Dtos.StartTripRequest",
         "IsRequired": true
       }
     ],
@@ -206,7 +206,7 @@
       },
       {
         "Name": "body",
-        "Type": "server.Models.EndTripRequestModel",
+        "Type": "server.Models.Dtos.EndTripRequest",
         "IsRequired": true
       }
     ],

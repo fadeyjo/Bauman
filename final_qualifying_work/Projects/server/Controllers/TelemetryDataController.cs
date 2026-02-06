@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Database;
-using server.Models;
+using server.Models.Dtos;
+using server.Models.Entities;
 
 namespace server.Controllers
 {
@@ -26,41 +27,44 @@ namespace server.Controllers
                         .Include(td => td.OBDIIPID)
                         .FirstOrDefaultAsync(td => td.RecId == recId);
 
-                if (record == null)
-                    return BadRequest("Записи телеметрии с таким ID не существует");
+                if (record is null)
+                    return BadRequest(new BadRequestResponse("Записи телеметрии с таким ID не существует"));
 
                 return Ok(record);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTelemetryData([FromBody] CreateTelemetryDataRequestModel body)
+        public async Task<IActionResult> CreateTelemetryData([FromBody] CreateTelemetryDataRequest body)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (body.RecDatetime is null)
-                return BadRequest("Дата и время записи обязательны");
+                return BadRequest(new BadRequestResponse("В теле запроса не получены дата и время записи"));
 
             if (body.ECUId is null || body.ECUId.Length == 0 || body.ECUId.All(b => b == 0))
-                return BadRequest("ID ЭБУ обязателен");
+                return BadRequest(new BadRequestResponse("В теле запроса не передан или получен нулевой ID ЭБУ"));
 
             if (body.ResponseDlc is null)
-                return BadRequest("Длина ответа обязательна");
+                return BadRequest(new BadRequestResponse("В теле запроса не получена длина OBDII ответа"));
 
             if (body.TripId is null)
-                return BadRequest("ID поездки обязателен");
+                return BadRequest(new BadRequestResponse("В теле запроса не получен ID поездки"));
 
             if (body.Response is not null && (body.Response.Length == 0 || body.Response.All(b => b == 0)))
-                return BadRequest("Получен некорректный ответ OBDII");
+                return BadRequest(new BadRequestResponse("В теле запроса получен нулевой OBDII ответ"));
 
             try
             {
                 bool exists = await _context.Trips.AnyAsync(t => t.TripId == body.TripId);
                 if (!exists)
-                    return BadRequest("Такой поездки не существует");
+                    return BadRequest(new BadRequestResponse("Такой поездки не существует"));
 
                 var OBDIIPID =
                     await _context.OBDIIPIDs
@@ -70,7 +74,7 @@ namespace server.Controllers
 
                 uint OBDIIPIDId = OBDIIPID is null ? 0 : OBDIIPID.OBDIIPIDId;
 
-                TelemetryData record = new TelemetryData()
+                TelemetryData record = new ()
                 {
                     RecDatetime = (DateTime)body.RecDatetime,
                     OBDIIPIDId = OBDIIPIDId,
@@ -84,12 +88,12 @@ namespace server.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetTelemtryDataById), new { recId = record.RecId }, new { record.RecId });
+                return CreatedAtAction(nameof(GetTelemtryDataById), new { recId = record.RecId }, new { recId = record.RecId });
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
             }
         }
     }

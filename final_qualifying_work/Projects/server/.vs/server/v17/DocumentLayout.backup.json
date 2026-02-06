@@ -3,16 +3,24 @@
   "WorkspaceRootPath": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\creategpsdatarequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\creategpsdatarequestmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\dtos\\checkpasswordrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\dtos\\checkpasswordrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\telemetrydatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\telemetrydatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\gpsdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\gpsdatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\database\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:database\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\tripscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\tripscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,42 +34,67 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Database\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "Database\\AppDbContext.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Database\\AppDbContext.cs",
-              "RelativeToolTip": "Database\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAABKAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "CheckPasswordRequest.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CheckPasswordRequest.cs",
+              "RelativeDocumentMoniker": "Models\\Dtos\\CheckPasswordRequest.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CheckPasswordRequest.cs*",
+              "RelativeToolTip": "Models\\Dtos\\CheckPasswordRequest.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-01T08:50:41.057Z",
-              "IsPinned": true,
+              "WhenOpened": "2026-02-06T15:09:23.139Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CreateGPSDataRequestModel.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\CreateGPSDataRequestModel.cs",
-              "RelativeDocumentMoniker": "Models\\CreateGPSDataRequestModel.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\CreateGPSDataRequestModel.cs",
-              "RelativeToolTip": "Models\\CreateGPSDataRequestModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Title": "PersonsController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PersonsController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs*",
+              "RelativeToolTip": "Controllers\\PersonsController.cs*",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAkwEkAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T16:02:12.301Z",
+              "WhenOpened": "2026-02-06T15:09:04.664Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": "TelemetryDataController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TelemetryDataController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TelemetryDataController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TelemetryDataController.cs",
+              "RelativeToolTip": "Controllers\\TelemetryDataController.cs",
+              "ViewState": "AgIAAFAAAAAAAAAAAAAgwFYAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-06T15:02:19.925Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "GPSDataController.cs",
               "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\GPSDataController.cs",
               "RelativeDocumentMoniker": "Controllers\\GPSDataController.cs",
               "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\GPSDataController.cs",
               "RelativeToolTip": "Controllers\\GPSDataController.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAqwCcAAABbAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAYwCkAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T15:41:52.837Z",
+              "WhenOpened": "2026-02-06T14:55:43.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TripsController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TripsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TripsController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TripsController.cs",
+              "RelativeToolTip": "Controllers\\TripsController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwHEAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-06T14:38:44.692Z",
               "EditorCaption": ""
             }
           ]
