@@ -1,0 +1,15 @@
+package com.example.data_provider_app.dto
+
+import java.time.LocalDate
+
+data class CreatePersonDto(
+    val email: String,
+    val phone: String,
+    val lastName: String,
+    val firstName: String,
+    val patronymic: String?,
+    val birth: LocalDate,
+    val password: String,
+    val driveLisense: String?,
+    val rightLevel: UByte
+)

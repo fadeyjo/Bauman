@@ -30,11 +30,9 @@ namespace server.Models.Entities
         public byte FuelTypeId { get; set; }
 
         [ForeignKey(nameof(EngineTypeId))]
-        [JsonIgnore]
         public EngineType EngineType { get; set; } = null!;
 
         [ForeignKey(nameof(FuelTypeId))]
-        [JsonIgnore]
         public FuelType FuelType { get; set; } = null!;
     }
 }

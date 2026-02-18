@@ -17,6 +17,14 @@ namespace server.Controllers
             _context = context;
         }
 
+        private ObjectResult ServerError()
+        {
+            return Problem(
+                title: "Внутренняя ошибка сервера",
+                statusCode: StatusCodes.Status500InternalServerError
+            );
+        }
+
         [HttpGet("rec_id/{recId}")]
         public async Task<IActionResult> GetTelemtryDataById([FromRoute] ulong recId)
         {
@@ -24,47 +32,77 @@ namespace server.Controllers
             {
                 var record =
                     await _context.TelemetryData
-                        .Include(td => td.OBDIIPID)
-                        .FirstOrDefaultAsync(td => td.RecId == recId);
+                        .Where(td => td.RecId == recId)
+                        .Select(
+                            d => new TelemtryDataDto()
+                            {
+                                RecId = d.RecId,
+                                RecDatetime = d.RecDatetime,
+                                ServiceId = d.OBDIIPID.ServiceId,
+                                PID = d.OBDIIPID.PID,
+                                ECUId = d.ECUId,
+                                ResponseDLC = d.ResponseDLC,
+                                Response = d.Response,
+                                TripId = d.TripId
+                            }
+                        )
+                        .FirstOrDefaultAsync();
 
                 if (record is null)
-                    return BadRequest(new BadRequestResponse("Записи телеметрии с таким ID не существует"));
+                    return Problem(
+                        title: "Запись телеметрии не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
 
                 return Ok(record);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTelemetryData([FromBody] CreateTelemetryDataRequest body)
+        public async Task<IActionResult> CreateTelemetryData([FromBody] CreateTelemetryDataDto body)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             if (body.RecDatetime is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не получены дата и время записи"));
+                return Problem(
+                    title: "Не переданы дата и время записи",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.ECUId is null || body.ECUId.Length == 0 || body.ECUId.All(b => b == 0))
-                return BadRequest(new BadRequestResponse("В теле запроса не передан или получен нулевой ID ЭБУ"));
+                return Problem(
+                    title: "Не передан или получен нулевой ID ЭБУ",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.ResponseDlc is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не получена длина OBDII ответа"));
+                return Problem(
+                    title: "Не передана длина OBDII ответа",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.TripId is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не получен ID поездки"));
+                return Problem(
+                    title: "Не передана поездка",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.Response is not null && (body.Response.Length == 0 || body.Response.All(b => b == 0)))
-                return BadRequest(new BadRequestResponse("В теле запроса получен нулевой OBDII ответ"));
+                return Problem(
+                    title: "Получен нулевой OBDII ответ",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             try
             {
                 bool exists = await _context.Trips.AnyAsync(t => t.TripId == body.TripId);
                 if (!exists)
-                    return BadRequest(new BadRequestResponse("Такой поездки не существует"));
+                    return Problem(
+                        title: "Поездка не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
 
                 var OBDIIPID =
                     await _context.OBDIIPIDs
@@ -88,12 +126,68 @@ namespace server.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetTelemtryDataById), new { recId = record.RecId }, new { recId = record.RecId });
+                var recordRes =
+                    await _context.TelemetryData
+                        .Where(td => td.RecId == record.RecId)
+                        .Select(
+                            d => new TelemtryDataDto()
+                            {
+                                RecId = d.RecId,
+                                RecDatetime = d.RecDatetime,
+                                ServiceId = d.OBDIIPID.ServiceId,
+                                PID = d.OBDIIPID.PID,
+                                ECUId = d.ECUId,
+                                ResponseDLC = d.ResponseDLC,
+                                Response = d.Response,
+                                TripId = d.TripId
+                            }
+                        )
+                        .FirstOrDefaultAsync();
+
+                return CreatedAtAction(nameof(GetTelemtryDataById), new { recId = record.RecId }, recordRes);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
+            }
+        }
+
+        [HttpGet("trip_id/{tripId}")]
+        public async Task<IActionResult> GetTelemetryDataByTripId([FromRoute] ulong tripId)
+        {
+            try
+            {
+                bool exists = await _context.TelemetryData.AnyAsync(d => d.TripId == tripId);
+
+                if (!exists)
+                    return Problem(
+                        title: "Поездка не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                var records =
+                    await _context.TelemetryData
+                        .Where(d => d.TripId == tripId)
+                        .Select(
+                            d => new TelemtryDataDto()
+                            {
+                                RecId = d.RecId,
+                                RecDatetime = d.RecDatetime,
+                                ServiceId = d.OBDIIPID.ServiceId,
+                                PID = d.OBDIIPID.PID,
+                                ECUId = d.ECUId,
+                                ResponseDLC = d.ResponseDLC,
+                                Response = d.Response,
+                                TripId = d.TripId
+                            }
+                        )
+                        .ToListAsync();
+
+                return Ok(records);
+            }
+            catch
+            {
+                return ServerError();
             }
         }
     }

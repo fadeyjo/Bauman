@@ -1,5 +1,35 @@
 [
   {
+    "ContainingType": "server.Controllers.CarBodiesController",
+    "Method": "GetAllBodies",
+    "RelativePath": "api/CarBodies",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.CarDrivesController",
+    "Method": "GetAllCarDrives",
+    "RelativePath": "api/CarDrives",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.CarGearboxes",
+    "Method": "GetAllGearboxes",
+    "RelativePath": "api/CarGearboxes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.CarsController",
     "Method": "CreateCar",
     "RelativePath": "api/Cars",
@@ -9,7 +39,23 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.CreateCarRequest",
+        "Type": "server.Models.Dtos.CreateCarDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.CarsController",
+    "Method": "UpdateCarInfo",
+    "RelativePath": "api/Cars",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.Dtos.UpdateCarInfoDto",
         "IsRequired": true
       }
     ],
@@ -48,6 +94,26 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "server.Controllers.EngineTypesController",
+    "Method": "GetAllEngineTypes",
+    "RelativePath": "api/EngineTypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.FuelTypesController",
+    "Method": "GetAllFuelTypes",
+    "RelativePath": "api/FuelTypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.GPSDataController",
     "Method": "CreateGPSData",
     "RelativePath": "api/GPSData",
@@ -57,7 +123,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.CreateGPSDataRequest",
+        "Type": "server.Models.Dtos.CreateGPSDataDto",
         "IsRequired": true
       }
     ],
@@ -80,6 +146,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "server.Controllers.GPSDataController",
+    "Method": "GetGPSDataByTripId",
+    "RelativePath": "api/GPSData/trip_id/{tripId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.PersonsController",
     "Method": "CreatePerson",
     "RelativePath": "api/Persons",
@@ -89,7 +171,23 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.CreatePersonRequest",
+        "Type": "server.Models.Dtos.CreatePersonDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.PersonsController",
+    "Method": "UpdatePersonInfo",
+    "RelativePath": "api/Persons",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.Dtos.UpdatePersonInfoDto",
         "IsRequired": true
       }
     ],
@@ -105,7 +203,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.CheckPasswordRequest",
+        "Type": "server.Models.Dtos.CheckPasswordDto",
         "IsRequired": true
       }
     ],
@@ -128,22 +226,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "server.Controllers.PersonsController",
-    "Method": "GetPersonById",
-    "RelativePath": "api/Persons/id/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.UInt32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "server.Controllers.TelemetryDataController",
     "Method": "CreateTelemetryData",
     "RelativePath": "api/TelemetryData",
@@ -153,7 +235,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.CreateTelemetryDataRequest",
+        "Type": "server.Models.Dtos.CreateTelemetryDataDto",
         "IsRequired": true
       }
     ],
@@ -176,6 +258,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "server.Controllers.TelemetryDataController",
+    "Method": "GetTelemetryDataByTripId",
+    "RelativePath": "api/TelemetryData/trip_id/{tripId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Type": "System.UInt64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.TripsController",
     "Method": "StartTrip",
     "RelativePath": "api/Trips",
@@ -185,7 +283,7 @@
     "Parameters": [
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.StartTripRequest",
+        "Type": "server.Models.Dtos.StartTripDto",
         "IsRequired": true
       }
     ],
@@ -206,7 +304,7 @@
       },
       {
         "Name": "body",
-        "Type": "server.Models.Dtos.EndTripRequest",
+        "Type": "server.Models.Dtos.EndTripDto",
         "IsRequired": true
       }
     ],

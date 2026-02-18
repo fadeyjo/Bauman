@@ -24,11 +24,9 @@ namespace server.Models.Entities
         public DateTime? EndDatetime { get; set; }
 
         [ForeignKey(nameof(DeviceId))]
-        [JsonIgnore]
         public OBDIIDevice OBDIIDevice { get; set; } = null!;
 
         [ForeignKey(nameof(CarId))]
-        [JsonIgnore]
         public Car Car { get; set; } = null!;
     }
 }

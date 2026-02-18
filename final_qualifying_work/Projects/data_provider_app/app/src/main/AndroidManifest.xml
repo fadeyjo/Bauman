@@ -15,13 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Data_provider_app">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.SignUp.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SignInActivity"
+            android:name=".ui.Main.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".ui.SignIn.SignInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.Splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

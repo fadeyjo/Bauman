@@ -17,40 +17,56 @@ namespace server.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> StartTrip([FromBody] StartTripRequest body)
+        private ObjectResult ServerError()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            return Problem(
+                title: "Внутренняя ошибка сервера",
+                statusCode: StatusCodes.Status500InternalServerError
+            );
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> StartTrip([FromBody] StartTripDto body)
+        {
             if (body.CarId is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не передан ID автомобиля"));
+                return Problem(
+                    title: "Не передан ID автомобиля",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.StartDatetime is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не переданы дата и время начала поездки"));
+                return Problem(
+                    title: "Не переданы дата и время начала поездки",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             try
             {
-                bool exists = await _context.Cars.AnyAsync(c => c.CarId == body.CarId);
+                bool carExists = await _context.Cars.AnyAsync(c => c.CarId == body.CarId);
 
-                if (!exists)
-                    return BadRequest("Автомобиля с данным ID не существует");
+                if (!carExists)
+                    return Problem(
+                        title: "Автомобиль не найден",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
 
                 uint? deviceId = await GetDeviceIdByMACAddress(body.MACAddress);
 
                 if (deviceId is null)
                 {
-                    var newOBDIIDevice = new OBDIIDevice { MACAddress = body.MACAddress.ToUpper() };
+                    var newDevice = new OBDIIDevice
+                    {
+                        MACAddress = body.MACAddress.ToUpper()
+                    };
 
-                    _context.OBDIIDevices.Add(newOBDIIDevice);
-
+                    _context.OBDIIDevices.Add(newDevice);
                     await _context.SaveChangesAsync();
 
-                    deviceId = newOBDIIDevice.DeviceId;
+                    deviceId = newDevice.DeviceId;
                 }
 
                 if (deviceId is null)
-                    return StatusCode(500, new BadRequestResponse("Не удалось определить контроллер ESP32"));
+                    return ServerError();
 
                 var newTrip = new Trip()
                 {
@@ -60,69 +76,113 @@ namespace server.Controllers
                 };
 
                 _context.Trips.Add(newTrip);
-
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetTripById), new { tripId = newTrip.TripId }, new { tripId = newTrip.TripId });
+                var tripRes =
+                    await _context.Trips
+                        .Where(t => t.TripId == newTrip.TripId)
+                        .Select(t => 
+                            new TripDto()
+                            {
+                                TripId = t.TripId,
+                                StartDatetime = t.StartDatetime,
+                                MACAddress = t.OBDIIDevice.MACAddress,
+                                VINNumber = t.Car.VINNumber,
+                                EndDatetime = t.EndDatetime
+                            }
+                        )
+                        .FirstOrDefaultAsync();
+
+                return CreatedAtAction(
+                    nameof(GetTripById),
+                    new { tripId = newTrip.TripId },
+                    tripRes
+                );
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
             }
         }
 
         [HttpGet("trip_id/{tripId}")]
         public async Task<IActionResult> GetTripById([FromRoute] ulong tripId)
         {
-            Trip? trip;
             try
             {
-                trip = await _context.Trips.FirstOrDefaultAsync(t => t.TripId == tripId);
+                var trip =
+                    await _context.Trips
+                        .Where(t => t.TripId == tripId)
+                        .Select(t =>
+                            new TripDto()
+                            {
+                                TripId = t.TripId,
+                                StartDatetime = t.StartDatetime,
+                                MACAddress = t.OBDIIDevice.MACAddress,
+                                VINNumber = t.Car.VINNumber,
+                                EndDatetime = t.EndDatetime
+                            }
+                        )
+                        .FirstOrDefaultAsync();
+
+                if (trip is null)
+                    return Problem(
+                        title: "Поездка не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                return Ok(trip);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
             }
-
-            if (trip is null)
-                return NotFound();
-
-            return Ok(trip);
         }
 
         [HttpPut("end/{tripId}")]
-        public async Task<IActionResult> EndTrip([FromRoute] ulong tripId, [FromBody] EndTripRequest body)
+        public async Task<IActionResult> EndTrip(
+            [FromRoute] ulong tripId,
+            [FromBody] EndTripDto body)
         {
+            if (body.EndDatetime is null)
+                return Problem(
+                    title: "Не переданы дата и время окончания поездки",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+
             try
             {
-                var trip = await _context.Trips.FirstOrDefaultAsync(t => t.TripId == tripId);
+                var trip = await _context.Trips
+                    .FirstOrDefaultAsync(t => t.TripId == tripId);
 
                 if (trip is null)
-                    return BadRequest(new BadRequestResponse("Поездка не найдена"));
+                    return Problem(
+                        title: "Поездка не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
 
                 if (trip.StartDatetime >= body.EndDatetime)
-                    return BadRequest(new BadRequestResponse("Окончание поездки должно быть позже начала"));
+                    return Problem(
+                        title: "Окончание поездки должно быть позже начала",
+                        statusCode: StatusCodes.Status400BadRequest
+                    );
 
                 trip.EndDatetime = body.EndDatetime;
-
                 await _context.SaveChangesAsync();
 
-                return Ok(new { tripId });
+                return NoContent();
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
             }
         }
 
-        private async Task<uint?> GetDeviceIdByMACAddress(string MACAddress)
+        private async Task<uint?> GetDeviceIdByMACAddress(string macAddress)
         {
             var device =
                 await _context.OBDIIDevices
-                    .Where(d => d.MACAddress == MACAddress.ToUpper())
+                    .Where(d => d.MACAddress == macAddress.ToUpper())
                     .Select(d => new { d.DeviceId })
                     .FirstOrDefaultAsync();
 

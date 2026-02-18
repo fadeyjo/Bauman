@@ -18,11 +18,9 @@ namespace server.Models.Entities
         public ushort PID { get; set; }
 
         [Column("PID_description")]
-        [JsonIgnore]
         public string PIDDescription { get; set; } = null!;
 
         [ForeignKey(nameof(ServiceId))]
-        [JsonIgnore]
         public OBDIIService OBDIIService { get; set; } = null!;
     }
 }

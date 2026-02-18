@@ -18,7 +18,6 @@ namespace server.Models.Entities
         public ushort BrandId { get; set; }
 
         [ForeignKey(nameof(BrandId))]
-        [JsonIgnore]
         public CarBrand CarBrand { get; set; } = null!;
     }
 }

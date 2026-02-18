@@ -33,7 +33,6 @@ namespace server.Models.Entities
         public ushort? BearingDEG { get; set; }
 
         [ForeignKey(nameof(TripId))]
-        [JsonIgnore]
         public Trip Trip { get; set; } = null!;
     }
 }

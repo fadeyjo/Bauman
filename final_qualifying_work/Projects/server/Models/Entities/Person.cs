@@ -30,7 +30,6 @@ namespace server.Models.Entities
         public DateOnly Birth { get; set; }
 
         [Column("hashed_password")]
-        [JsonIgnore]
         public string HashedPassword { get; set; } = null!;
 
         [Column("drive_lisense")]
@@ -40,7 +39,6 @@ namespace server.Models.Entities
         public byte RightLevel { get; set; }
 
         [ForeignKey(nameof(RightLevel))]
-        [JsonIgnore]
         public AccessRight AccessRight { get; set; } = null!;
     }
 }

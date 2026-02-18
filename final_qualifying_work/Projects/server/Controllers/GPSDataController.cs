@@ -18,55 +18,104 @@ namespace server.Controllers
             _context = context;
         }
 
+        private ObjectResult ServerError()
+        {
+            return Problem(
+                title: "Внутренняя ошибка сервера",
+                statusCode: StatusCodes.Status500InternalServerError
+            );
+        }
+
         [HttpGet("rec_id/{recId}")]
         public async Task<IActionResult> GetGPSDataById([FromRoute] ulong recId)
         {
             try
             {
                 var record =
-                    await _context.GPSData.FirstOrDefaultAsync(d => d.RecId == recId);
+                    await _context.GPSData
+                        .Where(d => d.RecId == recId)
+                        .Select(d =>
+                            new GPSDataDto()
+                            {
+                                RecId = d.RecId,
+                                RecDatetime = d.RecDatetime,
+                                TripId = d.TripId,
+                                LatitudeDEG = d.LatitudeDEG,
+                                LongitudeDEG = d.LongitudeDEG,
+                                AccuracyM = d.AccuracyM,
+                                SpeedKMH = d.SpeedKMH,
+                                BearingDEG = d.BearingDEG
+                            }
+                        )
+                        .FirstOrDefaultAsync();
 
                 if (record is null)
-                    return NotFound();
+                    return Problem(
+                        title: "Запись GPS не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
 
                 return Ok(record);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateGPSData([FromBody] CreateGPSDataRequest body)
+        public async Task<IActionResult> CreateGPSData([FromBody] CreateGPSDataDto body)
         {
             if (body.RecDatetime is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не переданы дата и время записи"));
+                return Problem(
+                    title: "Не переданы дата и время записи",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.LatitudeDEG is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не передана широта"));
+                return Problem(
+                    title: "Не передана широта",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.LatitudeDEG < -90 || body.LatitudeDEG > 90)
-                return BadRequest(new BadRequestResponse("Широта должна быть в диапазоне [-90; 90]"));
+                return Problem(
+                    title: "Широта должна быть в диапазоне [-90; 90]",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.LongitudeDEG is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не передана долгота"));
+                return Problem(
+                    title: "Не передана долгота",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.LatitudeDEG <= -180 || body.LatitudeDEG > 180)
-                return BadRequest(new BadRequestResponse("Долгота должна быть в диапазоне (-180; 180]"));
+                return Problem(
+                    title: "Долгота должна быть в диапазоне (-180; 180]",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.TripId is null)
-                return BadRequest(new BadRequestResponse("В теле запроса не передан ID поездки"));
+                return Problem(
+                    title: "Не передана поездка",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             if (body.BearingDEG is not null && (body.BearingDEG < 0 || body.BearingDEG >= 360))
-                return BadRequest(new BadRequestResponse("Курс должен быть в диапазоне [0; 360)"));
+                return Problem(
+                    title: "Курс должен быть в диапазоне [0; 360)",
+                    statusCode: StatusCodes.Status400BadRequest
+                );
 
             try
             {
                 bool exists = await _context.Trips.AnyAsync(t => t.TripId == body.TripId);
                 if (!exists)
-                    return BadRequest(new BadRequestResponse("Такой поездки не существует"));
+                    return Problem(
+                        title: "Поездка не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
 
                 var record = new GPSData()
                 {
@@ -83,12 +132,68 @@ namespace server.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetGPSDataById), new { recId = record.RecId }, new { recId = record.RecId });
+                var rec =
+                    await _context.GPSData
+                        .Where(d => d.RecId == record.RecId)
+                        .Select(d =>
+                            new GPSDataDto()
+                            {
+                                RecId = d.RecId,
+                                RecDatetime = d.RecDatetime,
+                                TripId = d.TripId,
+                                LatitudeDEG = d.LatitudeDEG,
+                                LongitudeDEG = d.LongitudeDEG,
+                                AccuracyM = d.AccuracyM,
+                                SpeedKMH = d.SpeedKMH,
+                                BearingDEG = d.BearingDEG
+                            }
+                        )
+                        .FirstOrDefaultAsync();
+
+                return CreatedAtAction(nameof(GetGPSDataById), new { recId = record.RecId }, rec);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, new InternalServerErrorResponse(ex.Message));
+                return ServerError();
+            }
+        }
+
+        [HttpGet("trip_id/{tripId}")]
+        public async Task<IActionResult> GetGPSDataByTripId([FromRoute] ulong tripId)
+        {
+            try
+            {
+                bool exists = await _context.GPSData.AnyAsync(d => d.TripId == tripId);
+
+                if (!exists)
+                    return Problem(
+                        title: "Поездка не найдена",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                var records =
+                    await _context.GPSData
+                        .Where(d => d.TripId == tripId)
+                        .Select(d =>
+                            new GPSDataDto()
+                            {
+                                RecId = d.RecId,
+                                RecDatetime = d.RecDatetime,
+                                TripId = d.TripId,
+                                LatitudeDEG = d.LatitudeDEG,
+                                LongitudeDEG = d.LongitudeDEG,
+                                AccuracyM = d.AccuracyM,
+                                SpeedKMH = d.SpeedKMH,
+                                BearingDEG = d.BearingDEG
+                            }
+                        )
+                        .ToListAsync();
+
+                return Ok(records);
+            }
+            catch
+            {
+                return ServerError();
             }
         }
     }

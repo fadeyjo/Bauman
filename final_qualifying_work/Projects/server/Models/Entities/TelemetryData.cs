@@ -30,11 +30,9 @@ namespace server.Models.Entities
         public ulong TripId { get; set; }
 
         [ForeignKey(nameof(TripId))]
-        [JsonIgnore]
         public Trip Trip { get; set; } = null!;
 
         [ForeignKey(nameof(OBDIIPIDId))]
-        [JsonIgnore]
         public OBDIIPID OBDIIPID { get; set; } = null!;
     }
 }
