@@ -4,10 +4,11 @@ namespace server.Models.Dtos
 {
     public class CheckPasswordDto
     {
-        [Required(ErrorMessage = "Email пользователя обязателен")]
+        [Required(ErrorMessage = "Введите email")]
+        [EmailAddress(ErrorMessage = "Некорректный формат email")]
         public string Email { get; set; } = null!;
 
-        [Required(ErrorMessage = "Пароля обязателен")]
+        [Required(ErrorMessage = "Введите пароль")]
         public string Password { get; set; } = null!;
     }
 }

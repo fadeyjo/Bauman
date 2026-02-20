@@ -70,7 +70,6 @@ namespace server.Controllers
             try
             {
                 string hashedPassword;
-                Console.WriteLine("LOL KEK CHEBURECK");
 
                 var person =
                         await _context.Persons
@@ -83,6 +82,8 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status404NotFound
                     );
                 hashedPassword = person.HashedPassword;
+
+                string pass = BCrypt.Net.BCrypt.HashPassword(body.Password);
 
                 bool confirmed = BCrypt.Net.BCrypt.Verify(body.Password, hashedPassword);
 

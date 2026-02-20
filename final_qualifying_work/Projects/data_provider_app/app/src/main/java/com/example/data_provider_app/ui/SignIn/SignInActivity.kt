@@ -1,12 +1,15 @@
 package com.example.data_provider_app.ui.SignIn
 
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.data_provider_app.R
@@ -14,8 +17,10 @@ import com.example.data_provider_app.ui.Main.MainActivity
 import com.example.data_provider_app.util.UserPreferences
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 import kotlin.getValue
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.data_provider_app.ui.SignUp.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var etEmail: EditText
@@ -23,6 +28,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var tilEmail: TextInputLayout
     private lateinit var tilPassword: TextInputLayout
     private lateinit var btnSignIn: Button
+    private lateinit var tvRegistration: TextView
 
     private val viewModel: SignInViewModel by viewModels()
 
@@ -31,20 +37,42 @@ class SignInActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_sign_in)
 
-        etEmail = findViewById<EditText>(R.id.etEmail)
-        etPassword = findViewById<EditText>(R.id.etPassword)
-        tilEmail = findViewById<TextInputLayout>(R.id.tilEmail)
-        tilPassword = findViewById<TextInputLayout>(R.id.tilPassword)
-        btnSignIn = findViewById<Button>(R.id.btnSignIn)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(
+                view.paddingLeft,
+                systemBars.top,
+                view.paddingRight,
+                systemBars.bottom
+            )
+            insets
+        }
+
+        tvRegistration = findViewById(R.id.tvRegistration)
+        tvRegistration.paintFlags =
+            tvRegistration.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+
+        etEmail = findViewById(R.id.etEmail)
+        etPassword = findViewById(R.id.etPassword)
+        tilEmail = findViewById(R.id.tilEmail)
+        tilPassword = findViewById(R.id.tilPassword)
+        btnSignIn = findViewById(R.id.btnSignIn)
 
         observeViewModel()
 
-        btnSignIn.setOnClickListener {
-            signIn()
-        }
+        btnSignIn.setOnClickListener { signIn() }
+
+        tvRegistration.setOnClickListener { signUp() }
     }
 
-    fun signIn() {
+    private fun signUp() {
+        startActivity(Intent(this, SignUpActivity::class.java))
+        finish()
+    }
+
+    private fun signIn() {
+        viewModel.resetState()
+
         val email = etEmail.text.toString()
         val password = etPassword.text.toString()
 
@@ -66,50 +94,72 @@ class SignInActivity : AppCompatActivity() {
             tilPassword.error = "Введите пароль"
             isValid = false
         }
-        else if (password.length < 8 || password.length > 32) {
-            tilPassword.error = "Длина пароля от 8 до 32 символов"
-            isValid = false
-        }
         else {
             tilPassword.error = null
         }
 
         if (isValid)
-            viewModel.getPersonByEmail(email)
+            viewModel.signIn(email, password)
     }
 
-    fun observeViewModel() {
-        lifecycleScope.launch {
-            viewModel.getPersonState.collect { state ->
-                when (state) {
-                    is GetPersonState.Data -> {
-                        viewModel.checkPassword(etEmail.text.toString(), etPassword.text.toString())
-                    }
-                    is GetPersonState.Error -> {  }
-                    is GetPersonState.Loading -> {  }
-                    is GetPersonState.NetworkError -> {  }
-                    is GetPersonState.NotFound -> tilEmail.error = "Пользователя с данным email не существует"
-                }
-            }
-        }
+    private fun showErrorDialog(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Ошибка")
+            .setMessage(message)
+            .setPositiveButton("ОК", null)
+            .show()
+    }
 
+    private fun navigateToMain() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    private fun observeViewModel() {
         lifecycleScope.launch {
-            viewModel.checkPasswordState.collect { state ->
+            viewModel.state.collect { state ->
+
                 when (state) {
-                    is PasswordCheckState.Authorized -> {
+                    is SignInState.Loading -> {
+                        btnSignIn.isEnabled = false
+                    }
+
+                    is SignInState.Success -> {
                         UserPreferences.saveEmail(this@SignInActivity, etEmail.text.toString())
                         UserPreferences.savePassword(this@SignInActivity, etPassword.text.toString())
-
-                        startActivity(
-                            Intent(this@SignInActivity, MainActivity::class.java)
-                        )
-
-                        finish()
+                        navigateToMain()
                     }
-                    is PasswordCheckState.Error -> {  }
-                    is PasswordCheckState.Loading -> {  }
-                    is PasswordCheckState.NetworkError -> {  }
-                    is PasswordCheckState.Unauthorized -> tilPassword.error = "Неправильный пароль"
+
+                    is SignInState.EmailError -> {
+                        tilEmail.error = state.message
+                        btnSignIn.isEnabled = true
+                    }
+
+                    is SignInState.PasswordError -> {
+                        tilPassword.error = state.message
+                        btnSignIn.isEnabled = true
+                    }
+
+                    is SignInState.GeneralError -> {
+                        showErrorDialog(state.message)
+                        btnSignIn.isEnabled = true
+                    }
+
+                    SignInState.Idle -> {
+                        btnSignIn.isEnabled = true
+                    }
+
+                    is SignInState.ValidationError -> {
+                        state.map["Email"]?.let { error ->
+                            tilEmail.error = error
+                        }
+
+                        state.map["Password"]?.let { error ->
+                            tilPassword.error = error
+                        }
+
+                        btnSignIn.isEnabled = true
+                    }
                 }
             }
         }

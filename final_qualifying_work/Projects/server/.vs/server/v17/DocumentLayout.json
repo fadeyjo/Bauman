@@ -3,16 +3,24 @@
   "WorkspaceRootPath": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\dtos\\createpersondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\dtos\\createpersondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\dtos\\checkpassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\dtos\\checkpassworddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\tripscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\tripscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\telemetrydatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\telemetrydatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,36 +30,63 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CreatePersonDto.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CreatePersonDto.cs",
+              "RelativeDocumentMoniker": "Models\\Dtos\\CreatePersonDto.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CreatePersonDto.cs",
+              "RelativeToolTip": "Models\\Dtos\\CreatePersonDto.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwCQAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T18:15:44.275Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "CheckPasswordDto.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CheckPasswordDto.cs",
+              "RelativeDocumentMoniker": "Models\\Dtos\\CheckPasswordDto.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CheckPasswordDto.cs",
+              "RelativeToolTip": "Models\\Dtos\\CheckPasswordDto.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T18:02:47.447Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "PersonsController.cs",
               "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
               "RelativeDocumentMoniker": "Controllers\\PersonsController.cs",
               "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
               "RelativeToolTip": "Controllers\\PersonsController.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAkwEgAAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAAI8AAAAAAAAAAAAowJsAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T10:03:36.627Z"
+              "WhenOpened": "2026-02-18T10:03:36.627Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "TripsController.cs",
               "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TripsController.cs",
               "RelativeDocumentMoniker": "Controllers\\TripsController.cs",
               "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TripsController.cs",
               "RelativeToolTip": "Controllers\\TripsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGsAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-18T09:45:19.713Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "TelemetryDataController.cs",
               "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TelemetryDataController.cs",
               "RelativeDocumentMoniker": "Controllers\\TelemetryDataController.cs",

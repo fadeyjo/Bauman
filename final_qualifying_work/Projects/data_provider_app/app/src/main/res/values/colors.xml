@@ -4,4 +4,5 @@
     <color name="text_primary">#EEEEEE</color>
     <color name="text_secondary">#333333</color>
     <color name="button_background_primary">#0066CC</color>
+    <color name="button_background_secondary">#EEEEEE</color>
 </resources>

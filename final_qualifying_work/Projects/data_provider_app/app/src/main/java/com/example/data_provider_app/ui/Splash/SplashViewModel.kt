@@ -2,7 +2,7 @@ package com.example.data_provider_app.ui.Splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data_provider_app.model.dto.CheckPasswordRequest
+import com.example.data_provider_app.retrofit_client.RetrofitClient
 import com.example.data_provider_app.util.ApiResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,19 +14,20 @@ class SplashViewModel : ViewModel() {
 
     fun checkUser(email: String, password: String) {
         viewModelScope.launch {
-            val request = CheckPasswordRequest(email, password)
-            val result = PersonRepository.checkPassword(request)
+            val result = RetrofitClient.personsRepository.checkPassword(email, password)
 
             _state.value = when (result) {
-                is ApiResult.Success -> {
-                    if (result.data.confirmed) {
-                        SplashState.Authorized
-                    }
-                    else {
-                        SplashState.NotAuthorized
+                is ApiResult.NetworkError -> SplashState.NetworkError
+                is ApiResult.Success -> SplashState.Authorized
+                is ApiResult.UnknownError -> SplashState.UnknownError
+                is ApiResult.Error -> {
+                    when (result.code) {
+                        401 -> SplashState.NotAuthorized
+                        404 -> SplashState.UserNotFound
+                        else -> SplashState.ServerError
                     }
                 }
-                else -> SplashState.Error
+                is ApiResult.ValidationError -> SplashState.ValidationError
             }
         }
     }
@@ -36,5 +37,9 @@ sealed class SplashState {
     object Loading : SplashState()
     object Authorized : SplashState()
     object NotAuthorized : SplashState()
-    object Error : SplashState()
+    object NetworkError : SplashState()
+    object UserNotFound : SplashState()
+    object ServerError : SplashState()
+    object UnknownError : SplashState()
+    object ValidationError : SplashState()
 }
