@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Database;
@@ -7,6 +8,7 @@ using server.Models.Dtos;
 namespace server.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class CarBodiesController : ControllerBase
     {

@@ -46,3 +46,11 @@ C:\Bauman\final_qualifying_work\Projects\server\obj\Debug\net8.0\ref\server.dll
 C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\MySqlConnector.dll
 C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Bauman\final_qualifying_work\Projects\server\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

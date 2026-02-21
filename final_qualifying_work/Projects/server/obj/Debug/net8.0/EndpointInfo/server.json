@@ -269,7 +269,7 @@
         }
       }
     },
-    "/api/Persons/check_password": {
+    "/api/Persons/login": {
       "post": {
         "tags": [
           "Persons"
@@ -278,17 +278,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckPasswordDto"
+                "$ref": "#/components/schemas/LoginDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckPasswordDto"
+                "$ref": "#/components/schemas/LoginDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckPasswordDto"
+                "$ref": "#/components/schemas/LoginDto"
               }
             }
           }
@@ -353,6 +353,49 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/RefreshTokens/refresh": {
+      "post": {
+        "tags": [
+          "RefreshTokens"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokensDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokensDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokensDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/RefreshTokens/logout": {
+      "post": {
+        "tags": [
+          "RefreshTokens"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -536,24 +579,6 @@
   },
   "components": {
     "schemas": {
-      "CheckPasswordDto": {
-        "required": [
-          "email",
-          "password"
-        ],
-        "type": "object",
-        "properties": {
-          "email": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "password": {
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
       "CreateCarDto": {
         "required": [
           "bodyName",
@@ -813,6 +838,38 @@
           "endDatetime": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginDto": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshTokensDto": {
+        "required": [
+          "refreshToken"
+        ],
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

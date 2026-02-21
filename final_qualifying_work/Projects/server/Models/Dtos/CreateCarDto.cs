@@ -5,9 +5,6 @@ namespace server.Models.Dtos
 {
     public class CreateCarDto
     {
-        [Required(ErrorMessage = "ID пользователя обязателен")]
-        public uint? PersonId { get; set; }
-
         [Required(ErrorMessage = "VIN обязателен")]
         [StringLength(17, MinimumLength = 17, ErrorMessage = "Длина VIN должна быть 17 символов")]
         public string VINNumber { get; set; } = null!;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.VisualBasic.FileIO;
@@ -7,10 +8,12 @@ using server.Models;
 using server.Models.Dtos;
 using server.Models.Entities;
 using System;
+using System.Security.Claims;
 
 namespace server.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class CarsController : ControllerBase
     {
@@ -60,7 +63,8 @@ namespace server.Controllers
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
                         EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
-                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName
+                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
+                        IsArchived = c.IsArchived
                     })
                     .FirstOrDefaultAsync();
 
@@ -81,11 +85,14 @@ namespace server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCar([FromBody] CreateCarDto body)
         {
-            if (body.PersonId is null)
+            object? personIdObj = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (personIdObj is null)
                 return Problem(
-                    title: "Не передан ID пользователя",
-                    statusCode: StatusCodes.Status400BadRequest
+                    title: "Пользователль не авторизован",
+                    statusCode: StatusCodes.Status401Unauthorized
                 );
+
+            uint personId = Convert.ToUInt32(personIdObj);
 
             if (body.EnginePowerHP is null)
                 return Problem(
@@ -278,10 +285,11 @@ namespace server.Controllers
 
                 Car newCar = new ()
                 {
-                    PersonId = (uint)body.PersonId,
+                    PersonId = personId,
                     VINNumber = body.VINNumber.ToUpper(),
                     StateNumber = body.StateNumber?.ToUpper(),
-                    CarConfigId = (uint)carConfigurationId
+                    CarConfigId = (uint)carConfigurationId,
+                    IsArchived = false
                 };
 
                 _context.Cars.Add(newCar);
@@ -308,7 +316,8 @@ namespace server.Controllers
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
                         EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
-                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName
+                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
+                        IsArchived = c.IsArchived
                     })
                     .FirstOrDefaultAsync();
 
@@ -326,9 +335,18 @@ namespace server.Controllers
             }
         }
 
-        [HttpGet("person_id/{personId}")]
-        public async Task<IActionResult> GetCarsByPersonId([FromRoute] uint personId)
+        [HttpGet]
+        public async Task<IActionResult> GetCarsByPersonId()
         {
+            object? personIdObj = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (personIdObj is null)
+                return Problem(
+                    title: "Пользователль не авторизован",
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
+
+            uint personId = Convert.ToUInt32(personIdObj);
+
             try
             {
                 bool exists = await _context.Persons.AnyAsync(p => p.PersonId == personId);
@@ -359,7 +377,8 @@ namespace server.Controllers
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
                         EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
-                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName
+                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
+                        IsArchived = c.IsArchived
                     })
                     .ToListAsync();
 
@@ -580,6 +599,32 @@ namespace server.Controllers
                 car.VINNumber = body.VINNumber.ToUpper();
                 car.StateNumber = body.StateNumber?.ToUpper();
                 car.CarConfigId = (uint)carConfigurationId;
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch
+            {
+                return ServerError();
+            }
+        }
+
+        [HttpPut("archive")]
+        public async Task<IActionResult> ArchiveCar([FromBody] ArchiveCarDto body)
+        {
+            try
+            {
+                var car =
+                    await _context.Cars.FirstOrDefaultAsync(c => c.CarId == body.CarId);
+
+                if (car is null)
+                    return Problem(
+                        title: "Автомобиль не найден",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                car.IsArchived = body.Archive;
 
                 await _context.SaveChangesAsync();
 

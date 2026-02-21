@@ -1,6 +1,10 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using server.Database;
+using server.JwtService;
+using System.Text;
 
 namespace server
 {
@@ -9,6 +13,36 @@ namespace server
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddScoped<JwtService.JwtService>();
+
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
             builder.WebHost.ConfigureKestrel(options => {
                 options.ListenAnyIP(5000);
@@ -48,6 +82,9 @@ namespace server
 
             var app = builder.Build();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -67,9 +104,6 @@ namespace server
             }
 
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
 
             app.MapControllers();
 

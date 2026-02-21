@@ -2,7 +2,7 @@
 
 namespace server.Models.Dtos
 {
-    public class CheckPasswordDto
+    public class LoginDto
     {
         [Required(ErrorMessage = "Введите email")]
         [EmailAddress(ErrorMessage = "Некорректный формат email")]

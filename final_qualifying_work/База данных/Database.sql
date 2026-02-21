@@ -247,6 +247,7 @@ create table cars
     VIN_number char(17) unique not null,
     state_number varchar(6) unique,
     car_config_id mediumint unsigned not null,
+    is_archived boolean not null,
 
     foreign key (person_id) references persons (person_id) on delete cascade,
     foreign key (car_config_id) references car_configurations (car_config_id) on delete cascade,
@@ -302,13 +303,23 @@ create table GPS_data
     check (bearing_deg is null or ((bearing_deg >= 0) and (bearing_deg < 360)))
 );
 
+create table refresh_tokens (
+    token_id bigint unsigned auto_increment primary key,
+    token_hash varchar(500) not null unique,
+    expires datetime not null,
+    is_revoked boolean not null,
+    person_id mediumint unsigned not null,
+
+    foreign key (person_id) references persons (person_id) on delete cascade
+);
+
 -- Начальные данные
 
 insert into car_brands (brand_name) values
-('Toyota');
+    ('Toyota');
 
 insert into car_brands_models (brand_id, model_name) values
-(1, 'Camry');
+    (1, 'Camry');
 
 insert into persons
 (
@@ -328,7 +339,7 @@ insert into persons
     'Егор',
     'Вячеславович',
     '2025-08-02',
-    '123',
+    '$2a$11$S/B6Jx.hZ9yP2kIK.LevfOvJmA4y5gWyqz.a3DbtTD6UpO8/arOdW',
     '9930376835',
     2
 );

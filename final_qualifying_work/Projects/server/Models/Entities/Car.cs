@@ -24,6 +24,9 @@ namespace server.Models.Entities
         [Column("car_config_id")]
         public uint CarConfigId { get; set; }
 
+        [Column("is_archived")]
+        public bool IsArchived { get; set; }
+
         [ForeignKey(nameof(PersonId))]
         public Person Person { get; set; } = null!;
 

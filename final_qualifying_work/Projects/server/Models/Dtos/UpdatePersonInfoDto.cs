@@ -4,9 +4,6 @@ namespace server.Models.Dtos
 {
     public class UpdatePersonInfoDto
     {
-        [Required(ErrorMessage = "В теле запроса не получен ID пользователя")]
-        public uint? PersonId { get; set; }
-
         [Required(ErrorMessage = "Email обязателен")]
         [EmailAddress(ErrorMessage = "Невалидный формат email")]
         [StringLength(320, ErrorMessage = "Длина email не должна превышать 320 символов")]

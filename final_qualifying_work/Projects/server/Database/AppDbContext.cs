@@ -25,6 +25,7 @@ namespace server.Database
         public DbSet<Trip> Trips => Set<Trip>();
         public DbSet<TelemetryData> TelemetryData => Set<TelemetryData>();
         public DbSet<GPSData> GPSData => Set<GPSData>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -200,6 +201,15 @@ namespace server.Database
                 entity.HasKey(g => g.RecId);
 
                 entity.HasOne(g => g.Trip).WithMany().HasForeignKey(t => t.TripId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(g => g.TokenId);
+
+                entity.HasOne(g => g.Person).WithMany().HasForeignKey(t => t.PersonId).OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(g => g.TokenHash).IsUnique();
             });
         }
     }

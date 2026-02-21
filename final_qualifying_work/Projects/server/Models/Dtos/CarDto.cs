@@ -24,5 +24,6 @@ namespace server.Models.Dtos
         public byte TankCapacityL { get; set; }
         public string FuelTypeName { get; set; } = null!;
         public ushort VehicleWeightKG { get; set; }
+        public bool IsArchived { get; set; }
     }
 }

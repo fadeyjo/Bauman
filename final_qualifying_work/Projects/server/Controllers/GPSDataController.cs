@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Database;
 using server.Models;
@@ -8,6 +9,7 @@ using server.Models.Entities;
 namespace server.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class GPSDataController : ControllerBase
     {

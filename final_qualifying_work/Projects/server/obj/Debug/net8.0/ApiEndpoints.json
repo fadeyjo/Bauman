@@ -195,22 +195,6 @@
   },
   {
     "ContainingType": "server.Controllers.PersonsController",
-    "Method": "CheckPassword",
-    "RelativePath": "api/Persons/check_password",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "body",
-        "Type": "server.Models.Dtos.CheckPasswordDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "server.Controllers.PersonsController",
     "Method": "GetPersonByEmail",
     "RelativePath": "api/Persons/email/{email}",
     "HttpMethod": "GET",
@@ -220,6 +204,48 @@
       {
         "Name": "email",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.PersonsController",
+    "Method": "Login",
+    "RelativePath": "api/Persons/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.Dtos.LoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.RefreshTokensController",
+    "Method": "Logout",
+    "RelativePath": "api/RefreshTokens/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.RefreshTokensController",
+    "Method": "Refresh",
+    "RelativePath": "api/RefreshTokens/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.Dtos.RefreshTokensDto",
         "IsRequired": true
       }
     ],

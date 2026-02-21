@@ -1,21 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using server.Database;
+using server.JwtService;
 using server.Models.Dtos;
 using server.Models.Entities;
 using System;
+using System.Security.Claims;
 
 namespace server.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class PersonsController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public PersonsController(AppDbContext context)
+        private readonly JwtService.JwtService _jwtService;
+
+        private readonly JwtOptions _jwtOptions;
+
+        public PersonsController(AppDbContext context, JwtService.JwtService jwtService, IOptions<JwtOptions> options)
         {
-            _context=context;
+            _context = context;
+            _jwtService = jwtService;
+            _jwtOptions = options.Value;
         }
 
         private ObjectResult ServerError()
@@ -26,9 +37,16 @@ namespace server.Controllers
             );
         }
 
-        [HttpGet("email/{email}")]
-        public async Task<IActionResult> GetPersonByEmail([FromRoute] string email)
+        [HttpGet("email")]
+        public async Task<IActionResult> GetPersonByEmail()
         {
+            string? email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrWhiteSpace(email))
+                return Problem(
+                    title: "Пользователь не авторизован",
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
+
             PersonDto? person;
             try
             {
@@ -64,18 +82,21 @@ namespace server.Controllers
             return Ok(person);
         }
 
-        [HttpPost("check_password")]
-        public async Task<IActionResult> CheckPassword([FromBody] CheckPasswordDto body)
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto body)
         {
+            Person? person;
+
             try
             {
                 string hashedPassword;
 
-                var person =
+                person =
                         await _context.Persons
                             .Where(p => p.Email == body.Email)
-                            .Select(p => new { p.HashedPassword })
                             .FirstOrDefaultAsync();
+
                 if (person is null)
                     return Problem(
                         title: "Пользователь не найден",
@@ -83,34 +104,35 @@ namespace server.Controllers
                     );
                 hashedPassword = person.HashedPassword;
 
-                string pass = BCrypt.Net.BCrypt.HashPassword(body.Password);
-
                 bool confirmed = BCrypt.Net.BCrypt.Verify(body.Password, hashedPassword);
 
-                var personRes =
-                    await _context.Persons
-                        .Where(p => p.Email == body.Email)
-                        .Select(p =>
-                            new PersonDto()
-                            {
-                                PersonId = p.PersonId,
-                                Email = p.Email,
-                                Phone = p.Phone,
-                                LastName = p.LastName,
-                                FirstName = p.FirstName,
-                                Patronymic = p.Patronymic,
-                                Birth = p.Birth,
-                                DriveLisense = p.DriveLisense
-                            }
-                        ).
-                        FirstOrDefaultAsync();
-
-                return confirmed ?
-                    Ok(personRes) :
-                    Problem(
+                if (!confirmed)
+                    return Problem(
                         title: "Пользолватель не авторизован",
                         statusCode: StatusCodes.Status401Unauthorized
                     );
+
+                string accessToken = _jwtService.GenerateAccessToken(person);
+                string refreshToken = _jwtService.GenerateRefreshToken();
+
+                string refreshHash = BCrypt.Net.BCrypt.HashPassword(refreshToken);
+
+                _context.RefreshTokens.Add(new RefreshToken
+                {
+                    TokenHash = refreshHash,
+                    Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenDays),
+                    PersonId = person.PersonId,
+                    IsRevoked = false
+                });
+
+                await _context.SaveChangesAsync();
+
+                return Ok(
+                    new AuthorizedDto()
+                    {
+                        AccessToken = accessToken,
+                        RefreshToken = refreshToken
+                    });
             }
             catch
             {
@@ -223,10 +245,19 @@ namespace server.Controllers
                     statusCode: StatusCodes.Status400BadRequest
                 );
 
+            object? personIdObj = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (personIdObj is null)
+                return Problem(
+                    title: "Пользователль не авторизован",
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
+
+            uint personId = Convert.ToUInt32(personIdObj);
+
             try
             {
                 var person =
-                    await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == body.PersonId);
+                    await _context.Persons.FirstOrDefaultAsync(p => p.PersonId == personId);
 
                 if (person is null)
                     return Problem(
@@ -241,7 +272,7 @@ namespace server.Controllers
                     );
 
                 bool exists =
-                    await _context.Persons.AnyAsync(p => p.Email == body.Email && p.PersonId != body.PersonId);
+                    await _context.Persons.AnyAsync(p => p.Email == body.Email && p.PersonId != personId);
 
                 if (exists)
                     return Problem(
@@ -250,7 +281,7 @@ namespace server.Controllers
                     );
 
                 exists =
-                    await _context.Persons.AnyAsync(p => p.Phone == body.Phone && p.PersonId != body.PersonId);
+                    await _context.Persons.AnyAsync(p => p.Phone == body.Phone && p.PersonId != personId);
 
                 if (exists)
                     return Problem(
@@ -261,7 +292,7 @@ namespace server.Controllers
                 if (!string.IsNullOrWhiteSpace(body.DriveLisense))
                 {
                     exists =
-                        await _context.Persons.AnyAsync(p => p.DriveLisense == body.DriveLisense && p.PersonId != body.PersonId);
+                        await _context.Persons.AnyAsync(p => p.DriveLisense == body.DriveLisense && p.PersonId != personId);
 
                     if (exists)
                         return Problem(
