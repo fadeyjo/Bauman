@@ -159,6 +159,14 @@ create table persons
     check (char_length(hashed_password) > 1)
 );
 
+create table avatars (
+    avatar_id int unsigned auto_increment primary key,
+    avatar_url varchar(255) not null unique,
+    person_id mediumint unsigned not null,
+
+    foreign key (person_id) references persons (person_id) on delete cascade
+);
+
 create table car_brands
 (
     brand_id smallint unsigned auto_increment primary key,

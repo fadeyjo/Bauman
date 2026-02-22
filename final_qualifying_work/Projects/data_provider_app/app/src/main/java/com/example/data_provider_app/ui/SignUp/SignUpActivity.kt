@@ -1,24 +1,31 @@
 package com.example.data_provider_app.ui.SignUp
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Paint
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.data_provider_app.R
-import com.example.data_provider_app.ui.Main.MainActivity
+import com.example.data_provider_app.jwt.TokenStorage
 import com.example.data_provider_app.ui.SignIn.SignInActivity
+import com.example.data_provider_app.ui.SignIn.SignInState
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlin.getValue
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var tvSignIn: TextView
@@ -43,6 +50,9 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var tilRepeatPassword: TextInputLayout
     private lateinit var btnSignUp: Button
 
+    private val viewModel: SignUpViewModel by viewModels()
+
+    @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -109,9 +119,15 @@ class SignUpActivity : AppCompatActivity() {
 
             datePicker.show()
         }
+
+        observeViewModel()
     }
 
     private fun signUp() {
+        btnSignUp.isEnabled = false
+
+        viewModel.resetState()
+
         val email = etEmail.text.toString()
         val phone = etPhone.text.toString()
         val lastName = etLastName.text.toString()
@@ -119,7 +135,7 @@ class SignUpActivity : AppCompatActivity() {
         val patronymic = etPatronymic.text.toString()
         val birth = etBirth.text.toString()
         val driveLicense = etDriveLicense.text.toString()
-        val password = etPatronymic.text.toString()
+        val password = etPassword.text.toString()
         val repeatPassword = etRepeatPassword.text.toString()
 
         var isValid = true
@@ -279,6 +295,101 @@ class SignUpActivity : AppCompatActivity() {
             tilRepeatPassword.error = null
         }
 
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val birthDate = LocalDate.parse(birth, formatter)
+
+        if (isValid)
+            viewModel.signUp(
+                email, phone,
+                lastName, firstName,
+                patronymic.ifBlank { null }, birthDate,
+                password, driveLicense
+            )
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                when (state) {
+                    is SignUpState.DriveLicenseExists -> {
+                        tilDriveLicense.error = "Уже существует"
+                        btnSignUp.isEnabled = true
+                    }
+                    is SignUpState.EmailExists -> {
+                        tilEmail.error = "Уже существует"
+                        btnSignUp.isEnabled = true
+                    }
+                    is SignUpState.Idle -> {}
+                    is SignUpState.Loading -> {}
+                    is SignUpState.NetworkError -> {
+                        showErrorDialog("Нет подключения к интернету")
+                        btnSignUp.isEnabled = true
+                    }
+                    is SignUpState.PhoneExists -> {
+                        tilPhone.error = "Уже существует"
+                        btnSignUp.isEnabled = true
+                    }
+                    is SignUpState.Registered -> {
+                        showInfoDialog("Вы успешно зарегистрированы! Необходим вход.")
+                    }
+                    is SignUpState.ServerError -> {
+                        showErrorDialog("Ошибка сервера")
+                        btnSignUp.isEnabled = true
+                    }
+                    is SignUpState.UnknownError -> {
+                        showErrorDialog("Неизвестная ошибка")
+                        btnSignUp.isEnabled = true
+                    }
+                    is SignUpState.ValidationError -> {
+                        state.map["Birth"]?.let {
+                            tilBirth.error = state.map["Birth"]
+                        }
+
+                        state.map["Email"]?.let {
+                            tilEmail.error = state.map["Email"]
+                        }
+
+                        state.map["Phone"]?.let {
+                            tilPhone.error = state.map["Phone"]
+                        }
+
+                        state.map["LastName"]?.let {
+                            tilLastName.error = state.map["LastName"]
+                        }
+
+                        state.map["Password"]?.let {
+                            tilPassword.error = state.map["Password"]
+                        }
+
+                        state.map["FirstName"]?.let {
+                            tilFirstName.error = state.map["FirstName"]
+                        }
+
+                        btnSignUp.isEnabled = true
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showErrorDialog(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Ошибка")
+            .setMessage(message)
+            .setPositiveButton("ОК", null)
+            .show()
+    }
+
+    private fun showInfoDialog(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Информация")
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton("ОК") {_, _ ->
+                signIn()
+                finish()
+            }
+            .show()
     }
 
     private fun signIn() {

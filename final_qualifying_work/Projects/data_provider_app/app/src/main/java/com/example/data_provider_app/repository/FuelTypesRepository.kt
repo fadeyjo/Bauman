@@ -9,6 +9,11 @@ class FuelTypesRepository(
     private val api: FuelTypeApi
 ) {
     suspend fun getAllEngineTypes(): ApiResult<List<FuelTypeDto>> {
-        return ApiResponseHandler.handleResponse(api.getAllFuelTypes())
+        return try {
+            ApiResponseHandler.handleResponse(api.getAllFuelTypes())
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

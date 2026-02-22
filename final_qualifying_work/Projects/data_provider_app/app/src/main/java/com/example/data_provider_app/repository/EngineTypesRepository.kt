@@ -9,7 +9,12 @@ class EngineTypesRepository(
     private val api: EngineTypeApi
 ) {
     suspend fun getAllEngineTypes(): ApiResult<List<EngineTypeDto>> {
-        return ApiResponseHandler.handleResponse(api.getAllEngineTypes())
+        return try {
+            ApiResponseHandler.handleResponse(api.getAllEngineTypes())
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }
 

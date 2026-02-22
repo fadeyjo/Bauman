@@ -11,7 +11,12 @@ class TelemetryDataRepository(
     private val api: TelemetryDataApi
 ) {
     suspend fun getTelemetryDataById(recId: ULong): ApiResult<TelemetryDataDto> {
-        return ApiResponseHandler.handleResponse(api.getTelemetryDataById(recId))
+        return try {
+            ApiResponseHandler.handleResponse(api.getTelemetryDataById(recId))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun createTelemtryData(
@@ -27,10 +32,20 @@ class TelemetryDataRepository(
             tripId
         )
 
-        return ApiResponseHandler.handleResponse(api.createTelemtryData(telemetryData))
+        return try {
+            ApiResponseHandler.handleResponse(api.createTelemtryData(telemetryData))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun getTelemetryDataByTripId(tripId: ULong): ApiResult<List<TelemetryDataDto>> {
-        return ApiResponseHandler.handleResponse(api.getTelemetryDataByTripId(tripId))
+        return try {
+            ApiResponseHandler.handleResponse(api.getTelemetryDataByTripId(tripId))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

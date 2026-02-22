@@ -20,14 +20,29 @@ class TripsRepository(
             carId
         )
 
-        return ApiResponseHandler.handleResponse(api.startTrip(startTrip))
+        return try {
+            ApiResponseHandler.handleResponse(api.startTrip(startTrip))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun getTripById(tripId: ULong): ApiResult<TripDto> {
-        return ApiResponseHandler.handleResponse(api.getTripById(tripId))
+        return try {
+            ApiResponseHandler.handleResponse(api.getTripById(tripId))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun endTrip(tripId: ULong): ApiResult<Unit> {
-        return ApiResponseHandler.handleResponse(api.endTrip(tripId))
+        return try {
+            ApiResponseHandler.handleResponse(api.endTrip(tripId))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

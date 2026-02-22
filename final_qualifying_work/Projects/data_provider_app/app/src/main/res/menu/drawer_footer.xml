@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/logout_all"
+        android:title="Закончить все сессии"
+        android:icon="@drawable/logout_icon"
+        android:titleTextColor="@android:color/holo_red_dark"/>
+</menu>

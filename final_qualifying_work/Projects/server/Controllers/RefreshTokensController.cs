@@ -7,6 +7,7 @@ using server.JwtService;
 using server.Models.Dtos;
 using server.Models.Entities;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace server.Controllers
 {
@@ -106,27 +107,40 @@ namespace server.Controllers
             }
         }
 
-        [Authorize]
-        [HttpPut("logout")]
-        public async Task<IActionResult> Logout()
+        [HttpPost("check_token")]
+        public async Task<IActionResult> CheckToken([FromBody] CheckTokenDto body)
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var tokens =
+                    await _context.RefreshTokens
+                        .Include(rt => rt.Person)
+                        .Where(rt => !rt.IsRevoked)
+                        .ToListAsync();
 
-                if (userIdClaim == null)
-                    return Unauthorized();
+                if (tokens is null)
+                    return Problem(
+                        title: "Пользователь не авторизован",
+                        statusCode: StatusCodes.Status401Unauthorized
+                    );
 
-                uint userId = uint.Parse(userIdClaim);
+                RefreshToken? valToken = null;
+                foreach (var t in tokens)
+                {
+                    if (!BCrypt.Net.BCrypt.Verify(body.RefreshToken, t.TokenHash)) continue;
 
-                var tokens = await _context.RefreshTokens
-                    .Where(rt => rt.PersonId == userId && !rt.IsRevoked)
-                    .ToListAsync();
+                    valToken = t;
+                    break;
+                }
 
-                foreach (var token in tokens)
-                    token.IsRevoked = true;
-
-                await _context.SaveChangesAsync();
+                if (
+                    valToken is null ||
+                    valToken.Expires < DateTime.UtcNow
+                )
+                    return Problem(
+                        title: "Пользователь не авторизован",
+                        statusCode: StatusCodes.Status401Unauthorized
+                    );
 
                 return NoContent();
             }

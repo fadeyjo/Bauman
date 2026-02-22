@@ -15,7 +15,7 @@ class CarsRepository(
     }
 
     suspend fun addCar(
-        personId: UInt, VINNumber: String,
+        VINNumber: String,
         stateNumber: String?, brandName: String,
         modelName: String, bodyName: String,
         releaseYear: UShort, gearboxName: String,
@@ -25,7 +25,7 @@ class CarsRepository(
         tankCapacityL: UByte, fuelTypeName: String
     ): ApiResult<CarDto> {
         val car = CreateCarDto(
-            personId, VINNumber,
+            VINNumber,
             stateNumber, brandName,
             modelName, bodyName,
             releaseYear, gearboxName,
@@ -35,11 +35,21 @@ class CarsRepository(
             tankCapacityL, fuelTypeName
         )
 
-        return ApiResponseHandler.handleResponse(api.addCar(car))
+        return try {
+            ApiResponseHandler.handleResponse(api.addCar(car))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
-    suspend fun getCarsByPersonId(personId: UInt): ApiResult<List<CarDto>> {
-        return ApiResponseHandler.handleResponse(api.getCarsByPersonId(personId))
+    suspend fun getCarsByPersonId(): ApiResult<List<CarDto>> {
+        return try {
+            ApiResponseHandler.handleResponse(api.getCarsByPersonId())
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun updateCarInfo(
@@ -63,6 +73,11 @@ class CarsRepository(
             tankCapacityL, fuelTypeName
         )
 
-        return ApiResponseHandler.handleResponse(api.updateCarInfo(car))
+        return try {
+            ApiResponseHandler.handleResponse(api.updateCarInfo(car))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

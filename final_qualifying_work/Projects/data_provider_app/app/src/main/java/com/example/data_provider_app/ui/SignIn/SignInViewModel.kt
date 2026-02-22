@@ -13,19 +13,19 @@ class SignInViewModel : ViewModel() {
     private val _state = MutableStateFlow<SignInState>(SignInState.Idle)
     val state: StateFlow<SignInState> = _state
 
-    fun signIn(email: String, password: String) {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
 
             _state.value = SignInState.Loading
 
             val result = RetrofitClient
                 .personsRepository
-                .checkPassword(email, password)
+                .login(email, password)
 
             _state.value = when (result) {
 
                 is ApiResult.Success -> {
-                    SignInState.Success
+                    SignInState.Success(result.data!!.accessToken, result.data.refreshToken)
                 }
 
                 is ApiResult.Error -> {
@@ -58,7 +58,7 @@ class SignInViewModel : ViewModel() {
 sealed class SignInState {
     object Idle : SignInState()
     object Loading : SignInState()
-    object Success : SignInState()
+    data class Success(val accessToken: String, val refreshToken: String) : SignInState()
     data class EmailError(val message: String) : SignInState()
     data class PasswordError(val message: String) : SignInState()
     data class GeneralError(val message: String) : SignInState()

@@ -9,6 +9,11 @@ class CarGearboxesRepository(
     private val api: CarGearboxApi
 ) {
     suspend fun getAllCarGearboxes(): ApiResult<List<CarGearboxDto>> {
-        return ApiResponseHandler.handleResponse(api.getAllCarGearboxes())
+        return try {
+            ApiResponseHandler.handleResponse(api.getAllCarGearboxes())
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

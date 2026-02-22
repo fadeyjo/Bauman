@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.androidx.viewmodel.ktx)
     implementation(libs.androidx.livedata.ktx)
     implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.drawerlayout)
+    implementation(libs.material)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

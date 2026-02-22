@@ -22,11 +22,14 @@ namespace server.Controllers
 
         private readonly JwtOptions _jwtOptions;
 
-        public PersonsController(AppDbContext context, JwtService.JwtService jwtService, IOptions<JwtOptions> options)
+        private readonly StoreService.StoreOptions _storeOptions;
+
+        public PersonsController(AppDbContext context, JwtService.JwtService jwtService, IOptions<JwtOptions> options, StoreService.StoreOptions storeOptions)
         {
             _context = context;
             _jwtService = jwtService;
             _jwtOptions = options.Value;
+            _storeOptions=storeOptions;
         }
 
         private ObjectResult ServerError()
@@ -80,6 +83,35 @@ namespace server.Controllers
                 );
 
             return Ok(person);
+        }
+
+        [HttpPut("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (userIdClaim == null)
+                    return Unauthorized();
+
+                uint userId = uint.Parse(userIdClaim);
+
+                var tokens = await _context.RefreshTokens
+                    .Where(rt => rt.PersonId == userId && !rt.IsRevoked)
+                    .ToListAsync();
+
+                foreach (var token in tokens)
+                    token.IsRevoked = true;
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch
+            {
+                return ServerError();
+            }
         }
 
         [AllowAnonymous]
@@ -140,6 +172,7 @@ namespace server.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreatePerson([FromBody] CreatePersonDto body)
         {
@@ -208,6 +241,16 @@ namespace server.Controllers
                 };
 
                 _context.Persons.Add(person);
+                await _context.SaveChangesAsync();
+
+                var avatar = new Avatar()
+                {
+                    AvatarUrl = Path.Combine(_storeOptions.AvatarsPath, "standart.png"),
+                    PersonId = person.PersonId
+                };
+
+                _context.Avatars.Add(avatar);
+
                 await _context.SaveChangesAsync();
 
                 var personRes =

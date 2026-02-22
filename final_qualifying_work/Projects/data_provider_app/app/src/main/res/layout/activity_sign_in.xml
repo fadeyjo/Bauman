@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Зарегистрироваться"
+            android:text="Войти"
             android:textColor="@color/text_primary"
             app:backgroundTint="@color/button_background_primary" />
 

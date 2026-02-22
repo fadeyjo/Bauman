@@ -9,6 +9,12 @@ class CarBodiesRepository(
     private val api: CarBodyApi
 ) {
     suspend fun getAllCarBodies(): ApiResult<List<CarBodyDto>> {
-        return ApiResponseHandler.handleResponse(api.getAllCarBodies())
+        return try {
+            ApiResponseHandler.handleResponse(api.getAllCarBodies())
+        }
+        catch (e: Exception)
+        {
+            ApiResult.NetworkError
+        }
     }
 }

@@ -9,6 +9,11 @@ class CarDrivesRepository(
     private val api: CarDriveApi
 ) {
     suspend fun getAllCarDrives(): ApiResult<List<CarDriveDto>> {
-        return ApiResponseHandler.handleResponse(api.getAllCarDrives())
+        return try {
+            ApiResponseHandler.handleResponse(api.getAllCarDrives())
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

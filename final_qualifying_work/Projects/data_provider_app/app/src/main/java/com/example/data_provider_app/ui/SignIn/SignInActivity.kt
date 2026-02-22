@@ -14,12 +14,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.data_provider_app.R
 import com.example.data_provider_app.ui.Main.MainActivity
-import com.example.data_provider_app.util.UserPreferences
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 import kotlin.getValue
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.data_provider_app.jwt.TokenStorage
 import com.example.data_provider_app.ui.SignUp.SignUpActivity
 
 class SignInActivity : AppCompatActivity() {
@@ -99,7 +99,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         if (isValid)
-            viewModel.signIn(email, password)
+            viewModel.login(email, password)
     }
 
     private fun showErrorDialog(message: String) {
@@ -125,8 +125,7 @@ class SignInActivity : AppCompatActivity() {
                     }
 
                     is SignInState.Success -> {
-                        UserPreferences.saveEmail(this@SignInActivity, etEmail.text.toString())
-                        UserPreferences.savePassword(this@SignInActivity, etPassword.text.toString())
+                        TokenStorage.saveTokens(state.accessToken, state.refreshToken)
                         navigateToMain()
                     }
 
@@ -145,9 +144,7 @@ class SignInActivity : AppCompatActivity() {
                         btnSignIn.isEnabled = true
                     }
 
-                    SignInState.Idle -> {
-                        btnSignIn.isEnabled = true
-                    }
+                    SignInState.Idle -> { }
 
                     is SignInState.ValidationError -> {
                         state.map["Email"]?.let { error ->

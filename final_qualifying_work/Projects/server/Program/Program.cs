@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using server.Database;
@@ -43,6 +44,8 @@ namespace server
             builder.Services.AddScoped<JwtService.JwtService>();
 
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
+            builder.Services.Configure<StoreOptions>(builder.Configuration.GetSection("Store"));
 
             builder.WebHost.ConfigureKestrel(options => {
                 options.ListenAnyIP(5000);

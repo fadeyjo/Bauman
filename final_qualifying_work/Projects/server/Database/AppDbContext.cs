@@ -26,6 +26,7 @@ namespace server.Database
         public DbSet<TelemetryData> TelemetryData => Set<TelemetryData>();
         public DbSet<GPSData> GPSData => Set<GPSData>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+        public DbSet<Avatar> Avatars => Set<Avatar>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -210,6 +211,13 @@ namespace server.Database
                 entity.HasOne(g => g.Person).WithMany().HasForeignKey(t => t.PersonId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(g => g.TokenHash).IsUnique();
+            });
+
+            modelBuilder.Entity<Avatar>(entity =>
+            {
+                entity.HasKey(a => a.AvatarId);
+
+                entity.HasIndex(a => a.AvatarUrl).IsUnique();
             });
         }
     }

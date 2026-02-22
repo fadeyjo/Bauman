@@ -1,5 +1,6 @@
 package com.example.data_provider_app.retrofit_client
 
+import com.example.data_provider_app.api.AvatarApi
 import com.example.data_provider_app.api.CarApi
 import com.example.data_provider_app.api.CarBodyApi
 import com.example.data_provider_app.api.CarDriveApi
@@ -8,8 +9,10 @@ import com.example.data_provider_app.api.EngineTypeApi
 import com.example.data_provider_app.api.FuelTypeApi
 import com.example.data_provider_app.api.GPSDataApi
 import com.example.data_provider_app.api.PersonApi
+import com.example.data_provider_app.api.RefreshTokenApi
 import com.example.data_provider_app.api.TelemetryDataApi
 import com.example.data_provider_app.api.TripApi
+import com.example.data_provider_app.repository.AvatarRepository
 import com.example.data_provider_app.repository.CarBodiesRepository
 import com.example.data_provider_app.repository.CarDrivesRepository
 import com.example.data_provider_app.repository.CarGearboxesRepository
@@ -18,6 +21,7 @@ import com.example.data_provider_app.repository.EngineTypesRepository
 import com.example.data_provider_app.repository.FuelTypesRepository
 import com.example.data_provider_app.repository.GPSDataRepository
 import com.example.data_provider_app.repository.PersonsRepository
+import com.example.data_provider_app.repository.RefreshTokensRepository
 import com.example.data_provider_app.repository.TelemetryDataRepository
 import com.example.data_provider_app.repository.TripsRepository
 import com.example.data_provider_app.util.LocalDateTimeAdapter
@@ -53,19 +57,31 @@ object RetrofitClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
-
     private val gson = GsonBuilder()
         .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
         .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
         .create()
+
+    private val refreshRetrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .build()
+
+    private val refreshApi = refreshRetrofit.create(RefreshTokenApi::class.java)
+
+
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor(AuthInterceptor())
+        .authenticator(TokenAuthenticator(refreshApi))
+        .build()
+
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
+
 
     val carBodiesRepository by lazy {
         CarBodiesRepository(retrofit.create(CarBodyApi::class.java))
@@ -105,5 +121,13 @@ object RetrofitClient {
 
     val tripRepository by lazy {
         TripsRepository(retrofit.create(TripApi::class.java))
+    }
+
+    val refreshTokenRepository by lazy {
+        RefreshTokensRepository(refreshApi)
+    }
+
+    val avatarRepository by lazy {
+        AvatarRepository(retrofit.create(AvatarApi::class.java))
     }
 }

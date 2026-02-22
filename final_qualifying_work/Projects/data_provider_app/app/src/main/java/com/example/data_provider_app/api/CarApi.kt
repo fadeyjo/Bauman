@@ -1,5 +1,6 @@
 package com.example.data_provider_app.api
 
+import com.example.data_provider_app.dto.ArchiveCarDto
 import com.example.data_provider_app.dto.CarDto
 import com.example.data_provider_app.dto.CreateCarDto
 import com.example.data_provider_app.dto.UpdateCarInfoDto
@@ -17,9 +18,12 @@ interface CarApi {
     @POST("cars")
     suspend fun addCar(@Body car: CreateCarDto): Response<CarDto>
 
-    @GET("cars/person_id/{personId}")
-    suspend fun getCarsByPersonId(@Path("personId") personId: UInt): Response<List<CarDto>>
+    @GET("cars")
+    suspend fun getCarsByPersonId(): Response<List<CarDto>>
 
     @PUT("cars")
     suspend fun updateCarInfo(@Body updatedCarData: UpdateCarInfoDto): Response<Unit>
+
+    @PUT("cars/archive")
+    suspend fun ArchiveCar(@Body archiveCar: ArchiveCarDto)
 }

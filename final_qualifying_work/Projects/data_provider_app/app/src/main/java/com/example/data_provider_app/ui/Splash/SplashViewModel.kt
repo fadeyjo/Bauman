@@ -12,9 +12,9 @@ class SplashViewModel : ViewModel() {
     private val _state = MutableStateFlow<SplashState>(SplashState.Loading)
     val state: StateFlow<SplashState> = _state
 
-    fun checkUser(email: String, password: String) {
+    fun checkToken(token: String) {
         viewModelScope.launch {
-            val result = RetrofitClient.personsRepository.checkPassword(email, password)
+            val result = RetrofitClient.refreshTokenRepository.checkToken(token)
 
             _state.value = when (result) {
                 is ApiResult.NetworkError -> SplashState.NetworkError
@@ -23,7 +23,6 @@ class SplashViewModel : ViewModel() {
                 is ApiResult.Error -> {
                     when (result.code) {
                         401 -> SplashState.NotAuthorized
-                        404 -> SplashState.UserNotFound
                         else -> SplashState.ServerError
                     }
                 }
@@ -38,7 +37,6 @@ sealed class SplashState {
     object Authorized : SplashState()
     object NotAuthorized : SplashState()
     object NetworkError : SplashState()
-    object UserNotFound : SplashState()
     object ServerError : SplashState()
     object UnknownError : SplashState()
     object ValidationError : SplashState()

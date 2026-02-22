@@ -1,5 +1,72 @@
 [
   {
+    "ContainingType": "server.Controllers.AvatarsController",
+    "Method": "NewAvatar",
+    "RelativePath": "api/Avatars",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ContentType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ContentDisposition",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Headers",
+        "Type": "Microsoft.AspNetCore.Http.IHeaderDictionary",
+        "IsRequired": false
+      },
+      {
+        "Name": "Length",
+        "Type": "System.Int64",
+        "IsRequired": false
+      },
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FileName",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.AvatarsController",
+    "Method": "GetAvatarById",
+    "RelativePath": "api/Avatars/avatar_id/{avatarId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "avatarId",
+        "Type": "System.UInt32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.AvatarsController",
+    "Method": "GetLastAvatar",
+    "RelativePath": "api/Avatars/last",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.CarBodiesController",
     "Method": "GetAllBodies",
     "RelativePath": "api/CarBodies",
@@ -47,6 +114,16 @@
   },
   {
     "ContainingType": "server.Controllers.CarsController",
+    "Method": "GetCarsByPersonId",
+    "RelativePath": "api/Cars",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.CarsController",
     "Method": "UpdateCarInfo",
     "RelativePath": "api/Cars",
     "HttpMethod": "PUT",
@@ -63,15 +140,15 @@
   },
   {
     "ContainingType": "server.Controllers.CarsController",
-    "Method": "GetCarsByPersonId",
-    "RelativePath": "api/Cars/person_id/{personId}",
-    "HttpMethod": "GET",
+    "Method": "ArchiveCar",
+    "RelativePath": "api/Cars/archive",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "personId",
-        "Type": "System.UInt32",
+        "Name": "body",
+        "Type": "server.Models.Dtos.ArchiveCarDto",
         "IsRequired": true
       }
     ],
@@ -196,17 +273,11 @@
   {
     "ContainingType": "server.Controllers.PersonsController",
     "Method": "GetPersonByEmail",
-    "RelativePath": "api/Persons/email/{email}",
+    "RelativePath": "api/Persons/email",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -226,13 +297,29 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "server.Controllers.RefreshTokensController",
+    "ContainingType": "server.Controllers.PersonsController",
     "Method": "Logout",
-    "RelativePath": "api/RefreshTokens/logout",
-    "HttpMethod": "POST",
+    "RelativePath": "api/Persons/logout",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.RefreshTokensController",
+    "Method": "CheckToken",
+    "RelativePath": "api/RefreshTokens/check_token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "server.Models.Dtos.CheckTokenDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

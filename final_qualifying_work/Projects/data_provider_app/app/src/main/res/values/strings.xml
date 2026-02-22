@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">data_provider_app</string>
+    <string name="open">Открыть меню</string>
+    <string name="close">Закрыть меню</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

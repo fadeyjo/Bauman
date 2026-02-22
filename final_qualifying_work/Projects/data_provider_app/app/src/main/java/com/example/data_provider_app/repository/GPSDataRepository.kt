@@ -11,7 +11,12 @@ class GPSDataRepository(
     private val api: GPSDataApi
 ) {
     suspend fun getGPSDataById(recId: ULong): ApiResult<GPSDataDto> {
-        return ApiResponseHandler.handleResponse(api.getGPSDataById(recId))
+        return try {
+            ApiResponseHandler.handleResponse(api.getGPSDataById(recId))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun createGPSData(
@@ -27,10 +32,20 @@ class GPSDataRepository(
             bearingDEG
         )
 
-        return ApiResponseHandler.handleResponse(api.createGPSData(GPSData))
+        return try {
+            ApiResponseHandler.handleResponse(api.createGPSData(GPSData))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 
     suspend fun getGPSDataByTripId(tripId: ULong): ApiResult<List<GPSDataDto>> {
-        return ApiResponseHandler.handleResponse(api.getGPSDataByTripId(tripId))
+        return try {
+            ApiResponseHandler.handleResponse(api.getGPSDataByTripId(tripId))
+        }
+        catch (e: Exception) {
+            ApiResult.NetworkError
+        }
     }
 }

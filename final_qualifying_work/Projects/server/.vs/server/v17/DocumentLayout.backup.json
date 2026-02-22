@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\avatarscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\avatarscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\dtos\\createcardto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\dtos\\createcardto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\program\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:program\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,40 +23,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CarsController.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\CarsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\CarsController.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\CarsController.cs",
-              "RelativeToolTip": "Controllers\\CarsController.cs",
-              "ViewState": "AgIAAIcBAAAAAAAAAAAowGoCAABPAAAAAAAAAA==",
+              "Title": "AvatarsController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\AvatarsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AvatarsController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\AvatarsController.cs",
+              "RelativeToolTip": "Controllers\\AvatarsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABBAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:41:45.223Z",
+              "WhenOpened": "2026-02-22T16:03:37.677Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "CreateCarDto.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CreateCarDto.cs",
-              "RelativeDocumentMoniker": "Models\\Dtos\\CreateCarDto.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\CreateCarDto.cs",
-              "RelativeToolTip": "Models\\Dtos\\CreateCarDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
+              "Title": "PersonsController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PersonsController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
+              "RelativeToolTip": "Controllers\\PersonsController.cs",
+              "ViewState": "AgIAAOAAAAAAAAAAAAAswPkAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:41:37.347Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Program\\Program.cs",
-              "RelativeDocumentMoniker": "Program\\Program.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Program\\Program.cs",
-              "RelativeToolTip": "Program\\Program.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAAACoAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T20:17:28.472Z",
+              "WhenOpened": "2026-02-22T15:59:25.543Z",
               "EditorCaption": ""
             }
           ]

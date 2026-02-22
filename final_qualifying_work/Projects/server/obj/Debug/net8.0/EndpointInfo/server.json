@@ -93,6 +93,16 @@
           }
         }
       },
+      "get": {
+        "tags": [
+          "Cars"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "put": {
         "tags": [
           "Cars"
@@ -123,22 +133,30 @@
         }
       }
     },
-    "/api/Cars/person_id/{personId}": {
-      "get": {
+    "/api/Cars/archive": {
+      "put": {
         "tags": [
           "Cars"
         ],
-        "parameters": [
-          {
-            "name": "personId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveCarDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveCarDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveCarDto"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -247,20 +265,22 @@
         }
       }
     },
-    "/api/Persons/email/{email}": {
+    "/api/Persons/email": {
       "get": {
         "tags": [
           "Persons"
         ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+        "responses": {
+          "200": {
+            "description": "OK"
           }
+        }
+      }
+    },
+    "/api/Persons/logout": {
+      "put": {
+        "tags": [
+          "Persons"
         ],
         "responses": {
           "200": {
@@ -391,11 +411,30 @@
         }
       }
     },
-    "/api/RefreshTokens/logout": {
+    "/api/RefreshTokens/check_token": {
       "post": {
         "tags": [
           "RefreshTokens"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckTokenDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckTokenDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckTokenDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -579,6 +618,36 @@
   },
   "components": {
     "schemas": {
+      "ArchiveCarDto": {
+        "required": [
+          "archive",
+          "carId"
+        ],
+        "type": "object",
+        "properties": {
+          "carId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "archive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckTokenDto": {
+        "required": [
+          "refreshToken"
+        ],
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateCarDto": {
         "required": [
           "bodyName",
@@ -591,7 +660,6 @@
           "fuelTypeName",
           "gearboxName",
           "modelName",
-          "personId",
           "releaseYear",
           "tankCapacityL",
           "vehicleWeightKG",
@@ -599,10 +667,6 @@
         ],
         "type": "object",
         "properties": {
-          "personId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "vinNumber": {
             "maxLength": 17,
             "minLength": 17,
@@ -1001,15 +1065,10 @@
           "email",
           "firstName",
           "lastName",
-          "personId",
           "phone"
         ],
         "type": "object",
         "properties": {
-          "personId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "email": {
             "maxLength": 320,
             "minLength": 0,
