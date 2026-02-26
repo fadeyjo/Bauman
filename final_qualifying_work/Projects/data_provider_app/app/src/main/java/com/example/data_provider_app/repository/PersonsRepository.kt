@@ -57,10 +57,10 @@ class PersonsRepository(
     }
 
     suspend fun updatePersonInfo(
-        personId: UInt, email: String,
+        email: String,
         phone: String, lastName: String,
         firstName: String, patronymic: String?,
-        birth: LocalDate, driveLicense: String?,
+        birth: LocalDate, driveLicense: String?
     ): ApiResult<Unit> {
         val updatedPerson = UpdatePersonInfoDto(
             email, phone,

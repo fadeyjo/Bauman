@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using server.Database;
-using System.Security.Claims;
-using server.Models.Entities;
 using server.Models.Dtos;
+using server.Models.Entities;
+using System.Security.Claims;
 
 namespace server.Controllers
 {
@@ -17,10 +18,10 @@ namespace server.Controllers
 
         private readonly StoreService.StoreOptions _storeOptions;
     
-        public AvatarsController(AppDbContext context, StoreService.StoreOptions storeOptions)
+        public AvatarsController(AppDbContext context, IOptions<StoreService.StoreOptions> storeOptions)
         {
-            _context=context;
-            _storeOptions = storeOptions;
+            _context = context;
+            _storeOptions = storeOptions.Value;
         }
 
         private ObjectResult ServerError()
@@ -67,7 +68,8 @@ namespace server.Controllers
 
                 uint newId = GetNewId(userFolder);
 
-                string newFileName = $"avatar_{newId}.png";
+                var extension = Path.GetExtension(file.FileName);
+                string newFileName = $"avatar_{newId}{extension}";
 
                 string filePath = Path.Combine(userFolder, newFileName);
 
@@ -77,7 +79,8 @@ namespace server.Controllers
                 var avatar = new Avatar()
                 {
                     AvatarUrl = $"{personId}/{newFileName}",
-                    PersonId = personId
+                    PersonId = personId,
+                    ContentType = file.ContentType
                 };
 
                 _context.Avatars.Add(avatar);
@@ -88,7 +91,8 @@ namespace server.Controllers
                 {
                     AvatarId = avatar.AvatarId,
                     PersonId = avatar.PersonId,
-                    AvatarUrl = avatar.AvatarUrl
+                    AvatarUrl = avatar.AvatarUrl,
+                    ContentType = file.ContentType
                 });
             }
             catch
@@ -119,9 +123,11 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status404NotFound
                     );
 
+                FileInfo file = new FileInfo(fullPath);
+
                 var bytes = System.IO.File.ReadAllBytes(fullPath);
 
-                return File(bytes, "image/png");
+                return File(bytes, avatar.ContentType);
             }
             catch
             {
@@ -145,18 +151,16 @@ namespace server.Controllers
 
                 string userFolder = Path.Combine(_storeOptions.AvatarsPath, personId.ToString());
 
-                if (!Directory.Exists(userFolder))
-                    return Problem(
-                        title: "Аватар не найден",
-                        statusCode: StatusCodes.Status404NotFound
-                    );
+                FileInfo? file =
+                    !Directory.Exists(userFolder) ?
+                        new FileInfo(Path.Combine(_storeOptions.AvatarsPath, "standart.png")) :
+                        new DirectoryInfo(userFolder)
+                            .GetFiles("avatar_*.png")
+                            .OrderByDescending(f => f.Name)
+                            .FirstOrDefault();
 
-                var file = new DirectoryInfo(userFolder)
-                    .GetFiles("avatar_*.png")
-                    .OrderByDescending(f => f.Name)
-                    .FirstOrDefault();
 
-                if (file == null)
+                if (file is null)
                     return Problem(
                         title: "Аватар не найден",
                         statusCode: StatusCodes.Status404NotFound
@@ -164,7 +168,7 @@ namespace server.Controllers
 
                 var bytes = System.IO.File.ReadAllBytes(file.FullName);
 
-                return File(bytes, "image/png");
+                return File(bytes, GetContentType(file.Extension));
             }
             catch
             {
@@ -205,6 +209,19 @@ namespace server.Controllers
                 newIndex = (uint)lastPhotoId + 1;
 
             return newIndex;
+        }
+
+        private static string GetContentType(string extension)
+        {
+            return extension.ToLower() switch
+            {
+                ".png" => "image/png",
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".webp" => "image/webp",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
         }
     }
 }

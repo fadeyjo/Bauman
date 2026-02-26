@@ -1,4 +1,4 @@
-package com.example.data_provider_app.ui.Main.Fragments
+package com.example.data_provider_app.ui.Main.Fragments.MyTrips
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

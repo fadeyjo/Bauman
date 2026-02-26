@@ -163,6 +163,7 @@ create table avatars (
     avatar_id int unsigned auto_increment primary key,
     avatar_url varchar(255) not null unique,
     person_id mediumint unsigned not null,
+    content_type varchar(50) not null,
 
     foreign key (person_id) references persons (person_id) on delete cascade
 );
@@ -351,3 +352,5 @@ insert into persons
     '9930376835',
     2
 );
+
+insert into avatars (avatar_url, person_id, content_type) value ('standart.png', 1, 'image/png');

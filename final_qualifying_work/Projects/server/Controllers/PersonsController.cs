@@ -24,12 +24,15 @@ namespace server.Controllers
 
         private readonly StoreService.StoreOptions _storeOptions;
 
-        public PersonsController(AppDbContext context, JwtService.JwtService jwtService, IOptions<JwtOptions> options, StoreService.StoreOptions storeOptions)
+        public PersonsController(
+            AppDbContext context, JwtService.JwtService jwtService,
+            IOptions<JwtOptions> options, IOptions<StoreService.StoreOptions> storeOptions
+        )
         {
             _context = context;
             _jwtService = jwtService;
             _jwtOptions = options.Value;
-            _storeOptions=storeOptions;
+            _storeOptions = storeOptions.Value;
         }
 
         private ObjectResult ServerError()

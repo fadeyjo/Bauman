@@ -7,5 +7,7 @@
         public uint PersonId { get; set; }
 
         public string AvatarUrl { get; set; } = null!;
+
+        public string ContentType { get; set; } = null!;
     }
 }

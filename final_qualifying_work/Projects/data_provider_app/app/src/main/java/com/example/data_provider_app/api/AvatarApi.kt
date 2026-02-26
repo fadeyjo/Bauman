@@ -1,18 +1,26 @@
 package com.example.data_provider_app.api
 
 import com.example.data_provider_app.dto.AvatarDto
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface AvatarApi {
+
+    @Multipart
     @POST("avatars")
-    suspend fun newAvatar(): Response<AvatarDto>
+    suspend fun newAvatar(
+        @Part file: MultipartBody.Part
+    ): Response<AvatarDto>
 
     @GET("avatars/avatar_id/{avatarId}")
-    suspend fun getAvatarById(@Path("avatarId") avatarId: UInt)
+    @Streaming
+    suspend fun getAvatarById(
+        @Path("avatarId") avatarId: UInt
+    ): Response<ResponseBody>
 
-    @POST("avatars/last")
-    suspend fun getLastAvatar()
+    @GET("avatars/last")
+    @Streaming
+    suspend fun getLastAvatar(): Response<ResponseBody>
 }

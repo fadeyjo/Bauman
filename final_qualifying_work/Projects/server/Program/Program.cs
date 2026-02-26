@@ -45,7 +45,7 @@ namespace server
 
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
-            builder.Services.Configure<StoreOptions>(builder.Configuration.GetSection("Store"));
+            builder.Services.Configure<StoreService.StoreOptions>(builder.Configuration.GetSection("Store"));
 
             builder.WebHost.ConfigureKestrel(options => {
                 options.ListenAnyIP(5000);

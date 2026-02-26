@@ -98,8 +98,6 @@ class SignUpActivity : AppCompatActivity() {
         btnSignUp.setOnClickListener { signUp() }
 
         etBirth.setOnClickListener {
-            val calendar = Calendar.getInstance()
-
             val today = Calendar.getInstance()
             today.add(Calendar.YEAR, -18)
             today.add(Calendar.DAY_OF_MONTH, -1)

@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\avatarscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\avatarscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\models\\dtos\\updatepersoninfodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:models\\dtos\\updatepersoninfodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\telemetrydatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\telemetrydatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\refreshtokenscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\refreshtokenscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\personscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|c:\\bauman\\final_qualifying_work\\projects\\server\\controllers\\avatarscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A0AF8361-B619-435D-8610-6BF2BC3B9AA6}|server.csproj|solutionrelative:controllers\\avatarscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,28 +35,64 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AvatarsController.cs",
-              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\AvatarsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AvatarsController.cs",
-              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\AvatarsController.cs",
-              "RelativeToolTip": "Controllers\\AvatarsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABBAAAAAAAAAA==",
+              "Title": "UpdatePersonInfoDto.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\UpdatePersonInfoDto.cs",
+              "RelativeDocumentMoniker": "Models\\Dtos\\UpdatePersonInfoDto.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Models\\Dtos\\UpdatePersonInfoDto.cs",
+              "RelativeToolTip": "Models\\Dtos\\UpdatePersonInfoDto.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAgwB8AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-22T16:03:37.677Z",
+              "WhenOpened": "2026-02-26T18:32:35.07Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "TelemetryDataController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TelemetryDataController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TelemetryDataController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\TelemetryDataController.cs",
+              "RelativeToolTip": "Controllers\\TelemetryDataController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T15:31:23.146Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RefreshTokensController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\RefreshTokensController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RefreshTokensController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\RefreshTokensController.cs",
+              "RelativeToolTip": "Controllers\\RefreshTokensController.cs",
+              "ViewState": "AgIAAJAAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T15:31:08.298Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "PersonsController.cs",
               "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
               "RelativeDocumentMoniker": "Controllers\\PersonsController.cs",
               "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\PersonsController.cs",
               "RelativeToolTip": "Controllers\\PersonsController.cs",
-              "ViewState": "AgIAAOAAAAAAAAAAAAAswPkAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAFsBAAAAAAAAAAAkwEEBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-22T15:59:25.543Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-23T15:30:29.069Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AvatarsController.cs",
+              "DocumentMoniker": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\AvatarsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AvatarsController.cs",
+              "ToolTip": "C:\\Bauman\\final_qualifying_work\\Projects\\server\\Controllers\\AvatarsController.cs",
+              "RelativeToolTip": "Controllers\\AvatarsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAK8AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T16:03:37.677Z"
             }
           ]
         }

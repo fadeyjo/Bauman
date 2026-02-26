@@ -15,5 +15,8 @@ namespace server.Models.Entities
 
         [Column("person_id")]
         public uint PersonId { get; set; }
+
+        [Column("content_type")]
+        public string ContentType { get; set; } = null!;
     }
 }
