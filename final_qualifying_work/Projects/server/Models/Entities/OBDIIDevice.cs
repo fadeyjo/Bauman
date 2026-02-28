@@ -10,6 +10,9 @@ namespace server.Models.Entities
         [Column("device_id")]
         public uint DeviceId { get; set; }
 
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+
         [Column("MAC_address")]
         public string MACAddress { get; set; } = null!;
     }

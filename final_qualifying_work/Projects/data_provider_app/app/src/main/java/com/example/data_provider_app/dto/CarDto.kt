@@ -1,7 +1,10 @@
 package com.example.data_provider_app.dto
 
+import java.time.LocalDateTime
+
 data class CarDto(
     val carId: UInt,
+    val createdAt: LocalDateTime,
     val personId: UInt,
     val VINNumber: String,
     val stateNumber: String?,
@@ -13,7 +16,6 @@ data class CarDto(
     val driveName: String,
     val enginePowerHP: UShort,
     val enginePowerKW: Float,
-    val engineTypeName: String,
     val engineCapacityL: Float,
     val tankCapacityL: UByte,
     val fuelTypeName: String,

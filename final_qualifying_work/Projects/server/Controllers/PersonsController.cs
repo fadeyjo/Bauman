@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using server.Database;
-using server.JwtService;
 using server.Models.Dtos;
 using server.Models.Entities;
+using server.Utils.JwtService;
+using server.Utils.StoreService;
 using System;
 using System.Security.Claims;
 
@@ -18,15 +19,15 @@ namespace server.Controllers
     {
         private readonly AppDbContext _context;
 
-        private readonly JwtService.JwtService _jwtService;
+        private readonly JwtService _jwtService;
 
         private readonly JwtOptions _jwtOptions;
 
-        private readonly StoreService.StoreOptions _storeOptions;
+        private readonly StoreOptions _storeOptions;
 
         public PersonsController(
-            AppDbContext context, JwtService.JwtService jwtService,
-            IOptions<JwtOptions> options, IOptions<StoreService.StoreOptions> storeOptions
+            AppDbContext context, JwtService jwtService,
+            IOptions<JwtOptions> options, IOptions<StoreOptions> storeOptions
         )
         {
             _context = context;
@@ -63,13 +64,14 @@ namespace server.Controllers
                             new PersonDto()
                             {
                                 PersonId = p.PersonId,
+                                CreatedAt = p.CreatedAt,
                                 Email = p.Email,
                                 Phone = p.Phone,
                                 LastName = p.LastName,
                                 FirstName = p.FirstName,
                                 Patronymic = p.Patronymic,
                                 Birth = p.Birth,
-                                DriveLisense = p.DriveLisense
+                                DriveLicense = p.DriveLicense
                             }
                         ).
                         FirstOrDefaultAsync();
@@ -130,6 +132,7 @@ namespace server.Controllers
                 person =
                         await _context.Persons
                             .Where(p => p.Email == body.Email)
+                            .Include(p => p.Role)
                             .FirstOrDefaultAsync();
 
                 if (person is null)
@@ -185,13 +188,13 @@ namespace server.Controllers
                     statusCode: StatusCodes.Status400BadRequest
                 );
 
-            if (body.RightLevel is null)
+            if (body.RoleId is null)
                 return Problem(
                    title: "Не передан уровень прав пользователя",
                    statusCode: StatusCodes.Status400BadRequest
                );
 
-            if (body.RightLevel == 0 && string.IsNullOrWhiteSpace(body.DriveLisense))
+            if (body.RoleId == 0 && string.IsNullOrWhiteSpace(body.DriveLicense))
                 return Problem(
                    title: "Не передано ВУ пользователя",
                    statusCode: StatusCodes.Status400BadRequest
@@ -213,9 +216,9 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status409Conflict
                     );
 
-                if (!string.IsNullOrWhiteSpace(body.DriveLisense))
+                if (!string.IsNullOrWhiteSpace(body.DriveLicense))
                 {
-                    exists = await _context.Persons.AnyAsync(p => p.DriveLisense == body.DriveLisense);
+                    exists = await _context.Persons.AnyAsync(p => p.DriveLicense == body.DriveLicense);
                     if (exists)
                         return Problem(
                             title: "Пользователь с данным ВУ уже существует",
@@ -223,7 +226,7 @@ namespace server.Controllers
                         );
                 }
 
-                exists = await _context.AccessRights.AnyAsync(a => a.RightLevel == body.RightLevel);
+                exists = await _context.Roles.AnyAsync(a => a.RoleId == body.RoleId);
                 if (!exists)
                     return Problem(
                         title: "Неизвестный уровень прав пользователя",
@@ -239,8 +242,8 @@ namespace server.Controllers
                     Patronymic = string.IsNullOrWhiteSpace(body.Patronymic) ? null : body.Patronymic,
                     Birth = (DateOnly)body.Birth,
                     HashedPassword = BCrypt.Net.BCrypt.HashPassword(body.Password),
-                    DriveLisense = string.IsNullOrWhiteSpace(body.DriveLisense) ? null : body.DriveLisense,
-                    RightLevel = (byte)body.RightLevel
+                    DriveLicense = string.IsNullOrWhiteSpace(body.DriveLicense) ? null : body.DriveLicense,
+                    RoleId = (byte)body.RoleId
                 };
 
                 _context.Persons.Add(person);
@@ -248,6 +251,7 @@ namespace server.Controllers
 
                 var avatar = new Avatar()
                 {
+                    CreatedAt = DateTime.UtcNow,
                     AvatarUrl = Path.Combine(_storeOptions.AvatarsPath, "standart.png"),
                     PersonId = person.PersonId
                 };
@@ -263,13 +267,14 @@ namespace server.Controllers
                             new PersonDto()
                             {
                                 PersonId = p.PersonId,
+                                CreatedAt = p.CreatedAt,
                                 Email = p.Email,
                                 Phone = p.Phone,
                                 LastName = p.LastName,
                                 FirstName = p.FirstName,
                                 Patronymic = p.Patronymic,
                                 Birth = p.Birth,
-                                DriveLisense = p.DriveLisense
+                                DriveLicense = p.DriveLicense
                             }
                         ).
                         FirstOrDefaultAsync();
@@ -311,7 +316,7 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status404NotFound
                     );
 
-                if (person.RightLevel == 0 && string.IsNullOrWhiteSpace(body.DriveLisense))
+                if (person.RoleId == 1 && string.IsNullOrWhiteSpace(body.DriveLicense))
                     return Problem(
                        title: "Не передано ВУ пользователя",
                        statusCode: StatusCodes.Status400BadRequest
@@ -335,10 +340,10 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status409Conflict
                     );
 
-                if (!string.IsNullOrWhiteSpace(body.DriveLisense))
+                if (!string.IsNullOrWhiteSpace(body.DriveLicense))
                 {
                     exists =
-                        await _context.Persons.AnyAsync(p => p.DriveLisense == body.DriveLisense && p.PersonId != personId);
+                        await _context.Persons.AnyAsync(p => p.DriveLicense == body.DriveLicense && p.PersonId != personId);
 
                     if (exists)
                         return Problem(
@@ -353,7 +358,7 @@ namespace server.Controllers
                 person.FirstName = body.FirstName;
                 person.Patronymic = body.Patronymic;
                 person.Birth = (DateOnly)body.Birth;
-                person.DriveLisense = body.DriveLisense;
+                person.DriveLicense = body.DriveLicense;
 
                 await _context.SaveChangesAsync();
 

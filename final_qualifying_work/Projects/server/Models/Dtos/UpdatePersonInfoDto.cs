@@ -28,6 +28,6 @@ namespace server.Models.Dtos
         public DateOnly? Birth { get; set; }
 
         [StringLength(10, MinimumLength = 10, ErrorMessage = "Длина прав должна быть 10 символов")]
-        public string? DriveLisense { get; set; }
+        public string? DriveLicense { get; set; }
     }
 }

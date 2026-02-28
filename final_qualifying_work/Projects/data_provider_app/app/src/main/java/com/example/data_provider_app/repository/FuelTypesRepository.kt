@@ -8,7 +8,7 @@ import com.example.data_provider_app.util.ApiResult
 class FuelTypesRepository(
     private val api: FuelTypeApi
 ) {
-    suspend fun getAllEngineTypes(): ApiResult<List<FuelTypeDto>> {
+    suspend fun getAllFuelTypes(): ApiResult<List<FuelTypeDto>> {
         return try {
             ApiResponseHandler.handleResponse(api.getAllFuelTypes())
         }

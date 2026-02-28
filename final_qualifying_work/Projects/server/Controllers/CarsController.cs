@@ -48,6 +48,7 @@ namespace server.Controllers
                     .Select(c => new CarDto()
                     {
                         CarId = c.CarId,
+                        CreatedAt = c.CreatedAt,
                         PersonId = c.PersonId,
                         VINNumber = c.VINNumber,
                         StateNumber= c.StateNumber,
@@ -62,7 +63,6 @@ namespace server.Controllers
                         EnginePowerKW = c.CarConfiguration.EngineConfiguration.EnginePowerKW,
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
-                        EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
                         FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
                         IsArchived = c.IsArchived
                     })
@@ -135,11 +135,10 @@ namespace server.Controllers
                 bool exists = await _context.Cars.AnyAsync(c => c.VINNumber == body.VINNumber.ToUpper());
 
                 if (exists)
-                    if (exists)
-                        return Problem(
-                            title: "Автомобиль с данным VIN уже существует",
-                            statusCode: StatusCodes.Status409Conflict
-                        );
+                    return Problem(
+                        title: "Автомобиль с данным VIN уже существует",
+                        statusCode: StatusCodes.Status409Conflict
+                    );
 
                 if (!string.IsNullOrWhiteSpace(body.StateNumber))
                 {
@@ -150,17 +149,6 @@ namespace server.Controllers
                             statusCode: StatusCodes.Status409Conflict
                         );
                 }
-
-                var engineType =
-                    await _context.EngineTypes
-                        .Where(et => et.TypeName == body.EngineTypeName)
-                        .Select (et => new { et.TypeId })
-                        .FirstOrDefaultAsync();
-                if (engineType is null)
-                    return Problem(
-                        title: "Неизвестный тип двигателя",
-                        statusCode: StatusCodes.Status400BadRequest
-                    );
 
                 var fuelType =
                     await _context.FuelTypes
@@ -175,8 +163,8 @@ namespace server.Controllers
 
                 uint? engineConfigurationId = await GetEngineConfigurationId(
                     (ushort)body.EnginePowerHP, (float)body.EnginePowerKW,
-                    engineType.TypeId, (float)body.EngineCapacityL,
-                    (byte)body.TankCapacityL, fuelType.TypeId
+                    (float)body.EngineCapacityL, (byte)body.TankCapacityL,
+                    fuelType.TypeId
                 );
 
                 if (engineConfigurationId is null)
@@ -185,7 +173,6 @@ namespace server.Controllers
                     {
                         EnginePowerHP = (ushort)body.EnginePowerHP,
                         EnginePowerKW = (float)body.EnginePowerKW,
-                        EngineTypeId = engineType.TypeId,
                         EngineCapacityL = (float)body.EngineCapacityL,
                         TankCapacityL = (byte)body.TankCapacityL,
                         FuelTypeId = fuelType.TypeId
@@ -207,7 +194,10 @@ namespace server.Controllers
                         .Select(cb => new { cb.BrandId })
                         .FirstOrDefaultAsync();
                 if (carBrand is null)
-                    return ServerError();
+                    return Problem(
+                            title: "Неизвестный брэнд автомобиля",
+                            statusCode: StatusCodes.Status404NotFound
+                        );
 
                 var carBrandModel =
                     await _context.CarBrandsModels
@@ -217,7 +207,7 @@ namespace server.Controllers
                 if (carBrandModel is null)
                     return Problem(
                         title: "Неизвестная модель автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carBody =
@@ -228,7 +218,7 @@ namespace server.Controllers
                 if (carBody is null)
                     return Problem(
                         title: "Неизвестный кузов автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carGearbox =
@@ -239,7 +229,7 @@ namespace server.Controllers
                 if (carGearbox is null)
                     return Problem(
                         title: "Неизвестный тип КПП автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carDrive =
@@ -250,7 +240,7 @@ namespace server.Controllers
                 if (carDrive is null)
                     return Problem(
                         title: "Неизвестный тип привода автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 uint? carConfigurationId = await GetCarConfigurationId(
@@ -283,9 +273,12 @@ namespace server.Controllers
                 if (carConfigurationId is null)
                     return ServerError();
 
+                var createdAt = DateTime.UtcNow;
+
                 Car newCar = new ()
                 {
                     PersonId = personId,
+                    CreatedAt = createdAt,
                     VINNumber = body.VINNumber.ToUpper(),
                     StateNumber = body.StateNumber?.ToUpper(),
                     CarConfigId = (uint)carConfigurationId,
@@ -301,6 +294,7 @@ namespace server.Controllers
                     .Select(c => new CarDto()
                     {
                         CarId = c.CarId,
+                        CreatedAt = c.CreatedAt,
                         PersonId = c.PersonId,
                         VINNumber = c.VINNumber,
                         StateNumber= c.StateNumber,
@@ -315,17 +309,13 @@ namespace server.Controllers
                         EnginePowerKW = c.CarConfiguration.EngineConfiguration.EnginePowerKW,
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
-                        EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
                         FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
                         IsArchived = c.IsArchived
                     })
                     .FirstOrDefaultAsync();
 
                 if (car is null)
-                    return Problem(
-                        title: "Автомобиль не найден",
-                        statusCode: StatusCodes.Status404NotFound
-                    );
+                    return ServerError();
 
                 return CreatedAtAction(nameof(GetCarByVIN), new { vin = newCar.VINNumber }, car);
             }
@@ -362,6 +352,7 @@ namespace server.Controllers
                     .Select(c => new CarDto()
                     {
                         CarId = c.CarId,
+                        CreatedAt = c.CreatedAt,
                         PersonId = c.PersonId,
                         VINNumber = c.VINNumber,
                         StateNumber= c.StateNumber,
@@ -376,7 +367,6 @@ namespace server.Controllers
                         EnginePowerKW = c.CarConfiguration.EngineConfiguration.EnginePowerKW,
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
-                        EngineTypeName = c.CarConfiguration.EngineConfiguration.EngineType.TypeName,
                         FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
                         IsArchived = c.IsArchived
                     })
@@ -461,17 +451,6 @@ namespace server.Controllers
                     );
                 }
 
-                var engineType =
-                    await _context.EngineTypes
-                        .Where(et => et.TypeName == body.EngineTypeName)
-                        .Select(et => new { et.TypeId })
-                        .FirstOrDefaultAsync();
-                if (engineType is null)
-                    return Problem(
-                        title: "Неизвестный тип двигателя",
-                        statusCode: StatusCodes.Status400BadRequest
-                    );
-
                 var fuelType =
                     await _context.FuelTypes
                         .Where(ft => ft.TypeName == body.FuelTypeName)
@@ -480,13 +459,13 @@ namespace server.Controllers
                 if (fuelType is null)
                     return Problem(
                         title: "Неизвестный тип топлива",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 uint? engineConfigurationId = await GetEngineConfigurationId(
                     (ushort)body.EnginePowerHP, (float)body.EnginePowerKW,
-                    engineType.TypeId, (float)body.EngineCapacityL,
-                    (byte)body.TankCapacityL, fuelType.TypeId
+                    (float)body.EngineCapacityL, (byte)body.TankCapacityL,
+                    fuelType.TypeId
                 );
 
                 if (engineConfigurationId is null)
@@ -495,7 +474,6 @@ namespace server.Controllers
                     {
                         EnginePowerHP = (ushort)body.EnginePowerHP,
                         EnginePowerKW = (float)body.EnginePowerKW,
-                        EngineTypeId = engineType.TypeId,
                         EngineCapacityL = (float)body.EngineCapacityL,
                         TankCapacityL = (byte)body.TankCapacityL,
                         FuelTypeId = fuelType.TypeId
@@ -519,7 +497,7 @@ namespace server.Controllers
                 if (carBrand is null)
                     return Problem(
                         title: "Неизвестный бренд автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carBrandModel =
@@ -530,7 +508,7 @@ namespace server.Controllers
                 if (carBrandModel is null)
                     return Problem(
                         title: "Неизвестная модель автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carBody =
@@ -541,7 +519,7 @@ namespace server.Controllers
                 if (carBody is null)
                     return Problem(
                         title: "Неизвестный тип кузова автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carGearbox =
@@ -552,7 +530,7 @@ namespace server.Controllers
                 if (carGearbox is null)
                     return Problem(
                         title: "Неизвестный тип КПП автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 var carDrive =
@@ -563,7 +541,7 @@ namespace server.Controllers
                 if (carDrive is null)
                     return Problem(
                         title: "Неизвестный тип привода автомобиля",
-                        statusCode: StatusCodes.Status400BadRequest
+                        statusCode: StatusCodes.Status404NotFound
                     );
 
                 uint? carConfigurationId = await GetCarConfigurationId(
@@ -638,8 +616,8 @@ namespace server.Controllers
 
         private async Task<uint?> GetEngineConfigurationId(
             ushort enginePowerHP, float enginePowerKW,
-            byte engineTypeId, float engineCapacityL,
-            byte tankCapacityL, byte fuelTypeId
+            float engineCapacityL, byte tankCapacityL,
+            byte fuelTypeId
         )
         {
             var engineConfiguration =
@@ -647,7 +625,6 @@ namespace server.Controllers
                     .Where(ec =>
                         ec.EnginePowerHP == enginePowerHP &&
                         ec.EnginePowerKW == enginePowerKW &&
-                        ec.EngineTypeId == engineTypeId &&
                         ec.EngineCapacityL == engineCapacityL &&
                         ec.TankCapacityL == tankCapacityL &&
                         ec.FuelTypeId == fuelTypeId

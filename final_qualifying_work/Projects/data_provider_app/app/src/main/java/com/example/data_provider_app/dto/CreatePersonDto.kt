@@ -10,6 +10,6 @@ data class CreatePersonDto(
     val patronymic: String?,
     val birth: LocalDate,
     val password: String,
-    val driveLisense: String?,
-    val rightLevel: UByte
+    val driveLicense: String?,
+    val roleId: UByte
 )

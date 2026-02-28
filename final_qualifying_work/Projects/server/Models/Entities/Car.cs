@@ -12,6 +12,9 @@ namespace server.Models.Entities
         [Column("car_id")]
         public uint CarId { get; set; }
 
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+
         [Column("person_id")]
         public uint PersonId { get; set; }
 

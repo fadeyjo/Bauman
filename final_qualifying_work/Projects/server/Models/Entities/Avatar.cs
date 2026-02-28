@@ -10,6 +10,9 @@ namespace server.Models.Entities
         [Column("avatar_id")]
         public uint AvatarId { get; set; }
 
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+
         [Column("avatar_url")]
         public string AvatarUrl { get; set; } = null!;
 

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using server.Database;
 using server.Models.Dtos;
 using server.Models.Entities;
+using server.Utils.StoreService;
 using System.Security.Claims;
 
 namespace server.Controllers
@@ -16,9 +17,9 @@ namespace server.Controllers
     {
         private readonly AppDbContext _context;
 
-        private readonly StoreService.StoreOptions _storeOptions;
+        private readonly StoreOptions _storeOptions;
     
-        public AvatarsController(AppDbContext context, IOptions<StoreService.StoreOptions> storeOptions)
+        public AvatarsController(AppDbContext context, IOptions<StoreOptions> storeOptions)
         {
             _context = context;
             _storeOptions = storeOptions.Value;
@@ -44,7 +45,7 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status401Unauthorized
                     );
 
-                uint personId = Convert.ToUInt32(personClaims);
+                uint personId = Convert.ToUInt32(((Claim)personClaims).Value);
 
                 bool exists =
                     await _context.Persons.AnyAsync(p => p.PersonId == personId);
@@ -57,7 +58,7 @@ namespace server.Controllers
 
                 if (file is null)
                     return Problem(
-                        title: "Не переадн файл",
+                        title: "Не передан файл",
                         statusCode: StatusCodes.Status400BadRequest
                     );
 
@@ -76,9 +77,12 @@ namespace server.Controllers
                 using (var stream = new FileStream(filePath, FileMode.Create))
                     await file.CopyToAsync(stream);
 
+                var createdAt = DateTime.UtcNow;
+
                 var avatar = new Avatar()
                 {
                     AvatarUrl = $"{personId}/{newFileName}",
+                    CreatedAt = createdAt,
                     PersonId = personId,
                     ContentType = file.ContentType
                 };
@@ -90,6 +94,7 @@ namespace server.Controllers
                 return Ok(new AvatarDto
                 {
                     AvatarId = avatar.AvatarId,
+                    CreatedAt = createdAt,
                     PersonId = avatar.PersonId,
                     AvatarUrl = avatar.AvatarUrl,
                     ContentType = file.ContentType
@@ -151,13 +156,12 @@ namespace server.Controllers
 
                 string userFolder = Path.Combine(_storeOptions.AvatarsPath, personId.ToString());
 
+                string? lastAvatarName = GetLastAvatarName(userFolder);
+
                 FileInfo? file =
-                    !Directory.Exists(userFolder) ?
+                    string.IsNullOrWhiteSpace(lastAvatarName) ?
                         new FileInfo(Path.Combine(_storeOptions.AvatarsPath, "standart.png")) :
-                        new DirectoryInfo(userFolder)
-                            .GetFiles("avatar_*.png")
-                            .OrderByDescending(f => f.Name)
-                            .FirstOrDefault();
+                        new FileInfo(Path.Combine(_storeOptions.AvatarsPath, personId.ToString(), lastAvatarName));
 
 
                 if (file is null)
@@ -191,9 +195,9 @@ namespace server.Controllers
                 {
                     if (string.IsNullOrWhiteSpace(f)) continue;
 
-                    string[] words = f.Split("_");
+                    string[] words = f.Split("_")[1].Split(".");
 
-                    uint index = Convert.ToUInt32(words[1]);
+                    uint index = Convert.ToUInt32(words[0]);
 
                     if (lastPhotoId is null)
                     {
@@ -209,6 +213,38 @@ namespace server.Controllers
                 newIndex = (uint)lastPhotoId + 1;
 
             return newIndex;
+        }
+
+        private static string? GetLastAvatarName(string userFolder)
+        {
+            if (!Directory.Exists(userFolder))
+                return null;
+
+            var filesInDir =
+                    Directory.GetFiles(userFolder)
+                        .Select(Path.GetFileName)
+                        .ToList();
+
+            string? lastPhotoName = null;
+            uint? lastPhotoId = null;
+
+            if (filesInDir is not null)
+                foreach (var f in filesInDir)
+                {
+                    if (string.IsNullOrWhiteSpace(f)) continue;
+
+                    string[] words = f.Split("_")[1].Split(".");
+
+                    uint index = Convert.ToUInt32(words[0]);
+
+                    if (lastPhotoId is not null && index <= lastPhotoId) continue;
+
+                    lastPhotoId = index;
+                    lastPhotoName = f;
+                }
+
+
+            return lastPhotoName;
         }
 
         private static string GetContentType(string extension)

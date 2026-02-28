@@ -9,5 +9,5 @@ data class UpdatePersonInfoDto(
     val firstName: String,
     val patronymic: String?,
     val birth: LocalDate,
-    val driveLisense: String?
+    val driveLicense: String?
 )

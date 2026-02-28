@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace server.JwtService
+namespace server.Utils.JwtService
 {
     public class JwtService
     {
@@ -21,7 +21,8 @@ namespace server.JwtService
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, person.PersonId.ToString()),
-                new Claim(ClaimTypes.Email, person.Email)
+                new Claim(ClaimTypes.Email, person.Email),
+                new Claim(ClaimTypes.Role, person.Role.RoleName)
             };
 
             var key = new SymmetricSecurityKey(

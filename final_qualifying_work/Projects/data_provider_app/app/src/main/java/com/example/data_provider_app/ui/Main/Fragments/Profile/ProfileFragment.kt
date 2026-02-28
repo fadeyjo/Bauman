@@ -10,13 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.data_provider_app.R
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.data_provider_app.dto.PersonDto
 import com.example.data_provider_app.ui.Main.MainViewModel
 import com.example.data_provider_app.ui.Main.UserViewState
 import kotlinx.coroutines.launch
@@ -38,8 +36,6 @@ class ProfileFragment : Fragment() {
     private lateinit var progressBar: View
     private lateinit var formContainer: View
 
-    private var person: PersonDto? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,7 +51,7 @@ class ProfileFragment : Fragment() {
         tvDriveLicense = view.findViewById(R.id.tvDriveLicense)
         btnRedactPersonInfo = view.findViewById(R.id.btnRedactPersonInfo)
 
-        btnRedactPersonInfo.setOnClickListener { redactPersonInfo(person) }
+        btnRedactPersonInfo.setOnClickListener { redactPersonInfo() }
 
         observeViewModel()
 
@@ -84,21 +80,9 @@ class ProfileFragment : Fragment() {
             ?.title = "Профиль"
     }
 
-    private fun redactPersonInfo(person: PersonDto?) {
-        if (person == null) {
-            showShortToast("Пользователь не определён")
-
-            return
-        }
-
-        val fragment = EditProfileFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable("person", person)
-            }
-        }
-
+    private fun redactPersonInfo() {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
+            .replace(R.id.fragmentContainer, EditProfileFragment())
             .addToBackStack(null)
             .commit()
     }
@@ -109,9 +93,6 @@ class ProfileFragment : Fragment() {
                 viewModel.userState.collect { state ->
                     when (state) {
                         is UserViewState.Data -> {
-
-                            person = state.person
-
                             progressBar.visibility = View.GONE
 
                             formContainer.visibility = View.VISIBLE
@@ -131,7 +112,7 @@ class ProfileFragment : Fragment() {
                             tvBirthDate.text = state.person.birth.format(formatter)
 
                             tvDriveLicense.text =
-                                state.person.driveLisense?.let { formatDriveLicense(it) } ?: ""
+                                state.person.driveLicense?.let { formatDriveLicense(it) } ?: ""
                         }
 
                         is UserViewState.Error -> showShortToast(state.message)
@@ -157,7 +138,7 @@ class ProfileFragment : Fragment() {
         return "+$country ($part1) $part2 $part3-$part4"
     }
 
-    fun formatDriveLicense(driveLicense: String): String {
+    private fun formatDriveLicense(driveLicense: String): String {
         val digits = driveLicense.filter { it.isDigit() }
 
         if (digits.length != 10) return driveLicense

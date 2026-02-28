@@ -17,9 +17,6 @@ namespace server.Models.Entities
         [Column("engine_power_kW")]
         public float EnginePowerKW { get; set; }
 
-        [Column("engine_type_id")]
-        public byte EngineTypeId { get; set; }
-
         [Column("engine_capacity_l")]
         public float EngineCapacityL { get; set; }
 
@@ -28,9 +25,6 @@ namespace server.Models.Entities
 
         [Column("fuel_type_id")]
         public byte FuelTypeId { get; set; }
-
-        [ForeignKey(nameof(EngineTypeId))]
-        public EngineType EngineType { get; set; } = null!;
 
         [ForeignKey(nameof(FuelTypeId))]
         public FuelType FuelType { get; set; } = null!;

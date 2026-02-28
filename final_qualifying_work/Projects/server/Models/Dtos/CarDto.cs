@@ -8,6 +8,7 @@ namespace server.Models.Dtos
     public class CarDto
     {
         public uint CarId { get; set; }
+        public DateTime CreatedAt { get; set; }
         public uint PersonId { get; set; }
         public string VINNumber { get; set; } = null!;
         public string? StateNumber { get; set; }
@@ -19,7 +20,6 @@ namespace server.Models.Dtos
         public string DriveName { get; set; } = null!;
         public ushort EnginePowerHP { get; set; }
         public float EnginePowerKW { get; set; }
-        public string EngineTypeName { get; set; } = null!;
         public float EngineCapacityL { get; set; }
         public byte TankCapacityL { get; set; }
         public string FuelTypeName { get; set; } = null!;

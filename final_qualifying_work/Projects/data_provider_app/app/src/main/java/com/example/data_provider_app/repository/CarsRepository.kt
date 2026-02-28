@@ -21,8 +21,8 @@ class CarsRepository(
         releaseYear: UShort, gearboxName: String,
         driveName: String, vehicleWeightKG: UShort,
         enginePowerHP: UShort, enginePowerKW: Float,
-        engineCapacityL: Float, engineTypeName: String,
-        tankCapacityL: UByte, fuelTypeName: String
+        engineCapacityL: Float, tankCapacityL: UByte,
+        fuelTypeName: String
     ): ApiResult<CarDto> {
         val car = CreateCarDto(
             VINNumber,
@@ -31,8 +31,8 @@ class CarsRepository(
             releaseYear, gearboxName,
             driveName, vehicleWeightKG,
             enginePowerHP, enginePowerKW,
-            engineCapacityL, engineTypeName,
-            tankCapacityL, fuelTypeName
+            engineCapacityL, tankCapacityL,
+            fuelTypeName
         )
 
         return try {
@@ -59,7 +59,7 @@ class CarsRepository(
         releaseYear: UShort, gearboxName: String,
         driveName: String, vehicleWeightKG: UShort,
         enginePowerHP: UShort, enginePowerKW: Float,
-        engineCapacityL: Float, engineTypeName: String,
+        engineCapacityL: Float,
         tankCapacityL: UByte, fuelTypeName: String
     ): ApiResult<Unit> {
         val car = UpdateCarInfoDto(
@@ -69,8 +69,8 @@ class CarsRepository(
             releaseYear, gearboxName,
             driveName, vehicleWeightKG,
             enginePowerHP, enginePowerKW,
-            engineCapacityL, engineTypeName,
-            tankCapacityL, fuelTypeName
+            engineCapacityL, tankCapacityL,
+            fuelTypeName
         )
 
         return try {

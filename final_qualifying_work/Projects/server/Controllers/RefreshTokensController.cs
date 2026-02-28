@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using server.Database;
-using server.JwtService;
 using server.Models.Dtos;
 using server.Models.Entities;
+using server.Utils.JwtService;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -17,11 +17,11 @@ namespace server.Controllers
     {
         private readonly AppDbContext _context;
 
-        private readonly JwtService.JwtService _jwtService;
+        private readonly JwtService _jwtService;
 
         private readonly JwtOptions _jwtOptions;
 
-        public RefreshTokensController(AppDbContext context, JwtService.JwtService jwtService, IOptions<JwtOptions> options)
+        public RefreshTokensController(AppDbContext context, JwtService jwtService, IOptions<JwtOptions> options)
         {
             _context = context;
             _jwtService = jwtService;
@@ -42,7 +42,11 @@ namespace server.Controllers
             try
             {
                 var tokens =
-                    await _context.RefreshTokens.Include(rt => rt.Person).Where(rt => !rt.IsRevoked).ToListAsync();
+                    await _context.RefreshTokens
+                        .Where(rt => !rt.IsRevoked)
+                        .Include(rt => rt.Person)
+                        .Include(rt => rt.Person.Role)
+                        .ToListAsync();
 
                 if (tokens is null)
                     return Problem(

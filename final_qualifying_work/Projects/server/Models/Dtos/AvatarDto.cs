@@ -4,6 +4,8 @@
     {
         public uint AvatarId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public uint PersonId { get; set; }
 
         public string AvatarUrl { get; set; } = null!;

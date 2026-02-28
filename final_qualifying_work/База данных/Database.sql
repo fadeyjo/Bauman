@@ -1,24 +1,19 @@
 -- Справочники
 
-create table access_rights
+create table roles
 (
-    right_level tinyint unsigned primary key,
-    right_description text not null,
-
-    check (char_length(right_description) > 0)
+    role_id tinyint unsigned auto_increment primary key,
+    role_name varchar(50) not null unique
 );
 
-insert into access_rights (right_level, right_description) values
-    (0, 'Пользователь'),
-    (1, 'Оператор'),
-    (2, 'Администратор');
+insert into roles (role_name) values
+    ('User'),
+    ('Operator');
 
 create table OBDII_services
 (
     service_id tinyint unsigned primary key,
-    service_description text not null,
-
-    check (char_length(service_description) > 0)
+    service_description varchar(300) not null unique
 );
 
 insert into OBDII_services value (0, 'Неизвестный сервис');
@@ -30,13 +25,11 @@ create table OBDII_PIDs
     OBDII_PID_id mediumint unsigned auto_increment primary key,
     service_id tinyint unsigned not null,
     PID smallint unsigned not null,
-    PID_description text not null,
+    PID_description varchar(300) not null unique,
 
     foreign key (service_id) references OBDII_services (service_id) on delete cascade,
 
-    constraint unique_service_id_PID unique (service_id, PID),
-
-    check (char_length(PID_description) > 0)
+    constraint unique_service_id_PID unique (service_id, PID)
 );
 
 insert into OBDII_PIDs (OBDII_PID_id, service_id, PID, PID_description) value
@@ -52,7 +45,7 @@ insert into OBDII_PIDs (service_id, PID, PID_description) values
     (1, 12, 'Обороты двигателя'), (1, 13, 'Скорость автомобиля'),
     (1, 14, 'Угол опережения зажигания'), (1, 15, 'Температура всасываемого воздуха'),
     (1, 16, 'Массовый расход воздуха'), (1, 17, 'Положение дроссельной заслонки'),
-    (1, 18, 'Запрограммированный режим подачи вторичного воздуха'), (1, 19, 'Наличие датчиков кислорода'),
+    (1, 18, 'Запрограммированный режим подачи вторичного воздуха'), (1, 19, 'Наличие датчиков кислорода (1)'),
     (1, 20, 'Bank 1, Sensor 1: напряжение датчика кислорода, кратковременный запас топлива'),
     (1, 21, 'Bank 1, Sensor 2: напряжение датчика кислорода, кратковременный запас топлива'),
     (1, 22, 'Bank 1, Sensor 3: напряжение датчика кислорода, кратковременный запас топлива'),
@@ -61,15 +54,13 @@ insert into OBDII_PIDs (service_id, PID, PID_description) values
     (1, 25, 'Bank 2, Sensor 2: напряжение датчика кислорода, кратковременный запас топлива'),
     (1, 26, 'Bank 2, Sensor 3: напряжение датчика кислорода, кратковременный запас топлива'),
     (1, 27, 'Bank 2, Sensor 4: напряжение датчика кислорода, кратковременный запас топлива'),
-    (1, 28, 'Соответствие этого автомобиля стандартам OBD'), (1, 29, 'Наличие датчиков кислорода'),
+    (1, 28, 'Соответствие этого автомобиля стандартам OBD'), (1, 29, 'Наличие датчиков кислорода (2)'),
     (1, 30, 'Состояние вспомогательного входного сигнала'), (1, 31, 'Время, прошедшее с запуска двигателя');
 
 create table car_bodies
 (
     body_id tinyint unsigned auto_increment primary key,
-    body_name varchar(30) not null unique,
-
-    check (char_length(body_name) > 0)
+    body_name varchar(30) not null unique
 );
 
 insert into car_bodies (body_name) values
@@ -83,9 +74,7 @@ insert into car_bodies (body_name) values
 create table car_gearboxes
 (
     gearbox_id tinyint unsigned auto_increment primary key,
-    gearbox_name varchar(30) not null unique,
-    
-    check (char_length(gearbox_name) > 0)
+    gearbox_name varchar(30) not null unique
 );
 
 insert into car_gearboxes (gearbox_name) values
@@ -95,9 +84,7 @@ insert into car_gearboxes (gearbox_name) values
 create table fuel_types
 (
     type_id tinyint unsigned auto_increment primary key,
-    type_name varchar(30) not null unique,
-    
-    check (char_length(type_name) > 0)
+    type_name varchar(30) not null unique
 );
 
 insert into fuel_types (type_name) values
@@ -108,72 +95,16 @@ insert into fuel_types (type_name) values
 create table car_drives
 (
     drive_id tinyint unsigned auto_increment primary key,
-    drive_name varchar(30) not null unique,
-    check (char_length(drive_name) > 0)
+    drive_name varchar(30) not null unique
 );
 
 insert into car_drives (drive_name) values
     ('Передний'), ('Задний'), ('Полный');
 
-create table engine_types
-(
-    type_id tinyint unsigned not null auto_increment primary key,
-    type_name varchar(30) not null unique,
-    check (char_length(type_name) > 0)
-);
-
-insert into engine_types (type_name) values
-    ('ДВС (бензиновый)'), ('ДВС (дизельный)');
-
--- Рабочие таблицы
-
-create table OBDII_devices
-(
-    device_id mediumint unsigned auto_increment primary key,
-    MAC_address char(17) not null unique,
-
-    check (lower(MAC_address) regexp '^([0-9a-f]{2}[:]){5}[0-9a-f]{2}$')
-);
-
-create table persons
-(
-    person_id mediumint unsigned auto_increment primary key,
-    email varchar(320) not null unique,
-    phone varchar(12) not null unique,
-    last_name varchar(50) not null,
-    first_name varchar(50) not null,
-    patronymic varchar(50),
-    birth date not null,
-    hashed_password varchar(500) not null,
-    drive_lisense char(10) unique,
-    right_level tinyint unsigned not null default 0,
-
-    foreign key (right_level) references access_rights (right_level) on delete cascade,
-
-    check (email regexp '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'),
-    check (phone regexp '\\+7[0-9]{10}'),
-    check (char_length(last_name) > 1),
-    check (char_length(first_name) > 1),
-    check (patronymic is null or char_length(patronymic) > 1),
-    check (drive_lisense is null or drive_lisense regexp '^[0-9]{10}$'),
-    check (char_length(hashed_password) > 1)
-);
-
-create table avatars (
-    avatar_id int unsigned auto_increment primary key,
-    avatar_url varchar(255) not null unique,
-    person_id mediumint unsigned not null,
-    content_type varchar(50) not null,
-
-    foreign key (person_id) references persons (person_id) on delete cascade
-);
-
 create table car_brands
 (
     brand_id smallint unsigned auto_increment primary key,
-    brand_name varchar(30) not null unique,
-    
-    check (char_length(brand_name) > 0)
+    brand_name varchar(30) not null unique
 );
 
 create table car_brands_models
@@ -184,9 +115,49 @@ create table car_brands_models
 
     foreign key (brand_id) references car_brands (brand_id) on delete cascade,
     
-    check (char_length(model_name) > 0),
-    
     constraint unique_model_name_brand_id unique (model_name, brand_id)
+);
+
+-- Рабочие таблицы
+
+create table OBDII_devices
+(
+    device_id mediumint unsigned auto_increment primary key,
+    MAC_address char(17) not null unique,
+    created_at datetime not null,
+
+    check (lower(MAC_address) regexp '^([0-9a-f]{2}[:]){5}[0-9a-f]{2}$')
+);
+
+create table persons
+(
+    person_id mediumint unsigned auto_increment primary key,
+    created_at datetime not null,
+    email varchar(320) not null unique,
+    phone varchar(12) not null unique,
+    last_name varchar(50) not null,
+    first_name varchar(50) not null,
+    patronymic varchar(50),
+    birth date not null,
+    hashed_password varchar(500) not null,
+    drive_lisense char(10) unique,
+    role_id tinyint unsigned not null,
+
+    foreign key (role_id) references roles (role_id) on delete cascade,
+
+    check (email regexp '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'),
+    check (phone regexp '\\+7[0-9]{10}'),
+    check (drive_lisense is null or drive_lisense regexp '^[0-9]{10}$')
+);
+
+create table avatars (
+    avatar_id int unsigned auto_increment primary key,
+    created_at datetime not null,
+    avatar_url varchar(300) not null unique,
+    person_id mediumint unsigned not null,
+    content_type varchar(50) not null,
+
+    foreign key (person_id) references persons (person_id) on delete cascade
 );
 
 create table engine_configurations
@@ -194,24 +165,16 @@ create table engine_configurations
     engine_config_id mediumint unsigned auto_increment primary key,
     engine_power_hp smallint unsigned not null,
     engine_power_kW decimal(5,1) not null,
-    engine_type_id tinyint unsigned not null,
     engine_capacity_l decimal(3, 1) not null,
     tank_capacity_l tinyint unsigned not null,
     fuel_type_id tinyint unsigned not null,
     
-    foreign key (engine_type_id) references engine_types (type_id) on delete cascade,
     foreign key (fuel_type_id) references fuel_types (type_id) on delete cascade,
-
-    check (engine_power_hp > 0),
-    check (engine_power_kW > 0),
-    check (engine_capacity_l > 0),
-    check (tank_capacity_l > 0),
 
     constraint unique_engine_configurations unique
     (
         engine_power_hp,
         engine_power_kW,
-        engine_type_id,
         engine_capacity_l,
         tank_capacity_l,
         fuel_type_id
@@ -228,8 +191,6 @@ create table car_configurations
     drive_id tinyint unsigned not null,
     engine_conf_id mediumint unsigned not null,
     vehicle_weight_kg smallint unsigned not null,
-
-    check (vehicle_weight_kg > 0),
     
     foreign key (car_brand_model_id) references car_brands_models (car_brand_model_id) on delete cascade,
     foreign key (body_id) references car_bodies (body_id) on delete cascade,
@@ -252,11 +213,11 @@ create table car_configurations
 create table cars
 (
     car_id int unsigned auto_increment primary key,
+    created_at datetime not null,
     person_id mediumint unsigned not null,
     VIN_number char(17) unique not null,
     state_number varchar(6) unique,
     car_config_id mediumint unsigned not null,
-    is_archived boolean not null,
 
     foreign key (person_id) references persons (person_id) on delete cascade,
     foreign key (car_config_id) references car_configurations (car_config_id) on delete cascade,
@@ -275,7 +236,7 @@ create table trips
     foreign key (device_id) references OBDII_devices (device_id) on delete cascade,
     foreign key (car_id) references cars (car_id) on delete cascade,
 
-    check (end_datetime is null or end_datetime >= start_datetime)
+    check (end_datetime is null or end_datetime > start_datetime)
 );
 
 create table telemetry_data
@@ -332,6 +293,7 @@ insert into car_brands_models (brand_id, model_name) values
 
 insert into persons
 (
+    created_at,
     email,
     phone,
     last_name,
@@ -340,8 +302,9 @@ insert into persons
     birth,
     hashed_password,
     drive_lisense,
-    right_level
+    role_id
 ) value (
+    '2026-02-28 13:46:22',
     'komrad.gubi2017@yandex.ru',
     '+79229060764',
     'Губин',
@@ -353,4 +316,6 @@ insert into persons
     2
 );
 
-insert into avatars (avatar_url, person_id, content_type) value ('standart.png', 1, 'image/png');
+insert into avatars
+    (avatar_url, person_id, content_type, created_at) value
+    ('standart.png', 1, 'image/png', '2026-02-28 13:46:22');

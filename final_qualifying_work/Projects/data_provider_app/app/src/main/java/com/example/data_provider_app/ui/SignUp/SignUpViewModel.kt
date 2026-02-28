@@ -31,7 +31,7 @@ class SignUpViewModel : ViewModel() {
                     lastName, firstName,
                     patronymic, birth,
                     password, driveLicense,
-                    0u
+                    1u
                 )
 
             _state.value = when(result) {

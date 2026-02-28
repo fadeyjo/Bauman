@@ -5,7 +5,6 @@ import com.example.data_provider_app.api.CarApi
 import com.example.data_provider_app.api.CarBodyApi
 import com.example.data_provider_app.api.CarDriveApi
 import com.example.data_provider_app.api.CarGearboxApi
-import com.example.data_provider_app.api.EngineTypeApi
 import com.example.data_provider_app.api.FuelTypeApi
 import com.example.data_provider_app.api.GPSDataApi
 import com.example.data_provider_app.api.PersonApi
@@ -17,7 +16,6 @@ import com.example.data_provider_app.repository.CarBodiesRepository
 import com.example.data_provider_app.repository.CarDrivesRepository
 import com.example.data_provider_app.repository.CarGearboxesRepository
 import com.example.data_provider_app.repository.CarsRepository
-import com.example.data_provider_app.repository.EngineTypesRepository
 import com.example.data_provider_app.repository.FuelTypesRepository
 import com.example.data_provider_app.repository.GPSDataRepository
 import com.example.data_provider_app.repository.PersonsRepository
@@ -97,10 +95,6 @@ object RetrofitClient {
 
     val carsRepository by lazy {
         CarsRepository(retrofit.create(CarApi::class.java))
-    }
-
-    val engineTypesRepository by lazy {
-        EngineTypesRepository(retrofit.create(EngineTypeApi::class.java))
     }
 
     val fuelTypesRepository by lazy {

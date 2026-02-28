@@ -7,13 +7,12 @@ namespace server.Database
     {
         public AppDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<AccessRight> AccessRights => Set<AccessRight>();
+        public DbSet<Role> Roles => Set<Role>();
         public DbSet<Person> Persons => Set<Person>();
         public DbSet<CarBody> CarBodies => Set<CarBody>();
         public DbSet<CarGearbox> CarGearboxes => Set<CarGearbox>();
         public DbSet<FuelType> FuelTypes => Set<FuelType>();
         public DbSet<CarDrive> CarDrives => Set<CarDrive>();
-        public DbSet<EngineType> EngineTypes => Set<EngineType>();
         public DbSet<EngineConfiguration> EngineConfigurations => Set<EngineConfiguration>();
         public DbSet<CarBrand> CarBrands => Set<CarBrand>();
         public DbSet<CarBrandModel> CarBrandsModels => Set<CarBrandModel>();
@@ -32,9 +31,11 @@ namespace server.Database
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<AccessRight>(entity =>
+            modelBuilder.Entity<Role>(entity =>
             {
-                entity.HasKey(a => a.RightLevel);
+                entity.HasKey(a => a.RoleId);
+
+                entity.HasIndex(r => r.RoleName).IsUnique();
             });
 
             modelBuilder.Entity<Person>(entity =>
@@ -47,9 +48,9 @@ namespace server.Database
 
                 entity.HasIndex(p => p.Phone).IsUnique();
 
-                entity.HasIndex(p => p.DriveLisense).IsUnique();
+                entity.HasIndex(p => p.DriveLicense).IsUnique();
 
-                entity.HasOne(p => p.AccessRight).WithMany().HasForeignKey(p => p.RightLevel).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(p => p.Role).WithMany().HasForeignKey(p => p.RoleId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<CarBody>(entity =>
@@ -80,25 +81,15 @@ namespace server.Database
                 entity.HasIndex(cd => cd.DriveName).IsUnique();
             });
 
-            modelBuilder.Entity<EngineType>(entity =>
-            {
-                entity.HasKey(et => et.TypeId);
-
-                entity.HasIndex(et => et.TypeName).IsUnique();
-            });
-
             modelBuilder.Entity<EngineConfiguration>(entity =>
             {
                 entity.HasKey(ec => ec.EngineConfigId);
-
-                entity.HasOne(ec => ec.EngineType).WithMany().HasForeignKey(ec => ec.EngineTypeId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(ec => ec.FuelType).WithMany().HasForeignKey(ec => ec.FuelTypeId).OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(ec => new {
                     ec.EnginePowerHP,
                     ec.EnginePowerKW,
-                    ec.EngineTypeId,
                     ec.EngineCapacityL,
                     ec.TankCapacityL,
                     ec.FuelTypeId
@@ -164,6 +155,8 @@ namespace server.Database
                 entity.HasKey(p => p.OBDIIPIDId);
 
                 entity.HasOne(p => p.OBDIIService).WithMany().HasForeignKey(p => p.ServiceId).OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(p => p.PIDDescription).IsUnique();
 
                 entity.HasIndex(p => new
                 {

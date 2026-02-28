@@ -1,4 +1,4 @@
-﻿namespace server.JwtService
+﻿namespace server.Utils.JwtService
 {
     public class JwtOptions
     {

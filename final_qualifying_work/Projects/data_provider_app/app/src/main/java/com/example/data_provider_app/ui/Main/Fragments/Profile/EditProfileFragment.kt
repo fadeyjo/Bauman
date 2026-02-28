@@ -3,7 +3,7 @@ package com.example.data_provider_app.ui.Main.Fragments.Profile
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.util.Patterns
 import androidx.fragment.app.Fragment
@@ -12,8 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
-import androidx.annotation.RequiresApi
+import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
@@ -21,11 +21,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.data_provider_app.R
-import com.example.data_provider_app.dto.PersonDto
 import com.example.data_provider_app.ui.Main.MainViewModel
-import com.example.data_provider_app.ui.Main.UpdateUserInfoState
+import com.example.data_provider_app.ui.Main.UpdateProfileInfoState
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.getValue
@@ -50,16 +50,17 @@ class EditProfileFragment : Fragment() {
     private lateinit var tilDriveLicense: TextInputLayout
     private lateinit var btnUpdateInfo: Button
 
-    private lateinit var person: PersonDto
+    private lateinit var ivAvatar: ImageView
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        person = requireArguments().getParcelable(
-            "person",
-            PersonDto::class.java
-        )!!
-    }
+    private var selectedAvatarFile: File? = null
+    private var selectedMimeType: String? = null
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                handleSelectedImage(it)
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,6 +93,7 @@ class EditProfileFragment : Fragment() {
         etDriveLicense = view.findViewById(R.id.etDriveLicense)
         tilDriveLicense = view.findViewById(R.id.tilDriveLicense)
         btnUpdateInfo = view.findViewById(R.id.btnUpdateInfo)
+        ivAvatar = view.findViewById(R.id.ivAvatar)
 
         btnUpdateInfo.setOnClickListener { updateUser() }
 
@@ -116,6 +118,10 @@ class EditProfileFragment : Fragment() {
             datePicker.show()
         }
 
+        ivAvatar.setOnClickListener {
+            openGallery()
+        }
+
         observerViewModel()
 
         initForm()
@@ -123,68 +129,103 @@ class EditProfileFragment : Fragment() {
         return view
     }
 
-    private fun initForm() {
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-        val formattedDate = person.birth.format(formatter)
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
+    }
 
-        etEmail.setText(person.email)
-        etPhone.setText(person.phone)
-        etLastName.setText(person.lastName)
-        etFirstName.setText(person.firstName)
-        person.patronymic.let { etPatronymic.setText(person.patronymic) }
+    private fun handleSelectedImage(uri: Uri) {
+
+        val contentResolver = requireContext().contentResolver
+        val mimeType = contentResolver.getType(uri) ?: "image/*"
+
+        selectedMimeType = mimeType
+
+        val extension = android.webkit.MimeTypeMap
+            .getSingleton()
+            .getExtensionFromMimeType(mimeType) ?: "png"
+
+        val file = File(requireContext().cacheDir, "avatar.$extension")
+
+        contentResolver.openInputStream(uri)?.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        selectedAvatarFile = file
+
+        ivAvatar.setImageURI(uri)
+    }
+
+    private fun initForm() {
+        if (viewModel.person == null)
+            return
+
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val formattedDate = viewModel.person!!.birth.format(formatter)
+
+        etEmail.setText(viewModel.person!!.email)
+        etPhone.setText(viewModel.person!!.phone)
+        etLastName.setText(viewModel.person!!.lastName)
+        etFirstName.setText(viewModel.person!!.firstName)
+        viewModel.person!!.patronymic?.let { etPatronymic.setText(viewModel.person!!.patronymic) }
         etBirth.setText(formattedDate)
-        etDriveLicense.setText(person.driveLisense)
+        etDriveLicense.setText(viewModel.person!!.driveLicense)
+
+        ivAvatar.setImageBitmap(viewModel.personBitmap)
     }
 
     private fun observerViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.updatePersonState.collect { state ->
+                launch {
+                    viewModel.updateProfileInfoState.collect { state ->
 
-                    when (state) {
+                        when (state) {
 
-                        is UpdateUserInfoState.Loading -> {
-                            btnUpdateInfo.isEnabled = false
-                        }
+                            is UpdateProfileInfoState.Loading -> {
+                                btnUpdateInfo.isEnabled = false
+                            }
 
-                        is UpdateUserInfoState.Updated -> {
-                            viewModel.getUserInfo()
+                            is UpdateProfileInfoState.Updated -> {
+                                viewModel.getUserInfo()
 
-                            viewModel.resetUpdateUserState()
+                                viewModel.resetUpdateProfileInfoState()
 
-                            parentFragmentManager.popBackStack()
-                        }
+                                parentFragmentManager.popBackStack()
+                            }
 
-                        is UpdateUserInfoState.Error -> {
-                            btnUpdateInfo.isEnabled = true
-                            showErrorDialog(state.message)
-                        }
+                            is UpdateProfileInfoState.Error -> {
+                                btnUpdateInfo.isEnabled = true
+                                showErrorDialog(state.message)
+                            }
 
-                        is UpdateUserInfoState.NetworkError -> {
-                            btnUpdateInfo.isEnabled = true
-                            showErrorDialog("Нет подключения к интернету")
-                        }
+                            is UpdateProfileInfoState.NetworkError -> {
+                                btnUpdateInfo.isEnabled = true
+                                showErrorDialog("Нет подключения к интернету")
+                            }
 
-                        is UpdateUserInfoState.ValidationError -> {
-                            btnUpdateInfo.isEnabled = true
-
-                            state.map.forEach { (field, errorMessage) ->
-                                when (field) {
-                                    "Email" -> tilEmail.error = errorMessage
-                                    "Phone" -> tilPhone.error = errorMessage
-                                    "LastName" -> tilLastName.error = errorMessage
-                                    "FirstName" -> tilFirstName.error = errorMessage
-                                    "Patronymic" -> tilPatronymic.error = errorMessage
-                                    "Birth" -> tilBirth.error = errorMessage
-                                    "DriveLisense" -> tilDriveLicense.error = errorMessage
+                            is UpdateProfileInfoState.ValidationError -> {
+                                btnUpdateInfo.isEnabled = true
+                                state.map.forEach { (field, errorMessage) ->
+                                    when (field) {
+                                        "Email" -> tilEmail.error = errorMessage
+                                        "Phone" -> tilPhone.error = errorMessage
+                                        "LastName" -> tilLastName.error = errorMessage
+                                        "FirstName" -> tilFirstName.error = errorMessage
+                                        "Patronymic" -> tilPatronymic.error = errorMessage
+                                        "Birth" -> tilBirth.error = errorMessage
+                                        "DriveLicense" -> tilDriveLicense.error = errorMessage
+                                    }
                                 }
                             }
-                        }
 
-                        UpdateUserInfoState.Idle -> {}
-                        UpdateUserInfoState.UnknownError -> {
-                            btnUpdateInfo.isEnabled = true
-                            showErrorDialog("Неизвестная ошибка")
+                            UpdateProfileInfoState.UnknownError -> {
+                                btnUpdateInfo.isEnabled = true
+                                showErrorDialog("Неизвестная ошибка")
+                            }
+
+                            UpdateProfileInfoState.Idle -> {}
                         }
                     }
                 }
@@ -203,7 +244,7 @@ class EditProfileFragment : Fragment() {
     private fun updateUser() {
         btnUpdateInfo.isEnabled = false
 
-        viewModel.resetUpdateUserState()
+        viewModel.resetUpdateProfileInfoState()
 
         val email = etEmail.text.toString()
         val phone = etPhone.text.toString()
@@ -341,11 +382,11 @@ class EditProfileFragment : Fragment() {
         val birthDate = LocalDate.parse(birth, formatter)
 
         if (isValid) {
-            viewModel.updatePersonInfo(
+            viewModel.updateProfileInfo(
                 email, phone,
                 lastName, firstName,
                 patronymic.ifBlank { null }, birthDate,
-                driveLicense
+                driveLicense, selectedAvatarFile, selectedMimeType ?: "image/*"
             )
         }
         else {

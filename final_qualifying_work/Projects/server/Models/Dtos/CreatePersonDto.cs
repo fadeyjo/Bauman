@@ -35,9 +35,9 @@ namespace server.Models.Dtos
         public string Password { get; set; } = null!;
 
         [StringLength(10, MinimumLength = 10, ErrorMessage = "ВУ должно состоять из 10 цифр")]
-        public string? DriveLisense { get; set; }
+        public string? DriveLicense { get; set; }
 
-        [Required(ErrorMessage = "Уровень прав доступа обязателен")]
-        public byte? RightLevel { get; set; }
+        [Required(ErrorMessage = "Роль обязательна")]
+        public byte? RoleId { get; set; }
     }
 }

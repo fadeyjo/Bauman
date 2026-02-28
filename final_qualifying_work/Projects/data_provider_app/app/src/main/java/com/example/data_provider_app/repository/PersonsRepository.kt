@@ -37,15 +37,15 @@ class PersonsRepository(
         email: String, phone: String,
         lastName: String, firstName: String,
         patronymic: String?, birth: LocalDate,
-        password: String, driveLisense: String?,
-        rightLevel: UByte
+        password: String, driveLicense: String?,
+        roleId: UByte
     ): ApiResult<PersonDto> {
         val person = CreatePersonDto(
             email, phone,
             lastName, firstName,
             patronymic, birth,
-            password, driveLisense,
-            rightLevel
+            password, driveLicense,
+            roleId
         )
 
         return try {

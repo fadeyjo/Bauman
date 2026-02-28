@@ -1,4 +1,4 @@
-﻿namespace server.StoreService
+﻿namespace server.Utils.StoreService
 {
     public class StoreOptions
     {

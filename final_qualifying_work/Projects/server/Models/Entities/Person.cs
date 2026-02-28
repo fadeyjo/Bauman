@@ -11,6 +11,9 @@ namespace server.Models.Entities
         [Column("person_id")]
         public uint PersonId { get; set; }
 
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; }
+
         [Column("email")]
         public string Email { get; set; } = null!;
 
@@ -33,12 +36,12 @@ namespace server.Models.Entities
         public string HashedPassword { get; set; } = null!;
 
         [Column("drive_lisense")]
-        public string? DriveLisense { get; set; }
+        public string? DriveLicense { get; set; }
 
-        [Column("right_level")]
-        public byte RightLevel { get; set; }
+        [Column("role_id")]
+        public byte RoleId { get; set; }
 
-        [ForeignKey(nameof(RightLevel))]
-        public AccessRight AccessRight { get; set; } = null!;
+        [ForeignKey(nameof(RoleId))]
+        public Role Role { get; set; } = null!;
     }
 }

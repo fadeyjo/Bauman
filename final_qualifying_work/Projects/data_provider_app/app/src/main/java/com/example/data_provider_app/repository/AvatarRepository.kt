@@ -17,18 +17,16 @@ class AvatarRepository(
     private val api: AvatarApi
 ) {
 
-    suspend fun newAvatar(file: File): ApiResult<AvatarDto> {
+    suspend fun newAvatar(file: File, mimeType: String): ApiResult<AvatarDto> {
         return try {
-            val requestFile =
-                file
-                    .asRequestBody("image/png".toMediaTypeOrNull())
 
-            val body =
-                MultipartBody.Part.createFormData(
-                    "file",
-                    file.name,
-                    requestFile
-                )
+            val requestFile = file.asRequestBody(mimeType.toMediaTypeOrNull())
+
+            val body = MultipartBody.Part.createFormData(
+                "file",
+                file.name,
+                requestFile
+            )
 
             ApiResponseHandler.handleResponse(api.newAvatar(body))
         }

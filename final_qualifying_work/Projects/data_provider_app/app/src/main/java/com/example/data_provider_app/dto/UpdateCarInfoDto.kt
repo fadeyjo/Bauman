@@ -14,7 +14,6 @@ data class UpdateCarInfoDto(
     val enginePowerHP: UShort,
     val enginePowerKW: Float,
     val engineCapacityL: Float,
-    val engineTypeName: String,
     val tankCapacityL: UByte,
     val fuelTypeName: String
 )

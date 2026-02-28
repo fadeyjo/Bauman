@@ -171,16 +171,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "server.Controllers.EngineTypesController",
-    "Method": "GetAllEngineTypes",
-    "RelativePath": "api/EngineTypes",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "server.Controllers.FuelTypesController",
     "Method": "GetAllFuelTypes",
     "RelativePath": "api/FuelTypes",

@@ -48,10 +48,6 @@ namespace server.Models.Dtos
         [Required(ErrorMessage = "Объём двигателя обязателен")]
         public float? EngineCapacityL { get; set; }
 
-        [Required(ErrorMessage = "Тип двигателя обязателен")]
-        [StringLength(30, ErrorMessage = "Длина типа двигателя должна быть не больше 30 символов")]
-        public string EngineTypeName { get; set; } = null!;
-
         [Required(ErrorMessage = "Объём бака обязателен")]
         public byte? TankCapacityL { get; set; }
 
