@@ -13,13 +13,13 @@ namespace server.Controllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    public class AvatarsController: ControllerBase
+    public class CarPhotosController: ControllerBase
     {
         private readonly AppDbContext _context;
 
         private readonly StoreOptions _storeOptions;
-    
-        public AvatarsController(AppDbContext context, IOptions<StoreOptions> storeOptions)
+
+        public CarPhotosController(AppDbContext context, IOptions<StoreOptions> storeOptions)
         {
             _context = context;
             _storeOptions = storeOptions.Value;
@@ -33,26 +33,16 @@ namespace server.Controllers
             );
         }
 
-        [HttpPost]
-        public async Task<IActionResult> NewAvatar([FromForm] IFormFile file)
+        [HttpPost("car_id/{carId}")]
+        public async Task<IActionResult> NewCarPhoto([FromForm] IFormFile file, [FromRoute] uint carId)
         {
             try
             {
-                object? personClaims = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (personClaims is null)
-                    return Problem(
-                        title: "Пользователь не авторизован",
-                        statusCode: StatusCodes.Status401Unauthorized
-                    );
-
-                uint personId = Convert.ToUInt32(((Claim)personClaims).Value);
-
-                bool exists =
-                    await _context.Persons.AnyAsync(p => p.PersonId == personId);
+                bool exists = await _context.Cars.AnyAsync(c => c.CarId == carId);
 
                 if (!exists)
                     return Problem(
-                        title: "Пользователь не найден",
+                        title: "Автомобиль не найден",
                         statusCode: StatusCodes.Status404NotFound
                     );
 
@@ -62,45 +52,45 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status400BadRequest
                     );
 
-                string userFolder = Path.Combine(_storeOptions.AvatarsPath, personId.ToString());
+                string carFolder = Path.Combine(_storeOptions.CarPhotosPath, carId.ToString());
 
-                if (!Directory.Exists(userFolder))
-                    Directory.CreateDirectory(userFolder);
+                if (!Directory.Exists(carFolder))
+                    Directory.CreateDirectory(carFolder);
 
-                uint newId = GetNewId(userFolder);
+                uint newId = GetNewId(carFolder);
 
                 var extension = Path.GetExtension(file.FileName);
-                string newFileName = $"avatar_{newId}{extension}";
+                string newFileName = $"photo_{newId}{extension}";
 
-                string filePath = Path.Combine(userFolder, newFileName);
+                string filePath = Path.Combine(carFolder, newFileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                     await file.CopyToAsync(stream);
 
                 var createdAt = DateTime.UtcNow;
 
-                var avatar = new Avatar()
+                var carPhoto = new CarPhoto()
                 {
-                    AvatarUrl = $"{personId}/{newFileName}",
+                    PhotoUrl = $"{carId}/{newFileName}",
                     CreatedAt = createdAt,
-                    PersonId = personId,
+                    CarId = carId,
                     ContentType = file.ContentType
                 };
 
-                _context.Avatars.Add(avatar);
+                _context.CarPhotos.Add(carPhoto);
 
                 await _context.SaveChangesAsync();
 
-                var avatarResponse = new AvatarDto
+                var carPhotoResposne = new CarPhotoDto()
                 {
-                    AvatarId = avatar.AvatarId,
+                    PhotoId = carPhoto.PhotoId,
                     CreatedAt = createdAt,
-                    PersonId = avatar.PersonId,
-                    AvatarUrl = avatar.AvatarUrl,
+                    CarId = carId,
+                    PhotoUrl = carPhoto.PhotoUrl,
                     ContentType = file.ContentType
                 };
 
-                return CreatedAtAction(nameof(GetAvatarById), new { avatarId = avatar.AvatarId }, avatarResponse);
+                return CreatedAtAction(nameof(GetPhotoById), new { photoId = carPhoto.PhotoId }, carPhotoResposne);
             }
             catch
             {
@@ -108,25 +98,25 @@ namespace server.Controllers
             }
         }
 
-        [HttpGet("avatar_id/{avatarId}")]
-        public async Task<IActionResult> GetAvatarById([FromRoute] uint avatarId)
+        [HttpGet("photo_id/{photoId}")]
+        public async Task<IActionResult> GetPhotoById([FromRoute] uint photoId)
         {
             try
             {
-                var avatar =
-                    await _context.Avatars.FirstOrDefaultAsync(a => a.AvatarId == avatarId);
+                var photo =
+                    await _context.CarPhotos.FirstOrDefaultAsync(a => a.PhotoId == photoId);
 
-                if (avatar is null)
+                if (photo is null)
                     return Problem(
-                        title: "Аватар не найден",
+                        title: "Фото не найдено",
                         statusCode: StatusCodes.Status404NotFound
                     );
 
-                string fullPath = Path.Combine(_storeOptions.AvatarsPath, avatar.AvatarUrl);
+                string fullPath = Path.Combine(_storeOptions.CarPhotosPath, photo.PhotoUrl);
 
                 if (!System.IO.File.Exists(fullPath))
                     return Problem(
-                        title: "Аватар не найден",
+                        title: "Фото не найдено",
                         statusCode: StatusCodes.Status404NotFound
                     );
 
@@ -134,7 +124,7 @@ namespace server.Controllers
 
                 var bytes = System.IO.File.ReadAllBytes(fullPath);
 
-                return File(bytes, avatar.ContentType);
+                return File(bytes, photo.ContentType);
             }
             catch
             {
@@ -142,30 +132,29 @@ namespace server.Controllers
             }
         }
 
-        [HttpGet("last")]
-        public IActionResult GetLastAvatar()
+        [HttpGet("last/{carId}")]
+        public async Task<IActionResult> GetLastPhoto(uint carId)
         {
             try
             {
-                var personClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                if (personClaim is null)
-                    return Problem(
-                        title: "Пользователь не авторизован",
-                        statusCode: StatusCodes.Status401Unauthorized
-                    );
+                bool exists = await _context.Cars.AnyAsync(c => c.CarId == carId);
+                if (!exists)
+                    return NotFound();
 
-                uint personId = Convert.ToUInt32(personClaim.Value);
-
-                string userFolder = Path.Combine(_storeOptions.AvatarsPath, personId.ToString());
-
-                string? lastAvatarName = GetLastAvatarName(userFolder);
+                string carFolder = Path.Combine(_storeOptions.CarPhotosPath, carId.ToString());
+                string? lastPhotoName = GetLastPhotoName(carFolder);
 
                 FileInfo file =
-                    string.IsNullOrWhiteSpace(lastAvatarName) ?
-                        new FileInfo(Path.Combine(_storeOptions.AvatarsPath, "standart.png")) :
-                        new FileInfo(Path.Combine(_storeOptions.AvatarsPath, personId.ToString(), lastAvatarName));
+                    string.IsNullOrWhiteSpace(lastPhotoName)
+                        ? new FileInfo(Path.Combine(_storeOptions.CarPhotosPath, "standart.png"))
+                        : new FileInfo(Path.Combine(carFolder, lastPhotoName));
 
-                var bytes = System.IO.File.ReadAllBytes(file.FullName);
+                if (!file.Exists)
+                    return NotFound();
+
+                var bytes = await System.IO.File.ReadAllBytesAsync(file.FullName);
+
+                Response.Headers["Cache-Control"] = "public,max-age=86400";
 
                 return File(bytes, GetContentType(file.Extension));
             }
@@ -175,10 +164,10 @@ namespace server.Controllers
             }
         }
 
-        private static uint GetNewId(string userFolder)
+        private static uint GetNewId(string carFolder)
         {
             var filesInDir =
-                    Directory.GetFiles(userFolder)
+                    Directory.GetFiles(carFolder)
                         .Select(Path.GetFileName)
                         .ToList();
 
@@ -194,14 +183,9 @@ namespace server.Controllers
 
                     uint index = Convert.ToUInt32(words[0]);
 
-                    if (lastPhotoId is null)
-                    {
-                        lastPhotoId = index;
-                        continue;
-                    }
+                    if (lastPhotoId is not null && index <= lastPhotoId) continue;
 
-                    if (index > lastPhotoId)
-                        lastPhotoId = index;
+                    lastPhotoId = index;
                 }
 
             if (lastPhotoId is not null)
@@ -210,7 +194,7 @@ namespace server.Controllers
             return newIndex;
         }
 
-        private static string? GetLastAvatarName(string userFolder)
+        private static string? GetLastPhotoName(string userFolder)
         {
             if (!Directory.Exists(userFolder))
                 return null;

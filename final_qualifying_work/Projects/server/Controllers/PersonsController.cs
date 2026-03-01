@@ -75,19 +75,34 @@ namespace server.Controllers
                             }
                         ).
                         FirstOrDefaultAsync();
+
+                if (person is null)
+                    return Problem(
+                        title: "Пользователь не найден",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                uint? avatarId =
+                    await _context.Avatars
+                        .Where(p => p.PersonId == person.PersonId)
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => p.AvatarId)
+                        .FirstOrDefaultAsync();
+
+                if (avatarId is null)
+                    return Problem(
+                        title: "Аватар не найден",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                person.AvatarId = (uint)avatarId;
+
+                return Ok(person);
             }
             catch
             {
                 return ServerError();
             }
-
-            if (person is null)
-                return Problem(
-                    title: "Пользователь не найден",
-                    statusCode: StatusCodes.Status404NotFound
-                );
-
-            return Ok(person);
         }
 
         [HttpPut("logout")]
@@ -233,8 +248,11 @@ namespace server.Controllers
                         statusCode: StatusCodes.Status400BadRequest
                     );
 
+                DateTime createdAt = DateTime.UtcNow;
+
                 var person = new Person
                 {
+                    CreatedAt = createdAt,
                     Email = body.Email,
                     Phone = body.Phone,
                     LastName = body.LastName,
@@ -251,7 +269,7 @@ namespace server.Controllers
 
                 var avatar = new Avatar()
                 {
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = createdAt,
                     AvatarUrl = Path.Combine(_storeOptions.AvatarsPath, "standart.png"),
                     PersonId = person.PersonId
                 };
@@ -278,6 +296,24 @@ namespace server.Controllers
                             }
                         ).
                         FirstOrDefaultAsync();
+
+                if (personRes is null)
+                    return ServerError();
+
+                uint? avatarId =
+                    await _context.Avatars
+                        .Where(p => p.PersonId == person.PersonId)
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Select(p => p.AvatarId)
+                        .FirstOrDefaultAsync();
+
+                if (avatarId is null)
+                    return Problem(
+                        title: "Аватар не найден",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                personRes.AvatarId = (uint)avatarId;
 
                 return CreatedAtAction(nameof(GetPersonByEmail), new { email = person.Email }, personRes);
             }

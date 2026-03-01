@@ -26,6 +26,7 @@ namespace server.Database
         public DbSet<GPSData> GPSData => Set<GPSData>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<Avatar> Avatars => Set<Avatar>();
+        public DbSet<CarPhoto> CarPhotos => Set<CarPhoto>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -211,6 +212,17 @@ namespace server.Database
                 entity.HasKey(a => a.AvatarId);
 
                 entity.HasIndex(a => a.AvatarUrl).IsUnique();
+
+                entity.HasOne(a => a.Person).WithMany().HasForeignKey(p => p.PersonId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<CarPhoto>(entity =>
+            {
+                entity.HasKey(a => a.PhotoId);
+
+                entity.HasIndex(a => a.PhotoUrl).IsUnique();
+
+                entity.HasOne(a => a.Car).WithMany().HasForeignKey(c => c.CarId).OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

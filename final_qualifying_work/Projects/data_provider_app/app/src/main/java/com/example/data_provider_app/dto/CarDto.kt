@@ -19,5 +19,6 @@ data class CarDto(
     val engineCapacityL: Float,
     val tankCapacityL: UByte,
     val fuelTypeName: String,
-    val vehicleWeightKG: UShort
+    val vehicleWeightKG: UShort,
+    val photoId: UInt
 )

@@ -15,6 +15,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.data_provider_app.BuildConfig
+import com.example.data_provider_app.glide.GlideApp
 import com.example.data_provider_app.ui.Main.MainViewModel
 import com.example.data_provider_app.ui.Main.UserViewState
 import kotlinx.coroutines.launch
@@ -104,7 +106,16 @@ class ProfileFragment : Fragment() {
                                     "${state.person.lastName} ${state.person.firstName} ${state.person.patronymic}"
 
                             tvFullName.text = fullName
-                            ivProfileAvatar.setImageBitmap(state.bitmap)
+
+                            val imageUrl = BuildConfig.BASE_URL + "api/avatars/avatar_id/${state.person.avatarId}"
+
+                            GlideApp.with(ivProfileAvatar)
+                                .load(imageUrl)
+                                .placeholder(R.drawable.loading)
+                                .error(R.drawable.no_image)
+                                .circleCrop()
+                                .into(ivProfileAvatar)
+
                             tvEmail.text = state.person.email
                             tvPhone.text = formatPhone(state.person.phone)
 

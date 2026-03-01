@@ -1,10 +1,12 @@
 package com.example.data_provider_app.retrofit_client
 
+import com.example.data_provider_app.BuildConfig
 import com.example.data_provider_app.api.AvatarApi
 import com.example.data_provider_app.api.CarApi
 import com.example.data_provider_app.api.CarBodyApi
 import com.example.data_provider_app.api.CarDriveApi
 import com.example.data_provider_app.api.CarGearboxApi
+import com.example.data_provider_app.api.CarPhotoApi
 import com.example.data_provider_app.api.FuelTypeApi
 import com.example.data_provider_app.api.GPSDataApi
 import com.example.data_provider_app.api.PersonApi
@@ -15,6 +17,7 @@ import com.example.data_provider_app.repository.AvatarRepository
 import com.example.data_provider_app.repository.CarBodiesRepository
 import com.example.data_provider_app.repository.CarDrivesRepository
 import com.example.data_provider_app.repository.CarGearboxesRepository
+import com.example.data_provider_app.repository.CarPhotosRepository
 import com.example.data_provider_app.repository.CarsRepository
 import com.example.data_provider_app.repository.FuelTypesRepository
 import com.example.data_provider_app.repository.GPSDataRepository
@@ -49,7 +52,7 @@ object RetrofitClient {
         }
     }
 
-    private const val BASE_URL: String = "https://192.168.3.2:5001/api/"
+    private const val BASE_URL: String = BuildConfig.BASE_URL + "api/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -68,7 +71,7 @@ object RetrofitClient {
     private val refreshApi = refreshRetrofit.create(RefreshTokenApi::class.java)
 
 
-    private val client = OkHttpClient.Builder()
+    val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .addInterceptor(AuthInterceptor())
         .authenticator(TokenAuthenticator(refreshApi))
@@ -123,5 +126,9 @@ object RetrofitClient {
 
     val avatarRepository by lazy {
         AvatarRepository(retrofit.create(AvatarApi::class.java))
+    }
+
+    val carPhotosRepository by lazy {
+        CarPhotosRepository(retrofit.create(CarPhotoApi::class.java))
     }
 }

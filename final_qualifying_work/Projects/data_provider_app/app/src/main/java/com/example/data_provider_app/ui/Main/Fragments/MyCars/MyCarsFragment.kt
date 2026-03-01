@@ -5,56 +5,91 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.data_provider_app.BuildConfig
 import com.example.data_provider_app.R
+import com.example.data_provider_app.glide.GlideApp
+import com.example.data_provider_app.ui.Main.MainViewModel
+import com.example.data_provider_app.ui.Main.MyCarsState
+import com.example.data_provider_app.ui.Main.UserViewState
+import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
+import kotlin.getValue
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MyCarsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MyCarsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val viewModel: MainViewModel by activityViewModels()
+
+    private lateinit var adapter: CarAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var tvEmpty: TextView
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         return inflater.inflate(R.layout.fragment_my_cars, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyCarsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyCarsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recyclerView = view.findViewById(R.id.recyclerViewCars)
+        tvEmpty = view.findViewById(R.id.tvEmptyCars)
+
+        setupRecyclerView()
+        observeCars()
+
+        viewModel.getMyCars()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = CarAdapter(emptyList())
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+    }
+
+    private fun showShortToast(message: String) {
+        Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun observeCars() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.myCarsState.collect { state ->
+                    when (state) {
+                        is MyCarsState.Data -> {
+                            if (state.cars.isEmpty()) {
+                                recyclerView.visibility = View.GONE
+                                tvEmpty.visibility = View.VISIBLE
+                            } else {
+                                recyclerView.visibility = View.VISIBLE
+                                tvEmpty.visibility = View.GONE
+                                adapter.updateData(state.cars)
+                            }
+                        }
+                        is MyCarsState.Error -> showShortToast(state.message)
+                        is MyCarsState.Idle -> {}
+                        is MyCarsState.Loading -> {}
+                        is MyCarsState.NetworkError -> showShortToast("Нет подключения к интернету")
+                        is MyCarsState.UnknownError -> showShortToast("Неизвестная ошибка")
+                        is MyCarsState.ValidationError -> showShortToast("Ошибка валидации данных")
+                    }
                 }
             }
+        }
     }
 }

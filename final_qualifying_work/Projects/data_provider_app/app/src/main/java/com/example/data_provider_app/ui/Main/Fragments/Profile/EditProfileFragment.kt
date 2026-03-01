@@ -20,7 +20,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.data_provider_app.BuildConfig
 import com.example.data_provider_app.R
+import com.example.data_provider_app.glide.GlideApp
 import com.example.data_provider_app.ui.Main.MainViewModel
 import com.example.data_provider_app.ui.Main.UpdateProfileInfoState
 import com.google.android.material.textfield.TextInputLayout
@@ -172,7 +174,14 @@ class EditProfileFragment : Fragment() {
         etBirth.setText(formattedDate)
         etDriveLicense.setText(viewModel.person!!.driveLicense)
 
-        ivAvatar.setImageBitmap(viewModel.personBitmap)
+        val imageUrl = BuildConfig.BASE_URL + "api/avatars/avatar_id/${viewModel.person!!.avatarId}"
+
+        GlideApp.with(ivAvatar)
+            .load(imageUrl)
+            .placeholder(R.drawable.loading)
+            .error(R.drawable.no_image)
+            .circleCrop()
+            .into(ivAvatar)
     }
 
     private fun observerViewModel() {

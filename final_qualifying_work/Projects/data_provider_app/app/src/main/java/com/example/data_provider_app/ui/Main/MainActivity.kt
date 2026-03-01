@@ -16,8 +16,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.data_provider_app.BuildConfig
 import com.example.data_provider_app.R
 import com.example.data_provider_app.dto.PersonDto
+import com.example.data_provider_app.glide.GlideApp
 import com.example.data_provider_app.jwt.TokenStorage
 import com.example.data_provider_app.ui.Main.Fragments.MyCars.MyCarsFragment
 import com.example.data_provider_app.ui.Main.Fragments.MyTrips.MyTripsFragment
@@ -124,7 +126,15 @@ class MainActivity : AppCompatActivity() {
                                 "${state.person.lastName} ${state.person.firstName}"
                             else
                                 "${state.person.lastName} ${state.person.firstName} ${state.person.patronymic}"
-                        ivAvatar.setImageBitmap(state.bitmap)
+
+                        val imageUrl = BuildConfig.BASE_URL + "api/avatars/avatar_id/${state.person.avatarId}"
+
+                        GlideApp.with(ivAvatar)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.loading)
+                            .error(R.drawable.no_image)
+                            .circleCrop()
+                            .into(ivAvatar)
                     }
                     is UserViewState.Error -> showErrorDialog(state.message)
                     is UserViewState.Idle -> {}

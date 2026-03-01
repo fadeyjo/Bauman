@@ -15,5 +15,6 @@ data class PersonDto(
     val firstName: String,
     val patronymic: String?,
     val birth: LocalDate,
-    val driveLicense: String?
+    val driveLicense: String?,
+    val avatarId: UInt
 ) : Parcelable

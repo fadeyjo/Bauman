@@ -21,5 +21,8 @@ namespace server.Models.Entities
 
         [Column("content_type")]
         public string ContentType { get; set; } = null!;
+
+        [ForeignKey(nameof(PersonId))]
+        public Person Person { get; set; } = null!;
     }
 }

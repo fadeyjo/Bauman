@@ -225,6 +225,16 @@ create table cars
     check (state_number is null or lower(state_number) regexp '^[авекмнорстух][0-9]{3}[авекмнорстух]{2}[0-9]{2,3}$')
 );
 
+create table car_photos (
+    photo_id int unsigned auto_increment primary key,
+    created_at datetime not null,
+    photo_url varchar(300) not null unique,
+    car_id int unsigned not null,
+    content_type varchar(50) not null,
+
+    foreign key (car_id) references cars (car_id) on delete cascade
+);
+
 create table trips
 (
     trip_id bigint unsigned auto_increment primary key,

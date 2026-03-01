@@ -1,14 +1,10 @@
 package com.example.data_provider_app.ui.Main
 
-import android.graphics.Bitmap
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data_provider_app.dto.AvatarDto
+import com.example.data_provider_app.dto.CarDto
 import com.example.data_provider_app.dto.PersonDto
-import com.example.data_provider_app.dto.UpdatePersonInfoDto
 import com.example.data_provider_app.retrofit_client.RetrofitClient
-import com.example.data_provider_app.ui.SignUp.SignUpState
 import com.example.data_provider_app.util.ApiResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,29 +22,14 @@ class MainViewModel : ViewModel() {
     private val _updateProfileInfoState = MutableStateFlow<UpdateProfileInfoState>(UpdateProfileInfoState.Idle)
     val updateProfileInfoState: StateFlow<UpdateProfileInfoState> = _updateProfileInfoState
 
+    private val _myCarsState = MutableStateFlow<MyCarsState>(MyCarsState.Idle)
+    val myCarsState: StateFlow<MyCarsState> = _myCarsState
+
     var person: PersonDto? = null
-    var personBitmap: Bitmap? = null
 
     fun getUserInfo() {
         viewModelScope.launch {
             _userState.value = UserViewState.Loading
-
-            val avatar =
-                RetrofitClient
-                    .avatarRepository
-                    .getLastAvatar()
-
-            var bitmap: Bitmap? = null
-
-            when (avatar) {
-                is ApiResult.Error -> _userState.value = UserViewState.Error(avatar.error)
-                is ApiResult.NetworkError -> _userState.value = UserViewState.NetworkError
-                is ApiResult.Success -> bitmap = avatar.data
-                is ApiResult.UnknownError -> _userState.value = UserViewState.UnknownError
-                is ApiResult.ValidationError -> _userState.value = UserViewState.ValidationError
-            }
-
-            if (bitmap == null) return@launch
 
             val userData =
                 RetrofitClient
@@ -60,11 +41,9 @@ class MainViewModel : ViewModel() {
                 is ApiResult.NetworkError -> UserViewState.NetworkError
                 is ApiResult.Success -> {
                     person = userData.data
-                    personBitmap = bitmap
 
                     UserViewState.Data(
-                        userData.data!!,
-                        bitmap
+                        userData.data!!
                     )
                 }
                 is ApiResult.UnknownError -> UserViewState.UnknownError
@@ -144,12 +123,23 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun resetUserState() {
-        _userState.value = UserViewState.Idle
-    }
+    fun getMyCars() {
+        viewModelScope.launch {
+            _myCarsState.value = MyCarsState.Loading
 
-    fun resetLogoutState() {
-        _logoutState.value = LogoutViewState.Idle
+            val result = RetrofitClient.carsRepository.getCarsByPersonId()
+
+            _myCarsState.value = when (result) {
+                is ApiResult.Error -> MyCarsState.Error(result.error)
+                is ApiResult.NetworkError -> MyCarsState.NetworkError
+                is ApiResult.Success -> MyCarsState.Data(result.data ?: emptyList())
+                is ApiResult.UnknownError -> MyCarsState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    MyCarsState.ValidationError(mapErrors)
+                }
+            }
+        }
     }
 
     fun resetUpdateProfileInfoState() {
@@ -161,8 +151,7 @@ sealed class UserViewState {
     object Loading : UserViewState()
     object Idle : UserViewState()
     data class Data(
-        val person: PersonDto,
-        val bitmap: Bitmap
+        val person: PersonDto
     ) : UserViewState()
     data class Error(val message: String) : UserViewState()
     object NetworkError : UserViewState()
@@ -188,4 +177,14 @@ sealed class UpdateProfileInfoState {
     object NetworkError : UpdateProfileInfoState()
     object UnknownError : UpdateProfileInfoState()
     data class ValidationError(val map: Map<String, String>) : UpdateProfileInfoState()
+}
+
+sealed class MyCarsState {
+    object Loading : MyCarsState()
+    object Idle : MyCarsState()
+    data class Data(val cars: List<CarDto>): MyCarsState()
+    data class Error(val message: String) : MyCarsState()
+    object NetworkError : MyCarsState()
+    object UnknownError : MyCarsState()
+    data class ValidationError(val map: Map<String, String>) : MyCarsState()
 }

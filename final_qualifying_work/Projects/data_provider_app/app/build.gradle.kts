@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -16,6 +17,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"https://192.168.3.2:5001/\""
+        )
     }
 
     buildTypes {
@@ -34,6 +41,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -48,6 +59,9 @@ dependencies {
     implementation(libs.androidx.drawerlayout)
     implementation(libs.material)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
+    implementation(libs.glide.okhttp)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -14,5 +14,6 @@ namespace server.Models.Dtos
         public string? Patronymic { get; set; }
         public DateOnly Birth { get; set; }
         public string? DriveLicense { get; set; }
+        public uint AvatarId { get; set; }
     }
 }

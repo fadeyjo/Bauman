@@ -8,6 +8,7 @@ using server.Models;
 using server.Models.Dtos;
 using server.Models.Entities;
 using System;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 
 namespace server.Controllers
@@ -64,7 +65,6 @@ namespace server.Controllers
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
                         FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
-                        IsArchived = c.IsArchived
                     })
                     .FirstOrDefaultAsync();
 
@@ -73,6 +73,21 @@ namespace server.Controllers
                         title: "Автомобиль не найден",
                         statusCode: StatusCodes.Status404NotFound
                     );
+
+                uint? photoId =
+                    await _context.CarPhotos
+                        .Where(c => c.CarId == car.CarId)
+                        .OrderByDescending(c => c.CreatedAt)
+                        .Select(c => c.PhotoId)
+                        .FirstOrDefaultAsync();
+
+                if (photoId is null)
+                    return Problem(
+                        title: "Фото автомобиля не найдено",
+                        statusCode: StatusCodes.Status404NotFound
+                    );
+
+                car.PhotoId = (uint)photoId;
 
                 return Ok(car);
             }
@@ -289,6 +304,18 @@ namespace server.Controllers
 
                 await _context.SaveChangesAsync();
 
+                var carPhoto = new CarPhoto()
+                {
+                    CreatedAt = createdAt,
+                    PhotoUrl = "standart.png",
+                    CarId = newCar.CarId,
+                    ContentType = "image/png"
+                };
+
+                _context.CarPhotos.Add(carPhoto);
+
+                await _context.SaveChangesAsync();
+
                 var car = await _context.Cars
                     .Where(c => c.VINNumber == body.VINNumber.ToUpper())
                     .Select(c => new CarDto()
@@ -310,12 +337,23 @@ namespace server.Controllers
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
                         FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
-                        IsArchived = c.IsArchived
                     })
                     .FirstOrDefaultAsync();
 
                 if (car is null)
                     return ServerError();
+
+                uint? photoId =
+                    await _context.CarPhotos
+                        .Where(c => c.CarId == car.CarId)
+                        .OrderByDescending(c => c.CreatedAt)
+                        .Select(c => c.PhotoId)
+                        .FirstOrDefaultAsync();
+
+                if (photoId is null)
+                    return ServerError();
+
+                car.PhotoId = (uint)photoId;
 
                 return CreatedAtAction(nameof(GetCarByVIN), new { vin = newCar.VINNumber }, car);
             }
@@ -367,14 +405,31 @@ namespace server.Controllers
                         EnginePowerKW = c.CarConfiguration.EngineConfiguration.EnginePowerKW,
                         EngineCapacityL= c.CarConfiguration.EngineConfiguration.EngineCapacityL,
                         TankCapacityL= c.CarConfiguration.EngineConfiguration.TankCapacityL,
-                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName,
-                        IsArchived = c.IsArchived
+                        FuelTypeName = c.CarConfiguration.EngineConfiguration.FuelType.TypeName
                     })
                     .ToListAsync();
 
+                for (int i = 0; i < cars.Count; i++)
+                {
+                    uint? photoId =
+                        await _context.CarPhotos
+                            .Where(c => c.CarId == cars[i].CarId)
+                            .OrderByDescending(c => c.CreatedAt)
+                            .Select(c => c.PhotoId)
+                            .FirstOrDefaultAsync();
+
+                    if (photoId is null)
+                        return Problem(
+                            title: "Фото автомобиля не найдено",
+                            statusCode: StatusCodes.Status404NotFound
+                        );
+
+                    cars[i].PhotoId = (uint)photoId;
+                }
+
                 return Ok(cars);
             }
-            catch
+            catch (Exception ex)
             {
                 return ServerError();
             }
