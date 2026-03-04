@@ -13,7 +13,7 @@ import retrofit2.http.Path
 
 interface CarApi {
     @GET("cars/vin/{vin}")
-    suspend fun getCarByVINNumber(@Path("vin") VINNumber: String): Response<List<CarDto>>
+    suspend fun getCarByVINNumber(@Path("vin") vinNumber: String): Response<CarDto>
 
     @POST("cars")
     suspend fun addCar(@Body car: CreateCarDto): Response<CarDto>
@@ -23,7 +23,4 @@ interface CarApi {
 
     @PUT("cars")
     suspend fun updateCarInfo(@Body updatedCarData: UpdateCarInfoDto): Response<Unit>
-
-    @PUT("cars/archive")
-    suspend fun ArchiveCar(@Body archiveCar: ArchiveCarDto)
 }

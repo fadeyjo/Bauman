@@ -6,6 +6,6 @@ data class TripDto(
     val tripId: ULong,
     val startDatetime: LocalDateTime,
     val MACAddress: String,
-    val VINNumber: String,
+    val vinNumber: String,
     val endDatetime: LocalDateTime?
 )

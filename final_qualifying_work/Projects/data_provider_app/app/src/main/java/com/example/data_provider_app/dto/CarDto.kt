@@ -6,7 +6,7 @@ data class CarDto(
     val carId: UInt,
     val createdAt: LocalDateTime,
     val personId: UInt,
-    val VINNumber: String,
+    val vinNumber: String,
     val stateNumber: String?,
     val modelName: String,
     val brandName: String,

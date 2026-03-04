@@ -2,7 +2,7 @@ package com.example.data_provider_app.dto
 
 data class UpdateCarInfoDto(
     val carId: UInt,
-    val VINNumber: String,
+    val vinNumber: String,
     val stateNumber: String?,
     val brandName: String,
     val modelName: String,

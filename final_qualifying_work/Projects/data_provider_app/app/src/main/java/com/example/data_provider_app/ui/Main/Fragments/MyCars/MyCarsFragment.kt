@@ -3,24 +3,25 @@ package com.example.data_provider_app.ui.Main.Fragments.MyCars
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.data_provider_app.BuildConfig
 import com.example.data_provider_app.R
-import com.example.data_provider_app.glide.GlideApp
 import com.example.data_provider_app.ui.Main.MainViewModel
 import com.example.data_provider_app.ui.Main.MyCarsState
-import com.example.data_provider_app.ui.Main.UserViewState
 import kotlinx.coroutines.launch
-import java.time.format.DateTimeFormatter
 import kotlin.getValue
 
 class MyCarsFragment : Fragment() {
@@ -42,20 +43,59 @@ class MyCarsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as AppCompatActivity)
+            .supportActionBar
+            ?.title = "Мои автомобили"
+
         recyclerView = view.findViewById(R.id.recyclerViewCars)
         tvEmpty = view.findViewById(R.id.tvEmptyCars)
 
         setupRecyclerView()
+
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_my_cars, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_add_car -> {
+                        openAddCarFragment()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         observeCars()
 
         viewModel.getMyCars()
     }
 
+    private fun openAddCarFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, AddCarFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun setupRecyclerView() {
-        adapter = CarAdapter(emptyList())
+        adapter = CarAdapter(emptyList()) { car ->
+            openCarDetailFragment(car.vinNumber)
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+    }
+
+    private fun openCarDetailFragment(VIN: String) {
+        val fragment = CarDetailFragment.newInstance(VIN)
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showShortToast(message: String) {

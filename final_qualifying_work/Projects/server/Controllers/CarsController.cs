@@ -296,8 +296,7 @@ namespace server.Controllers
                     CreatedAt = createdAt,
                     VINNumber = body.VINNumber.ToUpper(),
                     StateNumber = body.StateNumber?.ToUpper(),
-                    CarConfigId = (uint)carConfigurationId,
-                    IsArchived = false
+                    CarConfigId = (uint)carConfigurationId
                 };
 
                 _context.Cars.Add(newCar);
@@ -632,32 +631,6 @@ namespace server.Controllers
                 car.VINNumber = body.VINNumber.ToUpper();
                 car.StateNumber = body.StateNumber?.ToUpper();
                 car.CarConfigId = (uint)carConfigurationId;
-
-                await _context.SaveChangesAsync();
-
-                return NoContent();
-            }
-            catch
-            {
-                return ServerError();
-            }
-        }
-
-        [HttpPut("archive")]
-        public async Task<IActionResult> ArchiveCar([FromBody] ArchiveCarDto body)
-        {
-            try
-            {
-                var car =
-                    await _context.Cars.FirstOrDefaultAsync(c => c.CarId == body.CarId);
-
-                if (car is null)
-                    return Problem(
-                        title: "Автомобиль не найден",
-                        statusCode: StatusCodes.Status404NotFound
-                    );
-
-                car.IsArchived = body.Archive;
 
                 await _context.SaveChangesAsync();
 

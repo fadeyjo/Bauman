@@ -14,7 +14,8 @@ import com.example.data_provider_app.R
 import com.example.data_provider_app.glide.GlideApp
 
 class CarAdapter(
-    private var cars: List<CarDto>
+    private var cars: List<CarDto>,
+    private val onItemClick: (CarDto) -> Unit
 ) : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
     inner class CarViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivPhoto: ImageView = view.findViewById(R.id.ivCarPhoto)
@@ -35,7 +36,7 @@ class CarAdapter(
         val car = cars[position]
 
         holder.tvBrandModel.text = "${car.brandName} ${car.modelName}"
-        holder.tvPlate.text = "Гос номер: ${car.stateNumber}"
+        holder.tvPlate.text = "Гос номер: ${car.stateNumber ?: "-"}"
         holder.tvEngineVolume.text = "Объём: ${car.engineCapacityL} л"
         holder.tvHorsePower.text = "Мощность: ${car.enginePowerHP} л.с."
 
@@ -46,6 +47,10 @@ class CarAdapter(
             .placeholder(R.drawable.loading)
             .error(R.drawable.no_image)
             .into(holder.ivPhoto)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(car)
+        }
     }
 
     override fun getItemCount() = cars.size

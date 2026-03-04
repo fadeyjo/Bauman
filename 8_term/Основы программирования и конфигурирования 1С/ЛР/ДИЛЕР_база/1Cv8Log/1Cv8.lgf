@@ -54,4 +54,7 @@ c30cfc48-6a67-44fb-abb8-9073c3e1c418
 {13,1,2},
 {1,1c5e59d0-62c6-49d2-883b-8d2aebc18042,"Закупщиков З.З.",3},
 {13,1,3},
-{4,"_$Access$_.AccessDenied",24}
+{4,"_$Access$_.AccessDenied",24},
+{4,"_$Data$_.Delete",25},
+{3,"1CV8",5},
+{4,"_$Transaction$_.Rollback",26}

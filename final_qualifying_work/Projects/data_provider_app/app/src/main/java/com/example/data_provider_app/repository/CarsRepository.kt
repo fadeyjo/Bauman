@@ -10,12 +10,12 @@ import com.example.data_provider_app.util.ApiResult
 class CarsRepository(
     private val api: CarApi
 ) {
-    suspend fun getCarByVINNumber(VINNumber: String): ApiResult<List<CarDto>> {
-        return ApiResponseHandler.handleResponse(api.getCarByVINNumber(VINNumber))
+    suspend fun getCarByVINNumber(vinNumber: String): ApiResult<CarDto> {
+        return ApiResponseHandler.handleResponse(api.getCarByVINNumber(vinNumber))
     }
 
     suspend fun addCar(
-        VINNumber: String,
+        vinNumber: String,
         stateNumber: String?, brandName: String,
         modelName: String, bodyName: String,
         releaseYear: UShort, gearboxName: String,
@@ -25,7 +25,7 @@ class CarsRepository(
         fuelTypeName: String
     ): ApiResult<CarDto> {
         val car = CreateCarDto(
-            VINNumber,
+            vinNumber,
             stateNumber, brandName,
             modelName, bodyName,
             releaseYear, gearboxName,
@@ -53,7 +53,7 @@ class CarsRepository(
     }
 
     suspend fun updateCarInfo(
-        carId: UInt, VINNumber: String,
+        carId: UInt, vinNumber: String,
         stateNumber: String?, brandName: String,
         modelName: String, bodyName: String,
         releaseYear: UShort, gearboxName: String,
@@ -63,7 +63,7 @@ class CarsRepository(
         tankCapacityL: UByte, fuelTypeName: String
     ): ApiResult<Unit> {
         val car = UpdateCarInfoDto(
-            carId, VINNumber,
+            carId, vinNumber,
             stateNumber, brandName,
             modelName, bodyName,
             releaseYear, gearboxName,

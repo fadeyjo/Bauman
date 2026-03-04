@@ -2,8 +2,10 @@ package com.example.data_provider_app.retrofit_client
 
 import com.example.data_provider_app.BuildConfig
 import com.example.data_provider_app.api.AvatarApi
+import com.example.data_provider_app.api.CarBrandApi
 import com.example.data_provider_app.api.CarApi
 import com.example.data_provider_app.api.CarBodyApi
+import com.example.data_provider_app.api.CarBrandModelApi
 import com.example.data_provider_app.api.CarDriveApi
 import com.example.data_provider_app.api.CarGearboxApi
 import com.example.data_provider_app.api.CarPhotoApi
@@ -14,7 +16,9 @@ import com.example.data_provider_app.api.RefreshTokenApi
 import com.example.data_provider_app.api.TelemetryDataApi
 import com.example.data_provider_app.api.TripApi
 import com.example.data_provider_app.repository.AvatarRepository
+import com.example.data_provider_app.repository.CarBrandsRepository
 import com.example.data_provider_app.repository.CarBodiesRepository
+import com.example.data_provider_app.repository.CarBrandsModelsRepository
 import com.example.data_provider_app.repository.CarDrivesRepository
 import com.example.data_provider_app.repository.CarGearboxesRepository
 import com.example.data_provider_app.repository.CarPhotosRepository
@@ -130,5 +134,13 @@ object RetrofitClient {
 
     val carPhotosRepository by lazy {
         CarPhotosRepository(retrofit.create(CarPhotoApi::class.java))
+    }
+
+    val carBrandsRepository by lazy {
+        CarBrandsRepository(retrofit.create(CarBrandApi::class.java))
+    }
+
+    val carBrandsModelsRepository by lazy {
+        CarBrandsModelsRepository(retrofit.create(CarBrandModelApi::class.java))
     }
 }

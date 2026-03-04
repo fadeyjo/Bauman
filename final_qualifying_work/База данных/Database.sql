@@ -153,11 +153,12 @@ create table persons
 create table avatars (
     avatar_id int unsigned auto_increment primary key,
     created_at datetime not null,
-    avatar_url varchar(300) not null unique,
+    avatar_url varchar(300) not null,
     person_id mediumint unsigned not null,
     content_type varchar(50) not null,
 
-    foreign key (person_id) references persons (person_id) on delete cascade
+    foreign key (person_id) references persons (person_id) on delete cascade,
+    constraint unique_avatar_url_person_id unique (avatar_url , person_id)
 );
 
 create table engine_configurations
@@ -216,7 +217,7 @@ create table cars
     created_at datetime not null,
     person_id mediumint unsigned not null,
     VIN_number char(17) unique not null,
-    state_number varchar(6) unique,
+    state_number varchar(9) unique,
     car_config_id mediumint unsigned not null,
 
     foreign key (person_id) references persons (person_id) on delete cascade,
@@ -228,11 +229,12 @@ create table cars
 create table car_photos (
     photo_id int unsigned auto_increment primary key,
     created_at datetime not null,
-    photo_url varchar(300) not null unique,
+    photo_url varchar(300) not null,
     car_id int unsigned not null,
     content_type varchar(50) not null,
 
-    foreign key (car_id) references cars (car_id) on delete cascade
+    foreign key (car_id) references cars (car_id) on delete cascade,
+    constraint unique_photo_url_car_id unique (photo_url , car_id)
 );
 
 create table trips

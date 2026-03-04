@@ -1,7 +1,7 @@
 package com.example.data_provider_app.dto
 
 data class CreateCarDto(
-    val VINNumber: String,
+    val vinNumber: String,
     val stateNumber: String?,
     val brandName: String,
     val modelName: String,

@@ -25,6 +25,30 @@ class MainViewModel : ViewModel() {
     private val _myCarsState = MutableStateFlow<MyCarsState>(MyCarsState.Idle)
     val myCarsState: StateFlow<MyCarsState> = _myCarsState
 
+    private val _fuelTypesState = MutableStateFlow<DirectoryState>(DirectoryState.Idle)
+    val fuelTypesState: StateFlow<DirectoryState> = _fuelTypesState
+
+    private val _brandsState = MutableStateFlow<DirectoryState>(DirectoryState.Idle)
+    val brandsState: StateFlow<DirectoryState> = _brandsState
+
+    private val _modelsState = MutableStateFlow<DirectoryState>(DirectoryState.Idle)
+    val modelsState: StateFlow<DirectoryState> = _modelsState
+
+    private val _bodiesState = MutableStateFlow<DirectoryState>(DirectoryState.Idle)
+    val bodiesState: StateFlow<DirectoryState> = _bodiesState
+
+    private val _gearboxesState = MutableStateFlow<DirectoryState>(DirectoryState.Idle)
+    val gearboxesState: StateFlow<DirectoryState> = _gearboxesState
+
+    private val _drivesState = MutableStateFlow<DirectoryState>(DirectoryState.Idle)
+    val drivesState: StateFlow<DirectoryState> = _drivesState
+
+    private val _addCarState = MutableStateFlow<AddCarState>(AddCarState.Idle)
+    val addCarState: StateFlow<AddCarState> = _addCarState
+
+    private val _getCarState = MutableStateFlow<GetCarState>(GetCarState.Idle)
+    val getCarState: StateFlow<GetCarState> = _getCarState
+
     var person: PersonDto? = null
 
     fun getUserInfo() {
@@ -142,8 +166,247 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun getAllFuelTypes() {
+        viewModelScope.launch {
+            _fuelTypesState.value = DirectoryState.Loading
+
+            val result = RetrofitClient.fuelTypesRepository.getAllFuelTypes()
+
+            _fuelTypesState.value = when (result) {
+                is ApiResult.Error -> DirectoryState.Error(result.error)
+                is ApiResult.NetworkError -> DirectoryState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data.isNullOrEmpty()) {
+                        DirectoryState.UnknownError
+                    }
+                    else {
+                        DirectoryState.Data(result.data.map { it.typeName })
+                    }
+                }
+                is ApiResult.UnknownError -> DirectoryState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    DirectoryState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
+    fun getAllBrands() {
+        viewModelScope.launch {
+            _brandsState.value = DirectoryState.Loading
+
+            val result = RetrofitClient.carBrandsRepository.getAllBrands()
+
+            _brandsState.value = when (result) {
+                is ApiResult.Error -> DirectoryState.Error(result.error)
+                is ApiResult.NetworkError -> DirectoryState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data.isNullOrEmpty()) {
+                        DirectoryState.UnknownError
+                    }
+                    else {
+                        DirectoryState.Data(result.data)
+                    }
+                }
+                is ApiResult.UnknownError -> DirectoryState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    DirectoryState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
+    fun getAllModels(brandName: String) {
+        viewModelScope.launch {
+            _modelsState.value = DirectoryState.Loading
+
+            val result = RetrofitClient.carBrandsModelsRepository.getAllModelsByBrand(brandName)
+
+            _modelsState.value = when (result) {
+                is ApiResult.Error -> DirectoryState.Error(result.error)
+                is ApiResult.NetworkError -> DirectoryState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data.isNullOrEmpty()) {
+                        DirectoryState.UnknownError
+                    }
+                    else {
+                        DirectoryState.Data(result.data)
+                    }
+                }
+                is ApiResult.UnknownError -> DirectoryState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    DirectoryState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
+    fun getAllBodyTypes() {
+        viewModelScope.launch {
+            _bodiesState.value = DirectoryState.Loading
+
+            val result = RetrofitClient.carBodiesRepository.getAllCarBodies()
+
+            _bodiesState.value = when (result) {
+                is ApiResult.Error -> DirectoryState.Error(result.error)
+                is ApiResult.NetworkError -> DirectoryState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data.isNullOrEmpty()) {
+                        DirectoryState.UnknownError
+                    }
+                    else {
+                        DirectoryState.Data(result.data.map { it.bodyName })
+                    }
+                }
+                is ApiResult.UnknownError -> DirectoryState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    DirectoryState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
+    fun getAllGearboxTypes() {
+        viewModelScope.launch {
+            _gearboxesState.value = DirectoryState.Loading
+
+            val result = RetrofitClient.carGearboxesRepository.getAllCarGearboxes()
+
+            _gearboxesState.value = when (result) {
+                is ApiResult.Error -> DirectoryState.Error(result.error)
+                is ApiResult.NetworkError -> DirectoryState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data.isNullOrEmpty()) {
+                        DirectoryState.UnknownError
+                    }
+                    else {
+                        DirectoryState.Data(result.data.map { it.gearboxName })
+                    }
+                }
+                is ApiResult.UnknownError -> DirectoryState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    DirectoryState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
+    fun getAllDriveTypes() {
+        viewModelScope.launch {
+            _drivesState.value = DirectoryState.Loading
+
+            val result = RetrofitClient.carDrivesRepository.getAllCarDrives()
+
+            _drivesState.value = when (result) {
+                is ApiResult.Error -> DirectoryState.Error(result.error)
+                is ApiResult.NetworkError -> DirectoryState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data.isNullOrEmpty()) {
+                        DirectoryState.UnknownError
+                    }
+                    else {
+                        DirectoryState.Data(result.data.map { it.driveName })
+                    }
+                }
+                is ApiResult.UnknownError -> DirectoryState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    DirectoryState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
     fun resetUpdateProfileInfoState() {
         _updateProfileInfoState.value = UpdateProfileInfoState.Idle
+    }
+
+    fun resetMyCarsState() {
+        _myCarsState.value = MyCarsState.Idle
+    }
+
+    fun addCar(
+        vinNumber: String,
+        stateNumber: String?, brandName: String,
+        modelName: String, bodyName: String,
+        releaseYear: UShort, gearboxName: String,
+        driveName: String, vehicleWeightKG: UShort,
+        enginePowerHP: UShort, enginePowerKW: Float,
+        engineCapacityL: Float, tankCapacityL: UByte,
+        fuelTypeName: String
+    ) {
+        viewModelScope.launch {
+            _addCarState.value = AddCarState.Loading
+
+            val result = RetrofitClient.carsRepository.addCar(
+                vinNumber,
+                stateNumber, brandName,
+                modelName, bodyName,
+                releaseYear, gearboxName,
+                driveName, vehicleWeightKG,
+                enginePowerHP, enginePowerKW,
+                engineCapacityL, tankCapacityL,
+                fuelTypeName
+            )
+
+            _addCarState.value = when (result) {
+                is ApiResult.Error -> {
+                    if (result.code == 409) {
+                        if (result.error == "Автомобиль с данным VIN уже существует")
+                        {
+                            AddCarState.VINExists
+                        }
+                        else if (result.error == "Автомобиль с данным государственным номером уже существует") {
+                            AddCarState.StateNumberExists
+                        }
+                        else {
+                            AddCarState.Error(result.error)
+                        }
+                    }
+                    else {
+                        AddCarState.Error(result.error)
+                    }
+                }
+                is ApiResult.NetworkError -> AddCarState.NetworkError
+                is ApiResult.Success -> AddCarState.Added
+                is ApiResult.UnknownError -> AddCarState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    AddCarState.ValidationError(mapErrors)
+                }
+            }
+        }
+    }
+
+    fun getCarData(VIN: String) {
+        viewModelScope.launch {
+            _getCarState.value = GetCarState.Loading
+
+            val result = RetrofitClient.carsRepository.getCarByVINNumber(VIN)
+
+            _getCarState.value = when (result) {
+                is ApiResult.Error -> GetCarState.Error(result.error)
+                is ApiResult.NetworkError -> GetCarState.NetworkError
+                is ApiResult.Success -> {
+                    if (result.data == null) {
+                        GetCarState.UnknownError
+                    }
+                    else {
+                        GetCarState.Data(result.data)
+                    }
+                }
+                is ApiResult.UnknownError -> GetCarState.UnknownError
+                is ApiResult.ValidationError -> {
+                    val mapErrors = result.errors.mapNotNull { (key, list) -> list.firstOrNull()?.let { first -> key to first } }.toMap()
+                    GetCarState.ValidationError(mapErrors)
+                }
+            }
+        }
     }
 }
 
@@ -187,4 +450,36 @@ sealed class MyCarsState {
     object NetworkError : MyCarsState()
     object UnknownError : MyCarsState()
     data class ValidationError(val map: Map<String, String>) : MyCarsState()
+}
+
+sealed class DirectoryState {
+    object Loading : DirectoryState()
+    object Idle : DirectoryState()
+    data class Data(val items: List<String>): DirectoryState()
+    data class Error(val message: String) : DirectoryState()
+    object NetworkError : DirectoryState()
+    object UnknownError : DirectoryState()
+    data class ValidationError(val map: Map<String, String>) : DirectoryState()
+}
+
+sealed class AddCarState {
+    object Loading : AddCarState()
+    object Idle : AddCarState()
+    object Added: AddCarState()
+    data class Error(val message: String) : AddCarState()
+    object NetworkError : AddCarState()
+    object UnknownError : AddCarState()
+    data class ValidationError(val map: Map<String, String>) : AddCarState()
+    object VINExists: AddCarState()
+    object StateNumberExists: AddCarState()
+}
+
+sealed class GetCarState {
+    object Loading : GetCarState()
+    object Idle : GetCarState()
+    data class Data(val car: CarDto): GetCarState()
+    data class Error(val message: String) : GetCarState()
+    object NetworkError : GetCarState()
+    object UnknownError : GetCarState()
+    data class ValidationError(val map: Map<String, String>) : GetCarState()
 }

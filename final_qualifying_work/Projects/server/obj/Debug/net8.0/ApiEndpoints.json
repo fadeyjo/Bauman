@@ -77,6 +77,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "server.Controllers.CarBrandsController",
+    "Method": "GetAllBrands",
+    "RelativePath": "api/CarBrands",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "server.Controllers.CarBrandsModelsController",
+    "Method": "GetAllModelsByBrand",
+    "RelativePath": "api/CarBrandsModels/{brandName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "brandName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "server.Controllers.CarDrivesController",
     "Method": "GetAllCarDrives",
     "RelativePath": "api/CarDrives",
@@ -211,22 +237,6 @@
       {
         "Name": "body",
         "Type": "server.Models.Dtos.UpdateCarInfoDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "server.Controllers.CarsController",
-    "Method": "ArchiveCar",
-    "RelativePath": "api/Cars/archive",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "body",
-        "Type": "server.Models.Dtos.ArchiveCarDto",
         "IsRequired": true
       }
     ],
