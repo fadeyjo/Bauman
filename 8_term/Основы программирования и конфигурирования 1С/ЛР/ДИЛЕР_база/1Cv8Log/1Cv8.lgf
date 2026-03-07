@@ -57,4 +57,8 @@ c30cfc48-6a67-44fb-abb8-9073c3e1c418
 {4,"_$Access$_.AccessDenied",24},
 {4,"_$Data$_.Delete",25},
 {3,"1CV8",5},
-{4,"_$Transaction$_.Rollback",26}
+{4,"_$Transaction$_.Rollback",26},
+{4,"_$Session$_.ExternalDataProcessorConnectError",27},
+{4,"_$Session$_.ExternalDataProcessorConnect",28},
+{5,4bca1ceb-0665-42be-8ca1-76c2932ee760,"РегистрСведений.ЦеныПоставщиков",13},
+{5,593e485c-60db-4bfa-a53d-da9ccfa0b40d,"РегистрНакопления.Остатки",14}

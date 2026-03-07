@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<querylist>
+	<query name="ПоступлениеТоваров">
+		<text>ВЫБРАТЬ
+    МИНИМУМ(Товары.Цена) КАК МинимальнаяЦена,
+    МАКСИМУМ(Товары.Цена) КАК МаксимальнаяЦена
+ИЗ
+    Документ.ПоступлениеТоваров.Товары КАК Товары
+ГДЕ
+    Товары.Ссылка.Контрагент.Наименование = &amp;Контрагент
+</text>
+		<textSQL>
+
+		</textSQL>
+		<planSQL>
+
+		</planSQL>
+		<typeSQL>
+
+		</typeSQL>
+		<parameters>
+			<parameter name="Контрагент" type="Строка" value="Контрагент1"/>
+		</parameters>
+	</query>
+</querylist>
